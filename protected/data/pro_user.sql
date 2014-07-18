@@ -22,6 +22,7 @@ CREATE TABLE `action` (
   `controller_id` smallint(5) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `controller_action` (`controller_id`),
+  KEY `action_id` (`id`),
   CONSTRAINT `controller_action` FOREIGN KEY (`controller_id`) REFERENCES `controller` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -54,7 +55,7 @@ CREATE TABLE `company` (
   `active` tinyint(1) NOT NULL COMMENT '0 = Inactivo\n1 = Activo',
   `date_create` date NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `subdomain` (`subdomain`)
+  KEY `company_id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 /*Data for the table `company` */
@@ -85,28 +86,17 @@ DROP TABLE IF EXISTS `controller`;
 CREATE TABLE `controller` (
   `id` smallint(5) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
-  `module_id` smallint(5) NOT NULL,
+  `url_controller` varchar(255) DEFAULT NULL,
+  `product_id` smallint(5) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `module_controller` (`module_id`),
-  CONSTRAINT `module_controller` FOREIGN KEY (`module_id`) REFERENCES `module` (`id`)
+  UNIQUE KEY `url_controller` (`url_controller`),
+  UNIQUE KEY `url_controller_2` (`url_controller`),
+  KEY `controller_id` (`id`),
+  KEY `product_controller` (`product_id`),
+  CONSTRAINT `product_controller` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `controller` */
-
-/*Table structure for table `module` */
-
-DROP TABLE IF EXISTS `module`;
-
-CREATE TABLE `module` (
-  `id` smallint(5) NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL,
-  `product_id` smallint(5) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `product_module` (`product_id`),
-  CONSTRAINT `product_module` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Data for the table `module` */
 
 /*Table structure for table `product` */
 
@@ -117,7 +107,7 @@ CREATE TABLE `product` (
   `name` varchar(100) NOT NULL,
   `url_product` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `url_product` (`url_product`)
+  KEY `product_id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 /*Data for the table `product` */
@@ -136,6 +126,7 @@ CREATE TABLE `role` (
   PRIMARY KEY (`id`),
   KEY `company_role` (`company_id`),
   KEY `product_role` (`product_id`),
+  KEY `role_id` (`id`),
   CONSTRAINT `company_role` FOREIGN KEY (`company_id`) REFERENCES `company` (`id`),
   CONSTRAINT `product_role` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
@@ -155,7 +146,8 @@ CREATE TABLE `user` (
   `password` varchar(72) NOT NULL,
   `active` tinyint(1) NOT NULL COMMENT '0 = Inactivo\n1 = Activo',
   `date_create` date NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 /*Data for the table `user` */
@@ -193,10 +185,13 @@ CREATE TABLE `user_session` (
   `user_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user_user_session` (`user_id`),
+  KEY `user_session_id` (`id`),
   CONSTRAINT `user_user_session` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 
 /*Data for the table `user_session` */
+
+insert  into `user_session`(`id`,`session`,`ipv4`,`time_login`,`time_logout`,`user_id`) values (15,'367462099e72ba94884bd8e6cc585c45','127.0.0.1','2014-07-17 08:10:24',NULL,1),(16,'63cc1056e1c9ea95d9d25374561bdecd','127.0.0.1','2014-07-17 08:10:35','2014-07-17 07:49:46',1),(17,'dcefa5e0cef5d08265c2e9b88c1b8f30','127.0.0.1','2014-07-17 20:44:50',NULL,1),(18,'535084e2303e91e0ca5824a6f3eb6613','127.0.0.1','2014-07-17 20:46:49','2014-07-17 20:54:13',1),(19,'cbc8ef1f47612a0f57c099104a424522','127.0.0.1','2014-07-17 20:47:02','2014-07-17 20:24:02',1),(20,'ecc8160555149f12725e16f5d68eb030','127.0.0.1','2014-07-17 20:54:16','2014-07-17 20:55:32',1);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
