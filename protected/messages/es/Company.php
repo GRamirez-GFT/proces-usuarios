@@ -1,0 +1,27 @@
+<?php
+	return array(
+	'Name'=>'Nombre',
+        'Slogan'=>'Eslogan',
+        'Mision'=>'Misión',
+        'Vision'=>'Visión',
+        'Values'=>'Valores',
+        'Policies'=>'Políticas',
+        'Objectives'=>'Objetivos',
+	'Company'=>'Compañía',
+	'Companies'=>'Compañías',
+        'Corporate Information'=>'Información Corporativa',
+        'Our Mission'=>'Nuestra Misión',
+        'Our Vision'=>'Nuestra Visión',
+        'Our Values'=>'Nuestros Valores',
+        'Quality Policies'=>'Politicas de Calidad',
+        'Quality Objectives'=>'Objetivos de Calidad',
+        'Quality Policy and Objectives' => 'Políticas de Calidad y Objetivos',
+	'Create Company'=>'Crear Compañía',
+	'Manage Companies'=>'Administración de Compañías',
+	'List Companies'=>'Lista de Compañías',
+	'Update Company'=>'Actualizar Compañía',
+	'Delete Company'=>'Eliminar Compañía',
+	'View Company'=>'Mostrar Compañía',
+	'Active'=>'Activo',
+	);
+?>
