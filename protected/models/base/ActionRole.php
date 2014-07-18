@@ -3,8 +3,8 @@
  * @property integer $action_id
  * @property integer $role_id
  *
- * @property Role $role
  * @property Action $action
+ * @property Role $role
  */
 
 class ActionRole extends MyActiveRecord {
@@ -21,16 +21,16 @@ class ActionRole extends MyActiveRecord {
 		return array(
 		array('action_id, role_id', 'required'),
 		array('action_id, role_id', 'numerical', 'integerOnly' => true),
-		array('role_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => 'Role'),
 		array('action_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => 'Action'),
+		array('role_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => 'Role'),
 		array('action_id, role_id', 'safe', 'on' => 'search'),
 		);
 	}
 
 	public function relations() {
 		return array(
-		'role' => array(self::BELONGS_TO, 'Role', 'role_id'),
 		'action' => array(self::BELONGS_TO, 'Action', 'action_id'),
+		'role' => array(self::BELONGS_TO, 'Role', 'role_id'),
 		);
 	}
 	
