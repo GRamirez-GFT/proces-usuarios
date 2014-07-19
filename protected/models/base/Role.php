@@ -24,8 +24,8 @@ class Role extends MyActiveRecord {
 	public function rules() {
 		return array(
 		array('name, company_id, product_id', 'required'),
-		array('company_id, product_id', 'numerical', 'integerOnly' => true),
-		array('name', 'length', 'max' => 50),
+		array('company_id, product_id', 'numerical', 'integerOnly'=>true),
+		array('name', 'length', 'max'=>50),
 		array('company_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => 'Company'),
 		array('product_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => 'Product'),
 		array('id, name, company_id, product_id', 'safe', 'on' => 'search'),

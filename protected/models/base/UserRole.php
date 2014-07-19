@@ -2,9 +2,6 @@
 /**
  * @property integer $user_id
  * @property integer $role_id
- *
- * @property Role $role
- * @property User $user
  */
 
 class UserRole extends MyActiveRecord {
@@ -20,20 +17,11 @@ class UserRole extends MyActiveRecord {
 	public function rules() {
 		return array(
 		array('user_id, role_id', 'required'),
-		array('user_id, role_id', 'numerical', 'integerOnly' => true),
-		array('role_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => 'Role'),
-		array('user_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => 'User'),
+		array('user_id, role_id', 'numerical', 'integerOnly'=>true),
 		array('user_id, role_id', 'safe', 'on' => 'search'),
 		);
 	}
 
-	public function relations() {
-		return array(
-		'role' => array(self::BELONGS_TO, 'Role', 'role_id'),
-		'user' => array(self::BELONGS_TO, 'User', 'user_id'),
-		);
-	}
-	
 	public function attributeLabels() {
 		return array(
 		'user_id' => 'user_id',

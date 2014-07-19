@@ -21,8 +21,8 @@ class Action extends MyActiveRecord {
 	public function rules() {
 		return array(
 		array('name, controller_id', 'required'),
-		array('controller_id', 'numerical', 'integerOnly' => true),
-		array('name', 'length', 'max' => 100),
+		array('controller_id', 'numerical', 'integerOnly'=>true),
+		array('name', 'length', 'max'=>100),
 		array('controller_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => 'Controller'),
 		array('id, name, controller_id', 'safe', 'on' => 'search'),
 		);

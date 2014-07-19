@@ -7,12 +7,11 @@ class MyActiveRecord extends CActiveRecord {
             switch ($data->name) {
                 case 'password':
                     $this->setAttribute($data->name, CPasswordHelper::hashPassword($this->getAttribute($data->name)));
-                    echo "ALO";
                 break;
                 default:
             }
         }
-        parent::beforeSave();
+        return parent::beforeSave();
     }
 
 }

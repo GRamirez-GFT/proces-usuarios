@@ -8,6 +8,7 @@
  * @property string $date_create
  *
  * @property Role[] $roles
+ * @property UserSession[] $userSessions
  */
 
 class User extends MyActiveRecord {
@@ -22,12 +23,11 @@ class User extends MyActiveRecord {
 
 	public function rules() {
 		return array(
-		array('name, username, password', 'required'),
+		array('name, username, password, active, date_create', 'required'),
 		array('active', 'boolean', 'allowEmpty' => true),
-		array('name', 'length', 'max' => 100),
-		array('username', 'length', 'max' => 32),
-		array('password', 'length', 'max' => 72),
-		array('active', 'length', 'max' => 1),
+		array('name', 'length', 'max'=>100),
+		array('username', 'length', 'max'=>32),
+		array('password', 'length', 'max'=>72),
 		array('id, name, username, password, active, date_create', 'safe', 'on' => 'search'),
 		);
 	}
@@ -35,6 +35,7 @@ class User extends MyActiveRecord {
 	public function relations() {
 		return array(
 		'roles' => array(self::MANY_MANY, 'Role', 'user_role(user_id, role_id)'),
+		'userSessions' => array(self::HAS_MANY, 'UserSession', 'user_id'),
 		);
 	}
 	

@@ -15,11 +15,9 @@ class UserController extends MyController {
             $model->setAttributes(Yii::app()->request->getPost('User'));
             $model->date_create = date('Y-m-d');
             if ($model->save()) {
-                /*
                 $this->redirect(array(
                     'index'
                 ));
-                */
             }
         }
         $this->render('index', array(
