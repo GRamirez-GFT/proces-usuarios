@@ -155,17 +155,17 @@ div.dataTables_wrapper
 
 .dataTables_wrapper table thead th.sorting
 {
-	background-image:url(../../images/core/sort.png);
+	background-image:url(../images/core/sort.png);
 }
 
 .dataTables_wrapper table thead th.sorting_asc
 {
-	background-image:url(../../images/core/sort_asc.png);
+	background-image:url(../images/core/sort_asc.png);
 }
 
 .dataTables_wrapper table thead th.sorting_desc
 {
-	background-image:url(../../images/core/sort_desc.png);
+	background-image:url(../images/core/sort_desc.png);
 }
 
 .dataTables_wrapper table thead th.sorting.button_colum,

@@ -1,20 +1,36 @@
-<?php
-/* @var $this UserController */
-/* @var $dataProvider CActiveDataProvider */
+<?php // TODO: Condicion de acceso CREAR?>
+<div id="front" class="content">
+	<div>
+		<div class="mws-panel-body">
+			<div class="dataTables_wrapper">
+				<table class="mws-datatable-fn mws-table">
+					<thead>
+						<tr>
+							<th style="width: 182px;" class="sorting_asc">username</th>
+							<th style="width: 184px;" class="sorting">name</th>
+							<th style="width: 169px;" class="sorting">active</th>
+							<th style="width: 165px;" class="sorting">date_create</th>
+						</tr>
+					</thead>
+					<tbody>
+					<?php foreach ($model->findAll() as $item):?>
+					    <tr>
+							<td><?php echo $item->username; ?></td>
+							<td><?php echo $item->name; ?></td>
+							<td><?php echo $item->active; ?></td>
+							<td><?php echo $item->date_create; ?></td>
+						</tr>
+					<?php endforeach;?>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
 
-$this->breadcrumbs=array(
-	'Users',
-);
+</div>
 
-$this->menu=array(
-	array('label'=>'Create User', 'url'=>array('create')),
-	array('label'=>'Manage User', 'url'=>array('admin')),
-);
-?>
-
-<h1>Users</h1>
-
-<?php $this->widget('zii.widgets.CListView', array(
-	'dataProvider'=>$dataProvider,
-	'itemView'=>'_view',
-)); ?>
+<div id="panel" style="display: none; width: 30%">
+	<div id="panel-content" class="panel_section">
+		<?php $this->renderPartial('_form', array('model' => $model)); ?>
+	</div>
+</div>

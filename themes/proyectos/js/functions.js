@@ -129,28 +129,16 @@ $(function(){
 
 
 
-	/* *****	PANEL DINAMICO,	  		*****************************************************				*/
-	/* #####	CARGA DE VISTAS EN 		#####################################################				*/
-	/* *****	PANEL VÍA AJAX	 		*****************************************************				*/
-
-
-	var column = 'one';
-
+	/**
+	 * TODO: PANEL LATERAL
+	 */
 	body.on('click', '.panel-trigger', function(e){
-		switch (column) {
-		case 'one':
-			$('#column1').css('width', '64%');
-			$('#column2').css('width', '30%');
-			$('#column2').css('display', 'block');
-			column = 'two';
-			break;
-		case 'two':
-			$('#column1').css('width', '96%');
-			$('#column2').css('display', 'none');
-			$('#column2').css('width', '0px');
-			column = 'one';
-			break;
-		default:
+		if ($('#panel').css('display') == 'block') {
+			$('#front').css('width', '96%');
+			$('#panel').css('display', 'none');
+		} else {
+			$('#front').css('width', '64%');
+			$('#panel').css('display', 'block');			
 		}
 	});
 

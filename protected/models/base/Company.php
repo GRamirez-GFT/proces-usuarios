@@ -22,7 +22,6 @@ class Company extends MyActiveRecord {
 	public function rules() {
 		return array(
 		array('name', 'required'),
-		array('active', 'numerical', 'integerOnly' => true),
 		array('active', 'boolean', 'allowEmpty' => true),
 		array('name', 'length', 'max' => 100),
 		array('subdomain', 'length', 'max' => 30),

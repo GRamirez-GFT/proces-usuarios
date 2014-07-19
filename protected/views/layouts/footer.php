@@ -1,4 +1,4 @@
-<?php if (!in_array($this->action->getId(), array("login"))):?>
+<?php if (!in_array($this->action->getId(), array("login"))): ?>
 <footer>
 	<p>&copy; 2012 por Icono. Todos los derechos reservados</p>
 	<ul>
@@ -7,8 +7,8 @@
 		<li><a href="">Contacto</a></li>
 	</ul>
 </footer>
-<?php else:?>
+<?php else: ?>
 <div id="login-footer">
-	<p>&copy; <?=date('Y')?> por Icono. Todos los derechos reservados.</p>
+	<p>&copy; <?php echo date('Y'); ?> por Icono. Todos los derechos reservados.</p>
 </div>
-<?php endif;?>
+<?php endif; ?>

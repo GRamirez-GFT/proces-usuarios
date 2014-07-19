@@ -23,13 +23,11 @@ class User extends MyActiveRecord {
 	public function rules() {
 		return array(
 		array('name, username, password', 'required'),
-		array('active', 'numerical', 'integerOnly' => true),
 		array('active', 'boolean', 'allowEmpty' => true),
 		array('name', 'length', 'max' => 100),
 		array('username', 'length', 'max' => 32),
 		array('password', 'length', 'max' => 72),
 		array('active', 'length', 'max' => 1),
-		array('password', 'filter', 'filter' => 'strtolower'),
 		array('id, name, username, password, active, date_create', 'safe', 'on' => 'search'),
 		);
 	}

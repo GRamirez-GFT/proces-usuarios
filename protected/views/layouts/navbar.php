@@ -1,17 +1,10 @@
 <?php
-$current = "#";
-$title = "Notificaciones";
 $options = array(
-    'catalogo',
-    'proveedores',
-    'servicios',
-    'clientes',
-    'usuarios',
-    'roles',
-    'empresas',
-    'config_sistema'
+    'usuarios' => 'user',
+    'compañias' => 'company',
+    'productos' => 'product',
 );
-?>
+; ?>
 <div id="topbar">
 	<div id="logo">
 		<a href="<?php Yii::app()->baseUrl; ?>"><img
@@ -19,13 +12,16 @@ $options = array(
 	</div>
 	<div id="breadcrums">
 		<p>
-			<a href="<?php Yii::app()->baseUrl; ?>">Inicio</a> <span
-				class="breadcrums-sep"></span> <a href="<?php $current?>"><?php echo $title; ?></a>
+			<a href="<?php Yii::app()->baseUrl; ?>">Inicio</a>
+			<?php if ($this->id != 'site'):; ?>
+			<span class="breadcrums-sep"></span>
+			<a href="#"><?php echo $this->id; ?></a>
+			<?php endif;; ?>
 		</p>
 	</div>
 
 	<a id="logout"
-		href="<?php echo $this->createAbsoluteUrl('site/logout')?>"> <span
+		href="<?php echo $this->createAbsoluteUrl('site/logout'); ?>"> <span
 		id="logout-icon"></span>
 	</a>
 	<!-- end logout -->
@@ -44,8 +40,8 @@ $options = array(
 			<li><a id="settings-icon" class="button_switch" href=""></a>
 				<div class="drop-top">
 					<ul>
-<?php foreach ($options as $option): ?>
-    <li><a href="#"><?php echo $option; ?></a></li>
+<?php foreach ($options as $label => $url): ; ?>
+    <li><a href="<?php echo Yii::app()->createAbsoluteUrl($url); ?>"><?php echo $label; ?></a></li>
 <?php endforeach; ?>
 					</ul>
 					<span></span>
@@ -57,10 +53,10 @@ $options = array(
 	</div>
 	<div id="user">
 		<div id="company">
-			<?php echo  Yii::app()->user->company;?>
+			<?php echo  Yii::app()->user->company; ?>
 		</div>
 		<div id="user-name">
-			<?php echo Yii::app()->user->name;?>
+			<?php echo Yii::app()->user->name; ?>
 		</div>
 	</div>
 </div>

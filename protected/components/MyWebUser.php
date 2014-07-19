@@ -46,18 +46,16 @@ class MyWebUser extends CWebUser {
     }
 
     public function beforeLogout() {
-        if (Yii::app()->db->createCommand()->update('user_session',
+        Yii::app()->db->createCommand()->update('user_session',
             array(
                 'time_logout' => date('Y-m-d H:i:s')
             ), 'session=:t0 AND ipv4=:t1',
             array(
                 ':t0' => isset($_COOKIE['PROCESID']) ? $_COOKIE['PROCESID'] : null,
                 ':t1' => Yii::app()->request->getUserHostAddress()
-            ))) {
-            Yii::app()->request->cookies->clear();
-            return true;
-        }
-        return false;
+            ));
+        Yii::app()->request->cookies->clear();
+        return true;
     }
 
     public function getPermissions() {
