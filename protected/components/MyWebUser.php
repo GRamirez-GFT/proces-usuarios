@@ -23,15 +23,15 @@ class MyWebUser extends CWebUser {
             Yii::app()->user->setState('name', $usuario->name);
             Yii::app()->user->setState('username', $usuario->username);
             // Yii::app()->user->setState('role', $usuario->role->name);
-            $compania = $usuario->roles[0]->company;
-            Yii::app()->user->setState('company_id', $compania->id);
-            Yii::app()->user->setState('company', $compania->name);
-            Yii::app()->user->setState('subdomain', $compania->subdomain);
-            Yii::app()->user->setState('permissions', $this->getPermissions());
-            return true;
-        } else {
-            return false;
+            if ($usuario->roles && ($compania = $usuario->roles[0]->company)) {
+                Yii::app()->user->setState('company_id', $compania->id);
+                Yii::app()->user->setState('company', $compania->name);
+                Yii::app()->user->setState('subdomain', $compania->subdomain);
+                Yii::app()->user->setState('permissions', $this->getPermissions());
+                return true;
+            }
         }
+        return false;
     }
 
     public function afterLogin() {
