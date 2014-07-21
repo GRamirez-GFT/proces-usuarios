@@ -7,8 +7,15 @@
 		<div id="close-panel"></div>
 	</div>
 	<div id="panel-content" class="panel_section">
-	   <a class="mws-tooltip-s " original-title="Editar"></a>
-	   <a class=" mws-tooltip-s" original-title="Eliminar"></a>
+	   <a id="editar-option" class="mws-tooltip-s " original-title="Editar"></a>
+	   <?php echo CHtml::link('', '#', array(
+	       'id' => 'eliminar-option',
+	       'class' => 'mws-tooltip-s',
+	       'original-title' => 'Eliminar',
+	       'submit' => array('id' => $model->id),
+	       'confirm' => 'Are you sure?',
+	       'csrf' => true)
+	   ); ?>
 		<?php $this->renderPartial('_view', array('model' => $model)); ?>
 	</div>
 </div>
