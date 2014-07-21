@@ -20,11 +20,18 @@ class UserController extends MyController {
                 ));
             }
         }
-        $this->render('index', array(
+        $this->render('create', array(
             'model' => $model
         ));
     }
 
+    public function actionView($id) {
+        $model = $this->loadModel($id);
+        $this->render('view', array(
+            'model' => $model
+        ));
+    }
+    
     public function loadModel($id) {
         $model = User::model()->findByPk($id);
         if ($model === null) throw new CHttpException(404, 'The requested page does not exist.');
