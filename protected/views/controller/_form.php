@@ -2,7 +2,7 @@
 
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'controller-form',
-	'enableClientValidation' => true,  
+	'enableClientValidation' => true,
 	'htmlOptions' => array(
 		'enctype' => 'multipart/form-data',
 		'autocomplete' => 'off',
@@ -21,13 +21,13 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($model, 'url_controller'); ?>
-		<?php echo $form->textArea($model, 'url_controller', array('style' => 'resize: none;')); ?>
+		<?php echo $form->textField($model, 'url_controller', array('maxlength' => 255)); ?>
 		<?php echo $form->error($model,'url_controller'); ?>
 	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model, 'product_id'); ?>
-		<?php echo $form->dropDownList($model, 'product_id', array('prompt' => Yii::t('base', 'select option'))); ?>
+		<?php echo $form->dropDownList($model, 'product_id', CHtml::listData(Product::model()->findAll(), 'id', 'name'), array('prompt' => Yii::t('base', 'select option'))); ?>
 		<?php echo $form->error($model,'product_id'); ?>
 	</div>
 

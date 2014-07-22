@@ -3,7 +3,7 @@
 class ProductController extends MyController {
     public $layout = '//layouts/column2';
     public $defaultAction = 'admin';
-
+    
     public function actionView($id) {
         $this->render('view', array(
             'model' => $this->loadModel($id)

@@ -21,7 +21,7 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($model, 'url_product'); ?>
-		<?php echo $form->textArea($model, 'url_product', array('style' => 'resize: none;')); ?>
+		<?php echo $form->textField($model, 'url_product', array('maxlength' => 255)); ?>
 		<?php echo $form->error($model,'url_product'); ?>
 	</div>
 
