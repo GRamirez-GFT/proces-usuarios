@@ -19,7 +19,7 @@
 					<td><?php echo $item->active; ?></td>
 					<td><?php echo $item->date_create; ?></td>
 					<td class="button_colum">
-					   <?php echo CHtml::link('<div class="more_icon mws-tooltip-e" original-title="Ver detalles"></div>', $item->id);?>
+					   <?php echo CHtml::link('<div class="more_icon mws-tooltip-e" original-title="Ver detalles"></div>', array('view', 'id' => $item->id));?>
                     </td>
 				</tr>
 				<?php endforeach;?>

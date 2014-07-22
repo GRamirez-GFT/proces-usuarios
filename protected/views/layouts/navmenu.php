@@ -13,7 +13,7 @@ $options = array(
     'grados'
 );
 ?>
-
+<!--
 <div id="menu">
 	<ul>
 <?php foreach ($options as $option): ?>
@@ -21,6 +21,21 @@ $options = array(
 			title="<?php echo $option; ?>"> <span
 				id="<?php echo $option; ?>-icon"></span> <span><?php echo $option; ?></span>
 		</a></li>
+<?php endforeach; ?>
+    </ul>
+</div>
+-->
+
+<?php $options = array(
+    'usuarios' => 'user',
+    'compañias' => 'company',
+    'productos' => 'product',
+); ?>
+
+<div id="menu">
+	<ul>
+<?php foreach ($options as $option => $controller): ?>
+    <li><?php echo CHtml::link($option, Yii::app()->createAbsoluteUrl($controller)); ?></li>
 <?php endforeach; ?>
     </ul>
 </div>

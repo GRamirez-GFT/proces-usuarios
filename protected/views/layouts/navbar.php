@@ -1,10 +1,5 @@
 <?php
-$options = array(
-    'usuarios' => 'user',
-    'compañias' => 'company',
-    'productos' => 'product',
-);
-; ?>
+$options = array(); ?>
 <div id="topbar">
 	<div id="logo">
 		<a href="<?php Yii::app()->baseUrl; ?>"><img

@@ -1,34 +1,52 @@
-<div><h3>Crear Usuario</h3></div>
+<div class="form">
 
 <?php $form=$this->beginWidget('CActiveForm', array(
-    'id'=>'user-form',
-    'enableClientValidation' => true,
-    'action' => $model->isNewRecord ? array('create') : array('update'),
-    'htmlOptions' => array(
-        'enctype' => 'multipart/form-data',
-        'autocomplete' => 'off',
-))); ?>
+	'id'=>'user-form',
+	'enableClientValidation' => true,  
+	'htmlOptions' => array(
+		'enctype' => 'multipart/form-data',
+		'autocomplete' => 'off',
+	)
+)); ?>
 
-    <div class="cols" data-cols="4">
-        <?php echo $form->labelEx($model, 'name'); ?>
-        <?php echo $form->textField($model, 'name', array('maxlength' => 100)); ?>
-    </div>
+	<p class="note">Fields with <span class="required">*</span> are required.</p>
 
-    <div class="cols" data-cols="4">
-        <?php echo $form->labelEx($model, 'username'); ?>
-        <?php echo $form->textField($model, 'username', array('maxlength' => 32)); ?>
-    </div>
+	<?php echo $form->errorSummary($model); ?>
 
-    <div class="cols" data-cols="4">
-        <?php echo $form->labelEx($model, 'password'); ?>
-        <?php echo $form->passwordField($model, 'password', array('maxlength' => 72)); ?>
-    </div>
+	<div class="row">
+		<?php echo $form->labelEx($model, 'name'); ?>
+		<?php echo $form->textField($model, 'name', array('maxlength' => 100)); ?>
+		<?php echo $form->error($model,'name'); ?>
+	</div>
 
-    <div class="cols" data-cols="4">
-        <?php echo $form->labelEx($model, 'active'); ?>
-        <?php echo $form->checkBox($model, 'active'); ?>
-    </div>
-    
-    <?php echo CHtml::submitButton($model->isNewRecord ? 'Agregar' : 'Modificar', array('class' => 'redbtn')); ?>
+	<div class="row">
+		<?php echo $form->labelEx($model, 'username'); ?>
+		<?php echo $form->textField($model, 'username', array('maxlength' => 32)); ?>
+		<?php echo $form->error($model,'username'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model, 'password'); ?>
+		<?php echo $form->textField($model, 'password', array('maxlength' => 72)); ?>
+		<?php echo $form->error($model,'password'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model, 'active'); ?>
+		<?php echo $form->checkBox($model, 'active'); ?>
+		<?php echo $form->error($model,'active'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model, 'date_create'); ?>
+		<?php echo $form->textField($model, 'date_create'); ?>
+		<?php echo $form->error($model,'date_create'); ?>
+	</div>
+
+	<div class="row buttons">
+		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
+	</div>
 
 <?php $this->endWidget(); ?>
+
+</div>

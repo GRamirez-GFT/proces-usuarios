@@ -1,21 +1,28 @@
-<div id="front" class="content" style="width: 64%">
-    <?php $this->renderPartial('_table', array('model' => $model)); ?>
-</div>
+<?php
+$this->breadcrumbs=array(
+	'Users'=>array('index'),
+	$model->name,
+);
 
-<div id="panel" style="display: block; width: 32%">
-	<div id="panel-options">
-		<div id="close-panel"></div>
-	</div>
-	<div id="panel-content" class="panel_section">
-	   <a id="editar-option" class="mws-tooltip-s " original-title="Editar"></a>
-	   <?php echo CHtml::link('', '#', array(
-	       'id' => 'eliminar-option',
-	       'class' => 'mws-tooltip-s',
-	       'original-title' => 'Eliminar',
-	       'submit' => array('id' => $model->id),
-	       'confirm' => 'Are you sure?',
-	       'csrf' => true)
-	   ); ?>
-		<?php $this->renderPartial('_view', array('model' => $model)); ?>
-	</div>
-</div>
+$this->menu=array(
+	array('label'=>'List User', 'url'=>array('index')),
+	array('label'=>'Create User', 'url'=>array('create')),
+	array('label'=>'Update User', 'url'=>array('update', 'id'=>$model->id)),
+	array('label'=>'Delete User', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Are you sure you want to delete this item?')),
+	array('label'=>'Manage User', 'url'=>array('admin')),
+);
+?>
+
+<h1>View User #<?php echo $model->id; ?></h1>
+
+<?php $this->widget('zii.widgets.CDetailView', array(
+	'data'=>$model,
+	'attributes'=>array(
+		'id',
+		'name',
+		'username',
+		'password',
+		'active',
+		'date_create',
+	),
+));

@@ -1,21 +1,27 @@
-<div class="panel-info">
+<div class="view">
 
-	<h3>Detalles Usuario</h3>
-	
-	<div class="panel_section">
-	
-<?php $this->widget('zii.widgets.CDetailView', array(
-    'id' => 'user-details',
-    'cssFile' => false,
-    'itemTemplate' => '<div data-cols="4"><p><strong>{label}: </strong> {value}</p></div>',
-    'data' => $model,
-	'attributes' => array(
-        'username',
-        'name',
-        'active',
-	    'date_create',
-    ),
-));?>
-	
-    </div>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('id')); ?>:</b>
+	<?php echo CHtml::link(CHtml::encode($data->id), array('view', 'id'=>$data->id)); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('name')); ?>:</b>
+	<?php echo CHtml::encode($data->name); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('username')); ?>:</b>
+	<?php echo CHtml::encode($data->username); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('password')); ?>:</b>
+	<?php echo CHtml::encode($data->password); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('active')); ?>:</b>
+	<?php echo CHtml::encode($data->active); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('date_create')); ?>:</b>
+	<?php echo CHtml::encode($data->date_create); ?>
+	<br />
+
 </div>
