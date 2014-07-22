@@ -36,7 +36,7 @@ $options = array(
 
 <div id="menu">
 	<ul>
-<?php foreach ($options as $option => $controller): ?>
+<?php foreach ($options as $controller => $option): ?>
     <li><?php echo CHtml::link($option, Yii::app()->createAbsoluteUrl($controller)); ?></li>
 <?php endforeach; ?>
     </ul>

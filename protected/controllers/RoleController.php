@@ -1,9 +1,9 @@
 <?php
 
-class ProductController extends MyController {
+class RoleController extends MyController {
     public $layout = '//layouts/column2';
     public $defaultAction = 'admin';
-
+    
     public function actionView($id) {
         $this->render('view', array(
             'model' => $this->loadModel($id)
@@ -11,9 +11,9 @@ class ProductController extends MyController {
     }
 
     public function actionCreate() {
-        $model = new Product();
-        if (isset($_POST['Product'])) {
-            $model->attributes = $_POST['Product'];
+        $model = new Role();
+        if (isset($_POST['Role'])) {
+            $model->attributes = $_POST['Role'];
             if ($model->save()) $this->redirect(
                 array(
                     'view',
@@ -27,8 +27,8 @@ class ProductController extends MyController {
 
     public function actionUpdate($id) {
         $model = $this->loadModel($id);
-        if (isset($_POST['Product'])) {
-            $model->attributes = $_POST['Product'];
+        if (isset($_POST['Role'])) {
+            $model->attributes = $_POST['Role'];
             if ($model->save()) $this->redirect(
                 array(
                     'view',
@@ -49,23 +49,23 @@ class ProductController extends MyController {
     }
 
     public function actionIndex() {
-        $dataProvider = new CActiveDataProvider('Product');
+        $dataProvider = new CActiveDataProvider('Role');
         $this->render('index', array(
             'dataProvider' => $dataProvider
         ));
     }
 
     public function actionAdmin() {
-        $model = new Product('search');
+        $model = new Role('search');
         $model->unsetAttributes(); // clear any default values
-        if (isset($_GET['Product'])) $model->attributes = $_GET['Product'];
+        if (isset($_GET['Role'])) $model->attributes = $_GET['Role'];
         $this->render('admin', array(
             'model' => $model
         ));
     }
 
     public function loadModel($id) {
-        $model = Product::model()->findByPk($id);
+        $model = Role::model()->findByPk($id);
         if ($model === null) throw new CHttpException(404, 'The requested page does not exist.');
         return $model;
     }
