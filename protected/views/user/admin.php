@@ -17,7 +17,6 @@ $this->widget('zii.widgets.grid.CGridView', array(
 		'id',
 		'name',
 		'username',
-		'password',
 		'active',
 		'date_create',
 		array(
