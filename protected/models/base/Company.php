@@ -7,6 +7,7 @@
  * @property string $date_create
  *
  * @property Product[] $products
+ * @property Role[] $roles
  */
 
 class Company extends MyActiveRecord {
@@ -21,12 +22,10 @@ class Company extends MyActiveRecord {
 
 	public function rules() {
 		return array(
-		array('name', 'required'),
-		array('active', 'numerical', 'integerOnly' => true),
+		array('name, active, date_create', 'required'),
 		array('active', 'boolean', 'allowEmpty' => true),
-		array('name', 'length', 'max' => 100),
-		array('subdomain', 'length', 'max' => 30),
-		array('active', 'length', 'max' => 1),
+		array('name', 'length', 'max'=>100),
+		array('subdomain', 'length', 'max'=>30),
 		array('id, name, subdomain, active, date_create', 'safe', 'on' => 'search'),
 		);
 	}
@@ -34,6 +33,7 @@ class Company extends MyActiveRecord {
 	public function relations() {
 		return array(
 		'products' => array(self::MANY_MANY, 'Product', 'company_product(company_id, product_id)'),
+		'roles' => array(self::HAS_MANY, 'Role', 'company_id'),
 		);
 	}
 	

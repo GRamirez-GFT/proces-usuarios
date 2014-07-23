@@ -2,10 +2,11 @@
 /**
  * @property integer $id
  * @property string $name
- * @property integer $module_id
+ * @property string $url_controller
+ * @property integer $product_id
  *
  * @property Action[] $actions
- * @property Module $module
+ * @property Product $product
  */
 
 class Controller extends MyActiveRecord {
@@ -20,18 +21,19 @@ class Controller extends MyActiveRecord {
 
 	public function rules() {
 		return array(
-		array('name, module_id', 'required'),
-		array('module_id', 'numerical', 'integerOnly' => true),
-		array('name', 'length', 'max' => 100),
-		array('module_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => 'Module'),
-		array('id, name, module_id', 'safe', 'on' => 'search'),
+		array('name, product_id', 'required'),
+		array('product_id', 'numerical', 'integerOnly'=>true),
+		array('name', 'length', 'max'=>100),
+		array('url_controller', 'length', 'max'=>255),
+		array('product_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => 'Product'),
+		array('id, name, url_controller, product_id', 'safe', 'on' => 'search'),
 		);
 	}
 
 	public function relations() {
 		return array(
 		'actions' => array(self::HAS_MANY, 'Action', 'controller_id'),
-		'module' => array(self::BELONGS_TO, 'Module', 'module_id'),
+		'product' => array(self::BELONGS_TO, 'Product', 'product_id'),
 		);
 	}
 	
@@ -39,7 +41,8 @@ class Controller extends MyActiveRecord {
 		return array(
 		'id' => 'id',
 		'name' => 'name',
-		'module_id' => 'module_id',
+		'url_controller' => 'url_controller',
+		'product_id' => 'product_id',
 		);
 	}
 
@@ -47,7 +50,8 @@ class Controller extends MyActiveRecord {
 		$criteria=new CDbCriteria;
 		$criteria->compare('id', $this->id);
 		$criteria->compare('name', $this->name, true);
-		$criteria->compare('module_id', $this->module_id);
+		$criteria->compare('url_controller', $this->url_controller, true);
+		$criteria->compare('product_id', $this->product_id);
 		$sort = new CSort();
 		$sort->attributes = array('*');
 		$sort->multiSort = true;

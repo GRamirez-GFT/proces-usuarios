@@ -5,30 +5,27 @@ $(function(){
 
 
 	var body = $('body'),
-		files_tree = $('#files_tree'),
-		content = $('.content'),
-		menu = $('#menu');
+	files_tree = $('#files_tree'),
+	content = $('.content'),
+	menu = $('#menu');
 
 	$('#listado tr').click(function() {
 
 		$(".select").removeClass("select");
-        $(this).addClass("select");
+		$(this).addClass("select");
 
-    });
+	});
 
 	//Prevent page reload in empty href
-	body.on('click', 'a[href="#"]', function(event) {
-		event.preventDefault();
-	}); 
 
 	var menu_desplegado = false;
 	var animacion_curso = false;
 	var menu_original_height = menu.height();
 
 	$(window).scroll(function(event) {
-		
+
 		var scroll_window = $(window).scrollTop();
-		
+
 		if( scroll_window > 180 ) {
 
 			if( !menu_desplegado && !animacion_curso ) {
@@ -69,20 +66,20 @@ $(function(){
 				});
 
 			}
-				
+
 		}
 
 
 	});
 
 
-    /* Top menu */
+	/* Top menu */
 
 	body.on('click', '#options ul li', function(e){
 
 		e.stopPropagation();
 		e.preventDefault();
-		
+
 
 		var this_element = $(this),
 		drop = this_element.find('.drop-top');
@@ -114,13 +111,13 @@ $(function(){
 			globito.remove();
 
 			// Update de notificaciones como leídas
-	    }
-    });
+		}
+	});
 
 
 	//Cerrar el cuadro de búsqueda cuando se haga click fuera ##########################
 	body.click(function() {
-		
+
 		var options_li = $("#options ul li.active"),
 		drop = options_li.find('.drop-top');
 
@@ -132,81 +129,25 @@ $(function(){
 
 
 
-    /* *****	PANEL DINAMICO,	  		*****************************************************				*/
-    /* #####	CARGA DE VISTAS EN 		#####################################################				*/
-    /* *****	PANEL VÍA AJAX	 		*****************************************************				*/
-
-
+	/**
+	 * TODO: PANEL LATERAL
+	 */
 	body.on('click', '.panel-trigger', function(e){
-
-		var $this = $(this),
-			id = $this.attr('id'),
-			action = $this.attr('data-view'),
-			panel = $('#panel'),
-			searchInTable = $('#searchInTable');
-
-
-		e.preventDefault();
-
-		if ( action !== null && id !== null ) {
-
-				searchInTable.animate({width: '300px'});
-				
-				//Para ocultar los tooltips
-				$this.mouseout();
-
-				var animate = 200;
-				if(panel.length){
-					panel.remove();
-					animate = 0;
-				}
-
-				content.animate({
-					width: '64%'
-				}, animate, function(){
-					new_panel = $('<div>', {
-						id: 'panel'
-					});
-
-					content.after(new_panel.fadeIn());
-
-					$.ajax({
-
-						url: 'panel/render',
-						type: 'POST',
-						data: {'action': action, 'id': id},
-						dataType: 'html',
-						success: function(data) {
-
-							$('#panel').html(data);
-							$('.chosen').chosen();
-
-							var respuestas_reactivo_puntuacion = $('#respuestas_reactivo_puntuacion');
-							if(respuestas_reactivo_puntuacion.length) {
-								respuestas_reactivo_puntuacion.find('input').numeric();
-							}
-	
-						},
-						error: function(data) {
-
-							$('#panel').html(data);
-							
-						}
-
-					});
-
-				});
-
+		if ($('#panel').css('display') == 'block') {
+			$('#front').css('width', '96%');
+			$('#panel').css('display', 'none');
+		} else {
+			$('#front').css('width', '64%');
+			$('#panel').css('display', 'block');			
 		}
-
 	});
 
 
-     //Close panel
+	//Close panel
 	body.on('click', '#close-panel', function() {
-		
+
 		var panel = $('#panel'),
-			searchInTable = $('#searchInTable');
+		searchInTable = $('#searchInTable');
 
 		panel.animate({
 			opacity: 0
@@ -256,12 +197,12 @@ $(function(){
 			loading_ajax = true;
 			ajax_action( $(this), 'button');
 		}
-		
+
 
 	}); //End on click ajax action
 
 	body.on('submit', '.ajax_action_submit', function(event) {
-	
+
 		event.preventDefault();
 
 		if( !loading_ajax ) {
@@ -323,22 +264,22 @@ $(function(){
 
 								switch(data_action) {
 
-									case('crear'): 
+								case('crear'): 
 
-										data_target.append(data);
-										if( type == 'form' ) {
-											form_parent[0].reset();
-										}
-										break;
+									data_target.append(data);
+								if( type == 'form' ) {
+									form_parent[0].reset();
+								}
+								break;
 
 
-									case('editar'): 
-										data_target.replaceWith(data);	
-										break;
+								case('editar'): 
+									data_target.replaceWith(data);	
+								break;
 
-									case('eliminar'): 
-										data_target.remove();
-										break;
+								case('eliminar'): 
+									data_target.remove();
+								break;
 								}
 
 
@@ -362,7 +303,7 @@ $(function(){
 
 					//Custom callback
 					if( callback !== undefined ) {
-						
+
 						callback();
 					}
 
@@ -370,7 +311,7 @@ $(function(){
 
 					//Funciones para reinicializar plugins
 					crear_slider_encuestas('.slider-resp');
-					
+
 
 					//Redirect if
 					if(redirect_view !== undefined) {
@@ -392,12 +333,12 @@ $(function(){
 					}
 
 
-		           if (x.status == 403) {
-		                alert("Sorry, your session has expired. Please login again to continue");
-		            }
-		            else {
-		                alert("An error occurred: " + status + "nError: " + error);
-		            }
+					if (x.status == 403) {
+						alert("Sorry, your session has expired. Please login again to continue");
+					}
+					else {
+						alert("An error occurred: " + status + "nError: " + error);
+					}
 
 					loading_ajax = false;
 				}
@@ -413,78 +354,78 @@ $(function(){
 
 
 
-    /* *****			  				*****************************************************				*/
-    /* #####	REPORTES				#####################################################				*/
-    /* *****				 			*****************************************************				*/
+	/* *****			  				*****************************************************				*/
+	/* #####	REPORTES				#####################################################				*/
+	/* *****				 			*****************************************************				*/
 
 
 	var contador_graficas = 0;
 
 	function crearGrafica(data) {
 
-			var datos			= JSON.parse(data);
-			var grafica_data	= new Array();
-			var ticks_data		= new Array();
+		var datos			= JSON.parse(data);
+		var grafica_data	= new Array();
+		var ticks_data		= new Array();
 
-			contador_graficas++;
+		contador_graficas++;
 
-			for (var i =0; i < datos.length; i++ ) {
+		for (var i =0; i < datos.length; i++ ) {
 
-				grafica_data.push({
-					data: [[datos[i].value+1,i+1]],
-					label: datos[i].name,
-					color: "red"
+			grafica_data.push({
+				data: [[datos[i].value+1,i+1]],
+				label: datos[i].name,
+				color: "red"
+			});
+
+			// grafica_data.push([i+1, datos[i].value+1 ]);
+
+			ticks_data.push( [ i+1, datos[i].name ] );
+			// alert( JSON.stringify(grafica_data));
+		}
+
+
+		// if ( $("#mws-line-chart").length ) {
+
+		$('.content .mws-panel').append("<div id='mws-line-chart_"+contador_graficas+"></div>");
+		var grafica_nueva = $('#mws-line-chart_'+contador_graficas);
+		$.plot( grafica_nueva, grafica_data,
+				{ tooltip: true, 
+			series: {
+				bars: {
+					show: true,
+					lineWidth: 1,
+					fill: true,
+					barWidth: .5,
+					align: "center",
+					horizontal: true
+				}
+			},
+			grid: {
+				borderWidth: 0, 
+				hoverable: true,
+				clickable: true
+			},
+			legend: {
+				show: true
+			},
+			yaxis: {
+				ticks: ticks_data
+			},
+			xaxis:{
+				tickDecimals: 0
+			}
 				});
 
-				// grafica_data.push([i+1, datos[i].value+1 ]);
 
-				ticks_data.push( [ i+1, datos[i].name ] );
-				// alert( JSON.stringify(grafica_data));
-			}
-
-
-			// if ( $("#mws-line-chart").length ) {
-
-		            $('.content .mws-panel').append("<div id='mws-line-chart_"+contador_graficas+"></div>");
-		            var grafica_nueva = $('#mws-line-chart_'+contador_graficas);
-		            $.plot( grafica_nueva, grafica_data,
-		            { tooltip: true, 
-		                series: {
-						    bars: {
-								show: true,
-								lineWidth: 1,
-								fill: true,
-								barWidth: .5,
-								align: "center",
-								horizontal: true
-						    }
-		                 },
-		                grid: {
-							borderWidth: 0, 
-							hoverable: true,
-							clickable: true
-		                },
-		                legend: {
-							show: true
-						},
-						yaxis: {
-							ticks: ticks_data
-						},
-						xaxis:{
-							tickDecimals: 0
-						}
-		            });
-
-
-			// }
+		// }
 	}// Crear grafica
 
 
 
 
-    /* *****	ROLES	  				*****************************************************				*/
-    /* #####	PERMISOS DE MODULOS		#####################################################				*/
-    /* *****	Y PRODUCTOS	 			*****************************************************				*/
+	/* *****	ROLES	  				*****************************************************				*/
+	/* #####	PERMISOS DE MODULOS		#####################################################				*/
+	/* *****	Y PRODUCTOS	 			*****************************************************				*/
 
 
 
@@ -492,19 +433,19 @@ $(function(){
 
 		var this_element	= $(this);
 		var check_hijos		= this_element.parent().parent().find('.permision_check input[type=checkbox]');
-		
+
 		check_hijos.each(function() {
 
 			var this_check = $(this);
 
 			if ( this_element.attr('checked') ) {
-			
-			this_check.attr('checked', true);
-			
+
+				this_check.attr('checked', true);
+
 			} else {
-			
-			this_check.attr('checked', false);
-			
+
+				this_check.attr('checked', false);
+
 			}
 
 		});
@@ -520,7 +461,7 @@ $(function(){
 	des checkeados segun la acción del padre */
 
 	var checker = $('input[id=select_all]'),
-		checkboxes = $('input[class^=check-select_]');
+	checkboxes = $('input[class^=check-select_]');
 
 	checker.on('change', function(){
 		if($(this).is(':checked')){
@@ -532,31 +473,31 @@ $(function(){
 
 	checkboxes.on('change', function(){
 		var checkedBoxes = 0;
-        checkboxes.each(function(){
-            if($(this).is(":checked")){
-                checkedBoxes++;
-            }
-        });
-        if(checkedBoxes < checkboxes.length){
-            checker.prop("checked", false);
-        }else if(checkedBoxes == checkboxes.length){
-            checker.prop("checked", true);
-        }
+		checkboxes.each(function(){
+			if($(this).is(":checked")){
+				checkedBoxes++;
+			}
+		});
+		if(checkedBoxes < checkboxes.length){
+			checker.prop("checked", false);
+		}else if(checkedBoxes == checkboxes.length){
+			checker.prop("checked", true);
+		}
 	});
 
 	function checkAll(isOn){
 
 		checkboxes.each(function(index){
 			var $this = $(this);
-            if(isOn){
-                if(!$this.is(":checked")){
-                    $this.prop("checked", true);
-                }
-            }else{
-                if($this.is(":checked")){
-                    $this.prop("checked", false);
-                }
-            }
+			if(isOn){
+				if(!$this.is(":checked")){
+					$this.prop("checked", true);
+				}
+			}else{
+				if($this.is(":checked")){
+					$this.prop("checked", false);
+				}
+			}
 		});
 	}
 
@@ -565,37 +506,37 @@ $(function(){
 	body.on('click', '.table-option', function(){
 
 		var $this = $(this),
-			anchor = $this.find('a'),
-			option = anchor.data('option'),
-			checkboxes = $('input[id^=check-select_]'),
-			controlador = $('.content').attr('id');
+		anchor = $this.find('a'),
+		option = anchor.data('option'),
+		checkboxes = $('input[id^=check-select_]'),
+		controlador = $('.content').attr('id');
 
-			checkboxes.each(function(){
-				var $this = $(this);
+		checkboxes.each(function(){
+			var $this = $(this);
 
-				if($this.is(':checked')){
-					var id = $this.val(),
-						action = controlador + '/' + option + '/' + id;
+			if($this.is(':checked')){
+				var id = $this.val(),
+				action = controlador + '/' + option + '/' + id;
 
-					$.post(action, function(){
+				$.post(action, function(){
 
-					});
+				});
 
-				}	
-			});
+			}	
+		});
 
-			window.location.reload();
+		window.location.reload();
 
 	});
 
-	
 
 
-    /* *****							*****************************************************				*/
-    /* #####	TABLAS DE LISTADO		#####################################################				*/
-    /* *****				 			*****************************************************				*/
 
-	
+	/* *****							*****************************************************				*/
+	/* #####	TABLAS DE LISTADO		#####################################################				*/
+	/* *****				 			*****************************************************				*/
+
+
 	if( $('.mws-table').length ){
 
 		$('.mws-table').dataTable({
@@ -618,13 +559,13 @@ $(function(){
 		}
 
 	});
-	
+
 
 	/* Table header */
 
 	var dataTables_filter = $('.dataTables_filter'),
-		controlador = content.attr('data-controlador'),
-		add_action = content.attr('data-add');
+	controlador = content.attr('data-controlador'),
+	add_action = content.attr('data-add');
 
 	$('<a>', {
 		class: 'redbtn panel-trigger',
@@ -651,7 +592,7 @@ $(function(){
 
 	$('.chosen').chosen();
 
-	
+
 	/* *****	ENCUESTAS	  				*****************************************************			*/
 	/* #####	SLIDER, WIDGETS Y 			#####################################################			*/
 	/* *****	ACTUALIZACIÓN POR AJAX 		*****************************************************			*/
@@ -686,7 +627,7 @@ $(function(){
 			}	else{
 				inicial_value = parseInt(inicial_value);
 			}
-	
+
 			if( !this_element.hasClass('ui-slider') ) {
 
 				this_element.slider({
@@ -702,27 +643,27 @@ $(function(){
 
 						$(this).find('.indicator').text(ui.value);
 
-				    },create: function( event, ui ) {
+					},create: function( event, ui ) {
 
 						$(this).find('.ui-slider-handle').append('<span class="indicator"></span>');
 
-				    }, start: function( event, ui) {
+					}, start: function( event, ui) {
 
 						$(this).find('.indicator').fadeIn('fast');
 
-				    },stop: function( event, ui) {
+					},stop: function( event, ui) {
 
 						$(this).find('.indicator').fadeOut('fast');
 
-				    },change: function(event, ui) {
+					},change: function(event, ui) {
 
 						var custom_data = {
-							data_view	: this_element.attr('data-view'),
-							data_post	: "respuesta="+ui.value,
-							close_panel	: "false"
+								data_view	: this_element.attr('data-view'),
+								data_post	: "respuesta="+ui.value,
+								close_panel	: "false"
 						};
 
-						
+
 						loading_ajax = true;
 						this_element.slider( "disable" );
 
@@ -730,7 +671,7 @@ $(function(){
 
 							this_element.slider( "enable" );
 						});
-				    }
+					}
 
 
 				});
@@ -754,9 +695,9 @@ $(function(){
 			this_element.addClass('face_selected');
 
 			var custom_data = {
-				data_view	: ul_parent.attr('data-view'),
-				data_post	: "respuesta="+this_element.attr('data-value'),
-				close_panel	: "false"
+					data_view	: ul_parent.attr('data-view'),
+					data_post	: "respuesta="+this_element.attr('data-value'),
+					close_panel	: "false"
 			};
 
 			ul_parent.addClass('faces_disabled');
@@ -777,9 +718,9 @@ $(function(){
 		var this_element = $(this);
 
 		var custom_data = {
-			data_view	: this_element.attr('data-view'),
-			data_post	: "respuesta="+this_element.val(),
-			close_panel	: "false"
+				data_view	: this_element.attr('data-view'),
+				data_post	: "respuesta="+this_element.val(),
+				close_panel	: "false"
 		};
 
 		// alert(JSON.stringify(custom_data));
@@ -808,9 +749,9 @@ $(function(){
 		var this_element = $(this);
 
 		var custom_data = {
-			data_view	: this_element.attr('data-view'),
-			data_post	: "respuesta="+this_element.val(),
-			close_panel	: "false"
+				data_view	: this_element.attr('data-view'),
+				data_post	: "respuesta="+this_element.val(),
+				close_panel	: "false"
 		};
 
 		loading_ajax = true;
@@ -824,105 +765,105 @@ $(function(){
 
 	var inputs_respuestas_array;
 
-    body.on('change', 'select[name=idtipo_reactivo]', function(e){
+	body.on('change', 'select[name=idtipo_reactivo]', function(e){
 
 
-    	var respuestas_reactivo_caritas		= $('#respuestas_reactivo_caritas');
+		var respuestas_reactivo_caritas		= $('#respuestas_reactivo_caritas');
 		var respuestas_reactivo_opciones	= $('#respuestas_reactivo_opciones');
 		var respuestas_reactivo_puntuacion	= $('#respuestas_reactivo_puntuacion');
 		var respuestas_reactivo_button		= $('#respuesta_reactivo_button');
 
-        switch($(this).val()) {
+		switch($(this).val()) {
 
-			case "1" :
+		case "1" :
 
 			//Puntuacion
 
 			//Activar el utilizado
-	            respuestas_reactivo_puntuacion.find('input').removeAttr('disabled');
-	            respuestas_reactivo_puntuacion.css("display","block");
+			respuestas_reactivo_puntuacion.find('input').removeAttr('disabled');
+			respuestas_reactivo_puntuacion.css("display","block");
 
-	            //Desactivar los no utilizados
-	            respuestas_reactivo_opciones.find('input').attr('disabled', 'disabled');
-	            respuestas_reactivo_opciones.css("display", "none");
-	            respuestas_reactivo_button.css("display", "none");
+			//Desactivar los no utilizados
+			respuestas_reactivo_opciones.find('input').attr('disabled', 'disabled');
+			respuestas_reactivo_opciones.css("display", "none");
+			respuestas_reactivo_button.css("display", "none");
 
-	            respuestas_reactivo_caritas.find('input').attr('disabled');
-	            respuestas_reactivo_caritas.css("display","none");
+			respuestas_reactivo_caritas.find('input').attr('disabled');
+			respuestas_reactivo_caritas.css("display","none");
 
-	        break;
+			break;
 
-			case "2" :
+		case "2" :
 
 			//Opciones
 			//Activar el utilizado
-	            respuestas_reactivo_opciones.find('input').removeAttr('disabled');
-	            respuestas_reactivo_opciones.css("display","block");
-	            respuestas_reactivo_button.css("display","block");
+			respuestas_reactivo_opciones.find('input').removeAttr('disabled');
+			respuestas_reactivo_opciones.css("display","block");
+			respuestas_reactivo_button.css("display","block");
 
-	            //Desactivar los no utilizados
-	            respuestas_reactivo_puntuacion.find('input').attr('disabled', 'disabled');
-	            respuestas_reactivo_puntuacion.css("display","none");
+			//Desactivar los no utilizados
+			respuestas_reactivo_puntuacion.find('input').attr('disabled', 'disabled');
+			respuestas_reactivo_puntuacion.css("display","none");
 
-	            respuestas_reactivo_caritas.find('input').attr('disabled', 'disabled');
-	            respuestas_reactivo_caritas.css("display","none");
+			respuestas_reactivo_caritas.find('input').attr('disabled', 'disabled');
+			respuestas_reactivo_caritas.css("display","none");
 
 
-	        break;
+			break;
 
-	        case "3" :
+		case "3" :
 
 			//Caritas
 
 			//Activar el utilizado
-	            respuestas_reactivo_caritas.find('input').removeAttr('disabled');
-	            respuestas_reactivo_caritas.css("display","block");
+			respuestas_reactivo_caritas.find('input').removeAttr('disabled');
+			respuestas_reactivo_caritas.css("display","block");
 
-	            //Desactivar los no utilizados
-	            respuestas_reactivo_opciones.find('input').attr('disabled', 'disabled');
-	            respuestas_reactivo_opciones.css("display","none");
-	            respuestas_reactivo_button.css("display","none");
+			//Desactivar los no utilizados
+			respuestas_reactivo_opciones.find('input').attr('disabled', 'disabled');
+			respuestas_reactivo_opciones.css("display","none");
+			respuestas_reactivo_button.css("display","none");
 
 
-	            respuestas_reactivo_puntuacion.find('input').attr('disabled', 'disabled');
-	            respuestas_reactivo_puntuacion.css("display","none");
+			respuestas_reactivo_puntuacion.find('input').attr('disabled', 'disabled');
+			respuestas_reactivo_puntuacion.css("display","none");
 
-	        break;
+			break;
 
-	        case "4" :
+		case "4" :
 
-				//Respuesta abierta
+			//Respuesta abierta
 
-	            //Desactivar los no utilizados
-	            respuestas_reactivo_opciones.find('input').attr('disabled', 'disabled');
-	            respuestas_reactivo_opciones.css("display","none");
-	            respuestas_reactivo_button.css("display","none");
+			//Desactivar los no utilizados
+			respuestas_reactivo_opciones.find('input').attr('disabled', 'disabled');
+			respuestas_reactivo_opciones.css("display","none");
+			respuestas_reactivo_button.css("display","none");
 
-	            respuestas_reactivo_caritas.find('input').attr('disabled', 'disabled');
-	            respuestas_reactivo_caritas.css("display","none");
+			respuestas_reactivo_caritas.find('input').attr('disabled', 'disabled');
+			respuestas_reactivo_caritas.css("display","none");
 
-	            respuestas_reactivo_puntuacion.find('input').attr('disabled', 'disabled');
-	            respuestas_reactivo_puntuacion.css("display","none");
+			respuestas_reactivo_puntuacion.find('input').attr('disabled', 'disabled');
+			respuestas_reactivo_puntuacion.css("display","none");
 
-	        break;
+			break;
 
-        }
+		}
 
-    });
+	});
 
-    body.on('click', '.eliminar_reactivo_respuesta', function() {
+	body.on('click', '.eliminar_reactivo_respuesta', function() {
 
 		var this_element = $(this);
 		this_element.mouseout().prev().remove();
 
-    });
+	});
 
 
 	/* *****	SETUP ENCUESTAS,  		*****************************************************				*/
 	/* #####	REORDENAR ELEMENTOS		#####################################################				*/
 	/* *****	Y GUARDAR VÍA AJAX 		*****************************************************				*/
 
-   	$( "#grupos" ).each(function() {
+	$( "#grupos" ).each(function() {
 
 		var this_element = $(this);
 		this_element.sortable({
@@ -954,12 +895,12 @@ $(function(){
 
 						}, error: function(x, status, error) {
 
-				           if (x.status == 403) {
-				                alert("Sorry, your session has expired. Please login again to continue");
-				            }
-				            else {
-				                alert("An error occurred: " + status + "nError: " + error);
-				            }
+							if (x.status == 403) {
+								alert("Sorry, your session has expired. Please login again to continue");
+							}
+							else {
+								alert("An error occurred: " + status + "nError: " + error);
+							}
 						}
 
 
@@ -975,7 +916,7 @@ $(function(){
 
 		});
 
-    }); // Grupos reordenables
+	}); // Grupos reordenables
 
 
 	$( ".reactivos" ).each(function(){
@@ -1028,12 +969,12 @@ $(function(){
 
 						}, error: function(x, status, error) {
 
-				           if (x.status == 403) {
-				                alert("Sorry, your session has expired. Please login again to continue");
-				            }
-				            else {
-				                alert("An error occurred: " + status + "nError: " + error);
-				            }
+							if (x.status == 403) {
+								alert("Sorry, your session has expired. Please login again to continue");
+							}
+							else {
+								alert("An error occurred: " + status + "nError: " + error);
+							}
 						}
 
 
@@ -1048,8 +989,8 @@ $(function(){
 			}
 
 		});
-    
-    }); // Reactivos reordenables
+
+	}); // Reactivos reordenables
 
 	body.on('click', '.grupo_toogle', function(event) {
 
@@ -1083,4 +1024,4 @@ $(function(){
 
 
 
-});
+d});

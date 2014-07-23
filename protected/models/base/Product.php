@@ -5,6 +5,8 @@
  * @property string $url_product
  *
  * @property Company[] $companies
+ * @property Controller[] $controllers
+ * @property Role[] $roles
  */
 
 class Product extends MyActiveRecord {
@@ -20,8 +22,8 @@ class Product extends MyActiveRecord {
 	public function rules() {
 		return array(
 		array('name', 'required'),
-		array('name', 'length', 'max' => 100),
-		array('url_product', 'length', 'max' => 255),
+		array('name', 'length', 'max'=>100),
+		array('url_product', 'length', 'max'=>255),
 		array('id, name, url_product', 'safe', 'on' => 'search'),
 		);
 	}
@@ -29,6 +31,8 @@ class Product extends MyActiveRecord {
 	public function relations() {
 		return array(
 		'companies' => array(self::MANY_MANY, 'Company', 'company_product(product_id, company_id)'),
+		'controllers' => array(self::HAS_MANY, 'Controller', 'product_id'),
+		'roles' => array(self::HAS_MANY, 'Role', 'product_id'),
 		);
 	}
 	

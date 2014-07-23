@@ -22,10 +22,11 @@ class UserSession extends MyActiveRecord {
 
 	public function rules() {
 		return array(
-		array('session, ipv4, user_id', 'required'),
-		array('user_id', 'numerical', 'integerOnly' => true),
-		array('session', 'length', 'max' => 32),
-		array('ipv4', 'length', 'max' => 15),
+		array('session, ipv4, time_login, user_id', 'required'),
+		array('user_id', 'numerical', 'integerOnly'=>true),
+		array('session', 'length', 'max'=>32),
+		array('ipv4', 'length', 'max'=>15),
+		array('time_logout', 'safe'),
 		array('user_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => 'User'),
 		array('id, session, ipv4, time_login, time_logout, user_id', 'safe', 'on' => 'search'),
 		);

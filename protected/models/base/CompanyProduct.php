@@ -3,9 +3,6 @@
  * @property integer $company_id
  * @property integer $product_id
  * @property string $date_create
- *
- * @property Company $company
- * @property Product $product
  */
 
 class CompanyProduct extends MyActiveRecord {
@@ -20,21 +17,12 @@ class CompanyProduct extends MyActiveRecord {
 
 	public function rules() {
 		return array(
-		array('company_id, product_id', 'required'),
-		array('company_id, product_id', 'numerical', 'integerOnly' => true),
-		array('company_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => 'Company'),
-		array('product_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => 'Product'),
+		array('company_id, product_id, date_create', 'required'),
+		array('company_id, product_id', 'numerical', 'integerOnly'=>true),
 		array('company_id, product_id, date_create', 'safe', 'on' => 'search'),
 		);
 	}
 
-	public function relations() {
-		return array(
-		'company' => array(self::BELONGS_TO, 'Company', 'company_id'),
-		'product' => array(self::BELONGS_TO, 'Product', 'product_id'),
-		);
-	}
-	
 	public function attributeLabels() {
 		return array(
 		'company_id' => 'company_id',
