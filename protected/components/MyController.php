@@ -7,9 +7,32 @@ class MyController extends CController {
     public $assets;
 
     public function init() {
-        //$this->rewriteUrl();
+        $this->checkSession();
+        // $this->rewriteUrl();
         $this->assets = YII_DEBUG ? Yii::app()->theme->baseUrl : Yii::app()->assetManager->publish(
             Yii::app()->theme->basePath);
+    }
+
+    public function checkSession() {
+        $client = new SoapClient('http://localhost/proces-usuarios/ws/access');
+        if (isset($_COOKIE['PROCESID'])) {
+            if ($user_id = $client->validateSession($_COOKIE['PROCESID'], $_SERVER["REMOTE_ADDR"])) {
+                if (Yii::app()->user->isGuest) {
+                    Yii::app()->user->login(new CUserIdentity('', ''));
+                    $request = json_decode($client->stratSession($user_id), true);
+                    foreach ($request as $key => $value) {
+                        Yii::app()->user->setState($key, $value);
+                    }
+                    $this->redirect(Yii::app()->user->returnUrl);
+                }
+            } else {
+                setcookie('PROCESID', null, time() - 3600, '/');
+                Yii::app()->user->logout();
+            }
+        }
+        if (Yii::app()->user->isGuest && ! preg_match('/\/login$/', Yii::app()->request->getRequestUri())) {
+            $this->redirect(Yii::app()->createAbsoluteUrl('site/login'));
+        }
     }
 
     public function rewriteUrl() {
