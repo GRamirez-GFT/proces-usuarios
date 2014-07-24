@@ -26,8 +26,7 @@ class MyController extends CController {
                     $this->redirect(Yii::app()->user->returnUrl);
                 }
             } else {
-                setcookie('PROCESID', null, time() - 3600, '/');
-                Yii::app()->user->logout();
+                $this->redirect(Yii::app()->createAbsoluteUrl('site/logout'));
             }
         }
         if (Yii::app()->user->isGuest && ! preg_match('/\/login$/', Yii::app()->request->getRequestUri())) {
