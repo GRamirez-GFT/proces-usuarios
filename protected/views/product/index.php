@@ -1,7 +1,4 @@
 <?php
-/* @var $this ProductController */
-/* @var $dataProvider CActiveDataProvider */
-
 $this->breadcrumbs=array(
 	'Products',
 );

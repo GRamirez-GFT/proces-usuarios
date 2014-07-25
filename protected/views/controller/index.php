@@ -1,7 +1,4 @@
 <?php
-/* @var $this ControllerController */
-/* @var $dataProvider CActiveDataProvider */
-
 $this->breadcrumbs=array(
 	'Controllers',
 );

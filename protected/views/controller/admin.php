@@ -14,10 +14,12 @@ $this->widget('zii.widgets.grid.CGridView', array(
 	'dataProvider'=>$model->search(),
 	'filter'=>$model,
 	'columns'=>array(
-		'id',
 		'name',
 		'url_controller',
-		'product_id',
+	    array(
+	        'name' => 'product_id',
+	        'value' => '$data->product->name'
+	    ),
 		array(
 			'class'=>'CButtonColumn',
 		),
