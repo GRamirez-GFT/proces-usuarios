@@ -102,11 +102,10 @@ class WsController extends CController {
         return Yii::app()->db->createCommand()->update('user_session',
             array(
                 'time_logout' => date('Y-m-d H:i:s')
-            ), 'session=:t0 AND ipv4=:t1 AND user_id=:t2',
+            ), 'session=:t0 AND ipv4=:t1',
             array(
                 ':t0' => $session,
                 ':t1' => $ipv4,
-                ':t2' => $user_id
             ));
     }
     /*
