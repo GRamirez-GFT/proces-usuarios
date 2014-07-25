@@ -59,21 +59,8 @@ class WsController extends CController {
             // TODO: CARGAR PERMISOS DEL PRODUCTO
             $request['permissions'] = '';
         }
-        return json_encode($request);
-    }
-
-    /**
-     *
-     * @param string $session
-     * @param string $ipv4
-     * @return integer @soap
-     */
-    public function validateSession($session, $ipv4) {
-        return Yii::app()->db->createCommand()
-            ->select('user_id')
-            ->from('user_session')
-            ->where("session='{$session}' AND ipv4='{$ipv4}' AND time_logout IS NULL")
-            ->queryScalar();
+        $request = json_encode($request);
+        return $request;
     }
 
     /**
@@ -95,10 +82,23 @@ class WsController extends CController {
      *
      * @param string $session
      * @param string $ipv4
-     * @param integer $user_id
      * @return boolean @soap
      */
-    public function destroySession($session, $ipv4, $user_id) {
+    public function validateSession($session, $ipv4) {
+        return Yii::app()->db->createCommand()
+            ->select('user_id')
+            ->from('user_session')
+            ->where("session='{$session}' AND ipv4='{$ipv4}' AND time_logout IS NULL")
+            ->queryScalar();
+    }
+
+    /**
+     *
+     * @param string $session
+     * @param string $ipv4
+     * @return boolean @soap
+     */
+    public function destroySession($session, $ipv4) {
         return Yii::app()->db->createCommand()->update('user_session',
             array(
                 'time_logout' => date('Y-m-d H:i:s')
