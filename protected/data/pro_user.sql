@@ -2,7 +2,8 @@
 SQLyog Ultimate v10.00 Beta1
 MySQL - 5.5.31 : Database - pro_user
 *********************************************************************
-*/
+*/
+
 
 /*!40101 SET NAMES utf8 */;
 
@@ -12,6 +13,10 @@ MySQL - 5.5.31 : Database - pro_user
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+CREATE SCHEMA IF NOT EXISTS `pro_user` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
+USE `pro_user` ;
+
 /*Table structure for table `action` */
 
 DROP TABLE IF EXISTS `action`;

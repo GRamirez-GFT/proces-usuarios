@@ -43,7 +43,7 @@ class WsController extends CController {
      * @param integer $user_id
      * @return string @soap
      */
-    public function stratSession($user_id) {
+    public function startSession($user_id) {
         $request = array();
         if ($user = User::model()->findByAttributes(
             array(
