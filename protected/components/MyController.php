@@ -19,7 +19,7 @@ class MyController extends CController {
             if ($user_id = $client->validateSession($_COOKIE['PROCESID'], $_SERVER["REMOTE_ADDR"])) {
                 if (Yii::app()->user->isGuest || Yii::app()->user->id != $user_id) {
                     Yii::app()->user->login(new CUserIdentity('', ''));
-                    $request = json_decode($client->stratSession($user_id), true);
+                    $request = json_decode($client->startSession($user_id), true);
                     foreach ($request as $key => $value) {
                         Yii::app()->user->setState($key, $value);
                     }
