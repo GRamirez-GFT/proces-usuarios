@@ -68,7 +68,7 @@ if (Yii::app()->user->checkAccess("admin")) {
         )
     );
     // $informations[] = array('label' => Yii::t('Theme', 'Manage Themes'), 'url' =>
-// array('site/page/manage_themes','view'=>'manage_themes'));
+// array('site/page/manage_themes', 'view'=>'manage_themes'));
 $documents = array();
 $documents[] = array(
     'label' => Yii::t('Document', 'Manage Documents'),
@@ -120,8 +120,8 @@ $indicators[] = array(
         'indicator/admin'
     )
 );
-// $indicators[] = array('label' => Yii::t('Periodicity', 'Manage Periodicities'),'url' => array('periodicity/admin'));
-// $indicators[] = array('label' => Yii::t('Threshold', 'Manage Thresholds'),'url' => array('threshold/admin'));
+// $indicators[] = array('label' => Yii::t('Periodicity', 'Manage Periodicities'), 'url' => array('periodicity/admin'));
+// $indicators[] = array('label' => Yii::t('Threshold', 'Manage Thresholds'), 'url' => array('threshold/admin'));
 $this->beginWidget('Portlet',
     array(
         'title' => Yii::t('ControlPanel', 'Information'),

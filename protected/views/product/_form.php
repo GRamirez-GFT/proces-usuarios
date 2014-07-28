@@ -16,13 +16,13 @@
 	<div class="row">
 		<?php echo $form->labelEx($model, 'name'); ?>
 		<?php echo $form->textField($model, 'name', array('maxlength' => 100)); ?>
-		<?php echo $form->error($model,'name'); ?>
+		<?php echo $form->error($model, 'name'); ?>
 	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model, 'url_product'); ?>
 		<?php echo $form->textField($model, 'url_product', array('maxlength' => 255)); ?>
-		<?php echo $form->error($model,'url_product'); ?>
+		<?php echo $form->error($model, 'url_product'); ?>
 	</div>
 
 	<div class="row buttons">

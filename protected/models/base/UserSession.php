@@ -22,7 +22,7 @@ class UserSession extends MyActiveRecord {
 
 	public function rules() {
 		return array(
-		array('session, ipv4, user_id', 'required'),
+		array('session, ipv4, time_login, user_id', 'required'),
 		array('user_id', 'numerical', 'integerOnly'=>true),
 		array('session', 'length', 'max'=>32),
 		array('ipv4', 'length', 'max'=>15),
@@ -37,7 +37,7 @@ class UserSession extends MyActiveRecord {
 		'user' => array(self::BELONGS_TO, 'User', 'user_id'),
 		);
 	}
-
+	
 	public function attributeLabels() {
 		return array(
 		'id' => 'id',
@@ -62,5 +62,5 @@ class UserSession extends MyActiveRecord {
 		$sort->multiSort = true;
 		return new CActiveDataProvider($this, array('criteria' => $criteria, 'sort' => $sort));
 	}
-
+	
 }

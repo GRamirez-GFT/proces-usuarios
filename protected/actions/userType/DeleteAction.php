@@ -4,7 +4,8 @@ class DeleteAction extends CAction {
 
     public function run() {
         try {
-            if ($this->controller->loadModel()->delete()) {
+            $model = $this->controller->loadModel();
+            if ($model->delete()) {
                 $this->controller->redirect(array(
                     'index'
                 ));

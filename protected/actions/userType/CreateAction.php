@@ -3,7 +3,7 @@
 class CreateAction extends CAction {
 
     public function run() {
-        $model = new RoleModel();
+        $model = new UserTypeModel();
         if (Yii::app()->request->getPost(get_class($model))) {
             $model->setAttributes(Yii::app()->request->getPost(get_class($model)));
             if ($model->save()) {

@@ -3,7 +3,7 @@
 class IndexAction extends CAction {
 
     public function run() {
-        $dataProvider = new CActiveDataProvider('Role');
+        $dataProvider = new CActiveDataProvider('UserType');
         $this->controller->render('index', array(
             'dataProvider' => $dataProvider
         ));

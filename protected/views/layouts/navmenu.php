@@ -28,10 +28,10 @@ $options = array(
 
 <?php $options = array(
     'user' => 'Usuarios',
-    'company' => 'Compañias',
+    'company' => 'Compañías',
     'product' => 'Productos',
     'controller' => 'Controladores',
-    'role' => 'Roles',
+    'userType' => 'Tipos de Usuario',
 ); ?>
 
 <div id="menu">

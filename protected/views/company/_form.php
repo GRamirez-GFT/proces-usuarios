@@ -16,27 +16,25 @@
 	<div class="row">
 		<?php echo $form->labelEx($model, 'name'); ?>
 		<?php echo $form->textField($model, 'name', array('maxlength' => 100)); ?>
-		<?php echo $form->error($model,'name'); ?>
+		<?php echo $form->error($model, 'name'); ?>
 	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model, 'subdomain'); ?>
 		<?php echo $form->textField($model, 'subdomain', array('maxlength' => 30)); ?>
-		<?php echo $form->error($model,'subdomain'); ?>
+		<?php echo $form->error($model, 'subdomain'); ?>
 	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model, 'active'); ?>
 		<?php echo $form->checkBox($model, 'active'); ?>
-		<?php echo $form->error($model,'active'); ?>
+		<?php echo $form->error($model, 'active'); ?>
 	</div>
 
-	<hr>
-
 	<div class="row">
-		<?php echo CHtml::listBox('productos',
-		    Yii::app()->request->getParam('productos'),
-		    CHtml::listData(Product::model()->findAll(), 'id', 'name')); ?>
+	    <?php echo $form->labelEx($model, 'list_products'); ?>
+		<?php echo $form->listBox($model, 'list_products', CHtml::listData(Product::model()->findAll(), 'id', 'name')); ?>
+		<?php echo $form->error($model, 'list_products'); ?>
 	</div>
 
 	<div class="row buttons">

@@ -4,9 +4,9 @@
  * @property string $name
  * @property string $url_product
  *
- * @property Company[] $companies
  * @property Controller[] $controllers
- * @property Role[] $roles
+ * @property Company[] $companies
+ * @property UserType[] $userTypes
  */
 
 class Product extends MyActiveRecord {
@@ -30,9 +30,9 @@ class Product extends MyActiveRecord {
 
 	public function relations() {
 		return array(
-		'companies' => array(self::MANY_MANY, 'Company', 'company_product(product_id, company_id)'),
 		'controllers' => array(self::HAS_MANY, 'Controller', 'product_id'),
-		'roles' => array(self::HAS_MANY, 'Role', 'product_id'),
+		'companies' => array(self::MANY_MANY, 'Company', 'product_company(product_id, company_id)'),
+		'userTypes' => array(self::HAS_MANY, 'UserType', 'product_id'),
 		);
 	}
 	

@@ -5,7 +5,7 @@
  * @property integer $controller_id
  *
  * @property Controller $controller
- * @property Role[] $roles
+ * @property User[] $users
  */
 
 class Action extends MyActiveRecord {
@@ -31,7 +31,7 @@ class Action extends MyActiveRecord {
 	public function relations() {
 		return array(
 		'controller' => array(self::BELONGS_TO, 'Controller', 'controller_id'),
-		'roles' => array(self::MANY_MANY, 'Role', 'action_role(action_id, role_id)'),
+		'users' => array(self::MANY_MANY, 'User', 'action_user(action_id, user_id)'),
 		);
 	}
 	

@@ -7,7 +7,7 @@
  * @property string $date_create
  *
  * @property Product[] $products
- * @property Role[] $roles
+ * @property User[] $users
  */
 
 class Company extends MyActiveRecord {
@@ -32,8 +32,8 @@ class Company extends MyActiveRecord {
 
 	public function relations() {
 		return array(
-		'products' => array(self::MANY_MANY, 'Product', 'company_product(company_id, product_id)'),
-		'roles' => array(self::HAS_MANY, 'Role', 'company_id'),
+		'products' => array(self::MANY_MANY, 'Product', 'product_company(company_id, product_id)'),
+		'users' => array(self::HAS_MANY, 'User', 'company_id'),
 		);
 	}
 	

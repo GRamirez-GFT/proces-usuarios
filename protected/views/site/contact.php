@@ -1,11 +1,11 @@
 <?php
 $this->pageTitle=Yii::app()->name . ' - Contact Us';
 $this->breadcrumbs=array(
-	Yii::t('site/Contact','Contact'),
+	Yii::t('site/Contact', 'Contact'),
 );
 ?>
 
-<h1 id="contact_us"><?php echo Yii::t('site/Contact','Contact Us'); ?></h1>
+<h1 id="contact_us"><?php echo Yii::t('site/Contact', 'Contact Us'); ?></h1>
 
 <?php if(Yii::app()->user->hasFlash('contact')): ?>
 
@@ -16,7 +16,7 @@ $this->breadcrumbs=array(
 <?php else: ?>
 
 <p id="text_contact">
-<?php echo Yii::t('site/Contact','If you have business inquiries or other questions, please fill out the following form to contact us. Thank you.');
+<?php echo Yii::t('site/Contact', 'If you have business inquiries or other questions, please fill out the following form to contact us. Thank you.');
 ?>
 </p>
 
@@ -30,48 +30,48 @@ $this->breadcrumbs=array(
 	),
 )); ?>
 
-	<p class="note"><?php echo Yii::t('note','Fields with <span class="required">*</span> are required.'); ?></p>
+	<p class="note"><?php echo Yii::t('note', 'Fields with <span class="required">*</span> are required.'); ?></p>
 
 	<?php echo $form->errorSummary($model); ?>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'name'); ?>
-		<?php echo $form->textField($model,'name'); ?>
-		<?php echo $form->error($model,'name'); ?>
+		<?php echo $form->labelEx($model, 'name'); ?>
+		<?php echo $form->textField($model, 'name'); ?>
+		<?php echo $form->error($model, 'name'); ?>
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'email'); ?>
-		<?php echo $form->textField($model,'email'); ?>
-		<?php echo $form->error($model,'email'); ?>
+		<?php echo $form->labelEx($model, 'email'); ?>
+		<?php echo $form->textField($model, 'email'); ?>
+		<?php echo $form->error($model, 'email'); ?>
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'subject'); ?>
-		<?php echo $form->textField($model,'subject',array('size'=>60,'maxlength'=>128)); ?>
-		<?php echo $form->error($model,'subject'); ?>
+		<?php echo $form->labelEx($model, 'subject'); ?>
+		<?php echo $form->textField($model, 'subject',array('size'=>60, 'maxlength'=>128)); ?>
+		<?php echo $form->error($model, 'subject'); ?>
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'body'); ?>
-		<?php echo $form->textArea($model,'body',array('rows'=>6, 'cols'=>50)); ?>
-		<?php echo $form->error($model,'body'); ?>
+		<?php echo $form->labelEx($model, 'body'); ?>
+		<?php echo $form->textArea($model, 'body',array('rows'=>6, 'cols'=>50)); ?>
+		<?php echo $form->error($model, 'body'); ?>
 	</div>
 
 	<?php if(CCaptcha::checkRequirements()): ?>
 	<div class="row">
-		<?php echo $form->labelEx($model,'verifyCode'); ?>
+		<?php echo $form->labelEx($model, 'verifyCode'); ?>
 		<div>
 		<?php $this->widget('CCaptcha'); ?>
-		<?php echo $form->textField($model,'verifyCode'); ?>
+		<?php echo $form->textField($model, 'verifyCode'); ?>
 		</div>
-		<div class="hint"><?php echo Yii::t('site/Contact','Please enter the letters as they are shown in the image above.<br/>Letters are not case-sensitive.'); ?></div>
-		<?php echo $form->error($model,'verifyCode'); ?>
+		<div class="hint"><?php echo Yii::t('site/Contact', 'Please enter the letters as they are shown in the image above.<br/>Letters are not case-sensitive.'); ?></div>
+		<?php echo $form->error($model, 'verifyCode'); ?>
 	</div>
 	<?php endif; ?>
 
 	<div class="row buttons" id="submit">
-		<?php echo CHtml::submitButton(Yii::t('Action','Submit')); ?>
+		<?php echo CHtml::submitButton(Yii::t('Action', 'Submit')); ?>
 	</div>
 
 <?php $this->endWidget(); ?>

@@ -1,13 +1,11 @@
 <?php
 
-class CompanyModel extends Company {
-    public $list_products;
+
+class UserTypeModel extends UserType {
 
     public function attributeLabels() {
         return CMap::mergeArray(parent::attributeLabels(),
-            array(
-                'list_products' => 'list_products'
-            ));
+            array());
     }
 
     public function setAttributes($values) {
@@ -25,18 +23,6 @@ class CompanyModel extends Company {
             return true;
         }
         return false;
-    }
-
-    public function save() {
-        $success = false;
-        try {
-            if ($success) {
-                $transaction->commit();
-            }
-        } catch (Exception $e) {
-            $transaction->rollback();
-        }
-        return $success;
     }
 
 }
