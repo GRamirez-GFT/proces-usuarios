@@ -37,16 +37,13 @@ class SiteController extends MyController {
 
     public function actions() {
         return array(
+            'index' => 'application.actions.site.IndexAction',
             'login' => 'application.actions.site.LoginAction',
             'logout' => 'application.actions.site.LogoutAction',
             'cpanel' => 'application.actions.site.CpanelAction',
             'contact' => 'application.actions.site.ContactAction',
             'error' => 'application.actions.site.ErrorAction'
         );
-    }
-
-    public function actionIndex() {
-        $this->render('index');
     }
 
 }

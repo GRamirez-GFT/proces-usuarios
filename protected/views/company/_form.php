@@ -2,7 +2,7 @@
 
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'company-form',
-	'enableClientValidation' => true,  
+	'enableClientValidation' => true,
 	'htmlOptions' => array(
 		'enctype' => 'multipart/form-data',
 		'autocomplete' => 'off',
@@ -31,10 +31,12 @@
 		<?php echo $form->error($model,'active'); ?>
 	</div>
 
+	<hr>
+
 	<div class="row">
-		<?php echo $form->labelEx($model, 'date_create'); ?>
-		<?php echo $form->textField($model, 'date_create'); ?>
-		<?php echo $form->error($model,'date_create'); ?>
+		<?php echo CHtml::listBox('productos',
+		    Yii::app()->request->getParam('productos'),
+		    CHtml::listData(Product::model()->findAll(), 'id', 'name')); ?>
 	</div>
 
 	<div class="row buttons">
