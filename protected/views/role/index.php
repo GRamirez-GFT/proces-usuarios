@@ -1,7 +1,4 @@
 <?php
-/* @var $this RoleController */
-/* @var $dataProvider CActiveDataProvider */
-
 $this->breadcrumbs=array(
 	'Roles',
 );
