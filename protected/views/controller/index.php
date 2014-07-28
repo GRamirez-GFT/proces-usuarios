@@ -1,11 +1,11 @@
 <?php
-$this->breadcrumbs=array(
+$this->breadcrumbs = array(
 	'Controllers',
 );
 
-$this->menu=array(
-	array('label'=>'Create Controller', 'url'=>array('create')),
-	array('label'=>'Manage Controller', 'url'=>array('admin')),
+$this->menu = array(
+  array('label' => 'Create Controller', 'url' => array('create')),
+  array('label' => 'Manage Controller', 'url' => array('admin')),
 );
 ?>
 

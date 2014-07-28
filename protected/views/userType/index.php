@@ -1,11 +1,11 @@
 <?php
-$this->breadcrumbs=array(
+$this->breadcrumbs = array(
 	'User Types',
 );
 
-$this->menu=array(
-	array('label'=>'Create UserType', 'url'=>array('create')),
-	array('label'=>'Manage UserType', 'url'=>array('admin')),
+$this->menu = array(
+  array('label' => 'Create UserType', 'url' => array('create')),
+  array('label' => 'Manage UserType', 'url' => array('admin')),
 );
 ?>
 

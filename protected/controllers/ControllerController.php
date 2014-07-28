@@ -4,9 +4,9 @@ class ControllerController extends MyController {
     public $layout = '//layouts/column2';
     public $defaultAction = 'admin';
 
-    public function loadModel() {
+    public function loadModel($id) {
         $model = new ControllerModel();
-        if ($model->load(Yii::app()->request->getParam('id'))) {return $model;}
+        if ($model->load($id)) {return $model;}
         throw new CHttpException(404, 'The requested page does not exist.');
     }
 
@@ -20,5 +20,6 @@ class ControllerController extends MyController {
             'admin' => 'application.actions.controller.AdminAction'
         );
     }
+
 
 }

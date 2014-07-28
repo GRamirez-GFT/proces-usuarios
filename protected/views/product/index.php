@@ -1,11 +1,11 @@
 <?php
-$this->breadcrumbs=array(
+$this->breadcrumbs = array(
 	'Products',
 );
 
-$this->menu=array(
-	array('label'=>'Create Product', 'url'=>array('create')),
-	array('label'=>'Manage Product', 'url'=>array('admin')),
+$this->menu = array(
+  array('label' => 'Create Product', 'url' => array('create')),
+  array('label' => 'Manage Product', 'url' => array('admin')),
 );
 ?>
 

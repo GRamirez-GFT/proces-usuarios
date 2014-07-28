@@ -1,12 +1,12 @@
 <?php
-$this->breadcrumbs=array(
-	'User Types'=>array('index'),
+$this->breadcrumbs = array(
+	'User Types' => array('index'),
 	'Manage',
 );
 
-$this->menu=array(
-	array('label'=>'List UserType', 'url'=>array('index')),
-	array('label'=>'Create UserType', 'url'=>array('create')),
+$this->menu = array(
+	array('label' => 'List UserType', 'url' => array('index')),
+	array('label' => 'Create UserType', 'url' => array('create')),
 );
 
 $this->widget('zii.widgets.grid.CGridView', array(
@@ -14,8 +14,10 @@ $this->widget('zii.widgets.grid.CGridView', array(
 	'dataProvider'=>$model->search(),
 	'filter'=>$model,
 	'columns'=>array(
-		'id',
-		'product_id',
+		array(
+			'name' => 'product_id',
+			'value' => '$data->product->name'
+		),
 		'name',
 		array(
 			'class'=>'CButtonColumn',

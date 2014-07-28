@@ -1,6 +1,6 @@
 <div class="form">
 
-<?php $form=$this->beginWidget('CActiveForm', array(
+<?php $form = $this->beginWidget('CActiveForm', array(
 	'id'=>'user-form',
 	'enableClientValidation' => true,  
 	'htmlOptions' => array(
@@ -41,6 +41,12 @@
 		<?php echo $form->labelEx($model, 'date_create'); ?>
 		<?php echo $form->textField($model, 'date_create'); ?>
 		<?php echo $form->error($model, 'date_create'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model, 'company_id'); ?>
+		<?php echo $form->dropDownList($model, 'company_id', CHtml::listData(Company::model()->findAll(), 'id', 'name'), array('prompt' => Yii::t('base', 'select option'))); ?>
+		<?php echo $form->error($model, 'company_id'); ?>
 	</div>
 
 	<div class="row buttons">

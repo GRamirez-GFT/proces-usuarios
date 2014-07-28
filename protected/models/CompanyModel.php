@@ -1,13 +1,9 @@
 <?php
 
 class CompanyModel extends Company {
-    public $list_products;
 
     public function attributeLabels() {
-        return CMap::mergeArray(parent::attributeLabels(),
-            array(
-                'list_products' => 'list_products'
-            ));
+        return CMap::mergeArray(parent::attributeLabels(), array());
     }
 
     public function setAttributes($values) {
@@ -19,6 +15,10 @@ class CompanyModel extends Company {
     }
 
     public function load($id) {
+        $this->setIsNewRecord(false);
+        $this->setScenario(Yii::app()->getController()
+            ->getAction()
+            ->getId());
         if ($model = parent::model()->findByPk($id)) {
             $this->id = $id;
             $this->setAttributes($model->getAttributes());
@@ -28,15 +28,15 @@ class CompanyModel extends Company {
     }
 
     public function save() {
-        $success = false;
-        try {
-            if ($success) {
-                $transaction->commit();
-            }
-        } catch (Exception $e) {
-            $transaction->rollback();
-        }
-        return $success;
+        return parent::save();
+    }
+
+    public function update() {
+        return parent::update();
+    }
+
+    public function delete() {
+        return parent::deleteByPk($this->getPrimaryKey());
     }
 
 }

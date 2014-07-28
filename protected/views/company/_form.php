@@ -1,8 +1,8 @@
 <div class="form">
 
-<?php $form=$this->beginWidget('CActiveForm', array(
+<?php $form = $this->beginWidget('CActiveForm', array(
 	'id'=>'company-form',
-	'enableClientValidation' => true,
+	'enableClientValidation' => true,  
 	'htmlOptions' => array(
 		'enctype' => 'multipart/form-data',
 		'autocomplete' => 'off',
@@ -32,9 +32,9 @@
 	</div>
 
 	<div class="row">
-	    <?php echo $form->labelEx($model, 'list_products'); ?>
-		<?php echo $form->listBox($model, 'list_products', CHtml::listData(Product::model()->findAll(), 'id', 'name')); ?>
-		<?php echo $form->error($model, 'list_products'); ?>
+		<?php echo $form->labelEx($model, 'date_create'); ?>
+		<?php echo $form->textField($model, 'date_create'); ?>
+		<?php echo $form->error($model, 'date_create'); ?>
 	</div>
 
 	<div class="row buttons">

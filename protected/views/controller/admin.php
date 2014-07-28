@@ -1,12 +1,12 @@
 <?php
-$this->breadcrumbs=array(
-	'Controllers'=>array('index'),
+$this->breadcrumbs = array(
+	'Controllers' => array('index'),
 	'Manage',
 );
 
-$this->menu=array(
-	array('label'=>'List Controller', 'url'=>array('index')),
-	array('label'=>'Create Controller', 'url'=>array('create')),
+$this->menu = array(
+	array('label' => 'List Controller', 'url' => array('index')),
+	array('label' => 'Create Controller', 'url' => array('create')),
 );
 
 $this->widget('zii.widgets.grid.CGridView', array(
@@ -16,10 +16,10 @@ $this->widget('zii.widgets.grid.CGridView', array(
 	'columns'=>array(
 		'name',
 		'url_controller',
-	    array(
-	        'name' => 'product_id',
-	        'value' => '$data->product->name'
-	    ),
+		array(
+			'name' => 'product_id',
+			'value' => '$data->product_id ? $data->product->name : null'
+		),
 		array(
 			'class'=>'CButtonColumn',
 		),

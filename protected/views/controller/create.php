@@ -1,12 +1,12 @@
 <?php
-$this->breadcrumbs=array(
-	'Controllers'=>array('index'),
+$this->breadcrumbs = array(
+	'Controllers' => array('index'),
 	'Create',
 );
 
-$this->menu=array(
-	array('label'=>'List Controller', 'url'=>array('index')),
-	array('label'=>'Manage Controller', 'url'=>array('admin')),
+$this->menu = array(
+  array('label' => 'List Controller', 'url' => array('index')),
+  array('label' => 'Manage Controller', 'url' => array('admin')),
 );
 ?>
 

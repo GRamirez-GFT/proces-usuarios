@@ -2,9 +2,9 @@
 
 class DeleteAction extends CAction {
 
-    public function run() {
+    public function run($id = null) {
         try {
-            $model = $this->controller->loadModel();
+            $model = $this->controller->loadModel(Yii::app()->request->getParam('id', $id));
             if ($model->delete()) {
                 $this->controller->redirect(array(
                     'index'

@@ -2,9 +2,10 @@
 
 class ViewAction extends CAction {
 
-    public function run() {
+    public function run($id = null) {
+        $model = $this->controller->loadModel(Yii::app()->request->getParam('id', $id));
         $this->controller->render('view', array(
-            'model' => $this->controller->loadModel()
+            'model' => $model
         ));
     }
 

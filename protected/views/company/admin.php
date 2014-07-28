@@ -1,12 +1,12 @@
 <?php
-$this->breadcrumbs=array(
-	'Companies'=>array('index'),
+$this->breadcrumbs = array(
+	'Companies' => array('index'),
 	'Manage',
 );
 
-$this->menu=array(
-	array('label'=>'List Company', 'url'=>array('index')),
-	array('label'=>'Create Company', 'url'=>array('create')),
+$this->menu = array(
+	array('label' => 'List Company', 'url' => array('index')),
+	array('label' => 'Create Company', 'url' => array('create')),
 );
 
 $this->widget('zii.widgets.grid.CGridView', array(
