@@ -26,6 +26,14 @@
 	</div>
 
 	<div class="row">
+		<?php echo $form->labelEx($model, 'user_id'); ?>
+		<?php echo $form->dropDownList($model, 'user_id',
+		    CHtml::listData(User::model()->findAllByAttributes(array('company_id' => $model->id)), 'id', 'name'),
+		    array('prompt' => Yii::t('base', 'select option'))); ?>
+		<?php echo $form->error($model, 'user_id'); ?>
+	</div>
+
+	<div class="row">
 		<?php echo $form->labelEx($model, 'active'); ?>
 		<?php echo $form->checkBox($model, 'active'); ?>
 		<?php echo $form->error($model, 'active'); ?>
@@ -33,7 +41,9 @@
 
 	<div class="row">
 	    <?php echo $form->labelEx($model, 'list_products'); ?>
-		<?php echo $form->listBox($model, 'list_products', CHtml::listData(Product::model()->findAll(), 'id', 'name'), array('multiple' => true)); ?>
+		<?php echo $form->listBox($model, 'list_products',
+		    CHtml::listData(Product::model()->findAll(), 'id', 'name'),
+		    array('multiple' => true)); ?>
 		<?php echo $form->error($model, 'list_products'); ?>
 	</div>
 

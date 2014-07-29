@@ -16,15 +16,15 @@ $this->menu = array(
 <h1>View User #<?php echo $model->id; ?></h1>
 
 <?php $this->widget('zii.widgets.CDetailView', array(
-	'data'=>$model,
-	'attributes'=>array(
+	'data' => $model,
+	'attributes' => array(
 		'name',
 		'username',
-		'active',
-		'date_create',
 		array(
 			'name' => 'company_id',
 			'value' => $model->company_id ? $model->company->name : null
 		),
+		'active',
+		'date_create',
 	),
 ));

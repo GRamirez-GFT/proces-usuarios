@@ -12,12 +12,12 @@
 	<?php echo CHtml::encode($data->subdomain); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('active')); ?>:</b>
-	<?php echo CHtml::encode($data->active); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('user_id')); ?>:</b>
+	<?php echo CHtml::encode($data->user_id ? $data->user->name : null); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('date_create')); ?>:</b>
-	<?php echo CHtml::encode($data->date_create); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('active')); ?>:</b>
+	<?php echo CHtml::encode($data->active); ?>
 	<br />
 
 </div>

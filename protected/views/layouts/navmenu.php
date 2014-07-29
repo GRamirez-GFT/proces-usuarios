@@ -31,7 +31,6 @@ $options = array(
     'company' => 'Compañías',
     'product' => 'Productos',
     'controller' => 'Controladores',
-    'userType' => 'Tipos de Usuario',
 ); ?>
 
 <div id="menu">

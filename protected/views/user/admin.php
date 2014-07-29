@@ -16,12 +16,12 @@ $this->widget('zii.widgets.grid.CGridView', array(
 	'columns'=>array(
 		'name',
 		'username',
-		'active',
-		'date_create',
 		array(
 			'name' => 'company_id',
 			'value' => '$data->company_id ? $data->company->name : null'
 		),
+		'active',
+		'date_create',
 		array(
 			'class'=>'CButtonColumn',
 		),
