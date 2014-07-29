@@ -27,11 +27,11 @@ class User extends MyActiveRecord {
 
 	public function rules() {
 		return array(
-		array('name, username, password, active, date_create', 'required'),
-		array('company_id, active', 'numerical', 'integerOnly'=>true),
-		array('name', 'length', 'max'=>100),
-		array('username', 'length', 'max'=>32),
-		array('password', 'length', 'max'=>72),
+		array('name, username, password, date_create', 'required'),
+		array('company_id, active', 'numerical', 'integerOnly' => true),
+		array('name', 'length', 'max' => 100),
+		array('username', 'length', 'max' => 32),
+		array('password', 'length', 'max' => 72),
 		array('company_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => 'Company'),
 		array('id, name, username, password, company_id, active, date_create', 'safe', 'on' => 'search'),
 		);
@@ -60,7 +60,7 @@ class User extends MyActiveRecord {
 	}
 
 	public function search() {
-		$criteria=new CDbCriteria;
+		$criteria = new CDbCriteria;
 		$criteria->compare('id', $this->id);
 		$criteria->compare('name', $this->name, true);
 		$criteria->compare('username', $this->username, true);

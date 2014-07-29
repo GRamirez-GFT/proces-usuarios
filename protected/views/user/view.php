@@ -8,12 +8,20 @@ $this->menu = array(
   array('label' => 'List User', 'url' => array('index')),
   array('label' => 'Create User', 'url' => array('create')),
   array('label' => 'Update User', 'url' => '#', 'linkOptions' => array('submit' => array('update'), 'params' => array('id' => $model->id))),
-  array('label' => 'Delete User', 'url' => '#', 'linkOptions' => array('submit' => array('delete'), 'params' => array('id' => $model->id), 'confirm' => Yii::t('zii', 'Are you sure you want to delete this item?'))),	
+  array('label' => 'Delete User', 'url' => '#', 'linkOptions' => array('submit' => array('delete'), 'params' => array('id' => $model->id), 'confirm' => Yii::t('zii', 'Are you sure you want to delete this item?'))),
   array('label' => 'Manage User', 'url' => array('admin')),
 );
 ?>
 
 <h1>View User #<?php echo $model->id; ?></h1>
+
+<?php
+$products = "<ul>";
+foreach ($model->products as $item) {
+    $products .= "<li>{$item->name}</li>";
+}
+$products .= "</ul>";
+?>
 
 <?php $this->widget('zii.widgets.CDetailView', array(
 	'data' => $model,
@@ -26,5 +34,10 @@ $this->menu = array(
 		),
 		'active',
 		'date_create',
+        array(
+            'name' => 'list_products',
+            'type' => 'raw',
+            'value' => $products
+        ),
 	),
 ));

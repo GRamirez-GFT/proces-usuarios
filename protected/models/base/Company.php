@@ -24,10 +24,10 @@ class Company extends MyActiveRecord {
 
 	public function rules() {
 		return array(
-		array('name, active, date_create', 'required'),
-		array('user_id, active', 'numerical', 'integerOnly'=>true),
-		array('name', 'length', 'max'=>100),
-		array('subdomain', 'length', 'max'=>30),
+		array('name, date_create', 'required'),
+		array('user_id, active', 'numerical', 'integerOnly' => true),
+		array('name', 'length', 'max' => 100),
+		array('subdomain', 'length', 'max' => 30),
 		array('user_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => 'User'),
 		array('id, name, subdomain, user_id, active, date_create', 'safe', 'on' => 'search'),
 		);
@@ -53,7 +53,7 @@ class Company extends MyActiveRecord {
 	}
 
 	public function search() {
-		$criteria=new CDbCriteria;
+		$criteria = new CDbCriteria;
 		$criteria->compare('id', $this->id);
 		$criteria->compare('name', $this->name, true);
 		$criteria->compare('subdomain', $this->subdomain, true);

@@ -2,7 +2,7 @@
 
 <?php $form = $this->beginWidget('CActiveForm', array(
 	'id'=>'product-form',
-	'enableClientValidation' => true,  
+	'enableClientValidation' => true,
 	'htmlOptions' => array(
 		'enctype' => 'multipart/form-data',
 		'autocomplete' => 'off',
@@ -10,8 +10,6 @@
 )); ?>
 
 	<p class="note">Fields with <span class="required">*</span> are required.</p>
-
-	<?php echo $form->errorSummary($model); ?>
 
 	<div class="row">
 		<?php echo $form->labelEx($model, 'name'); ?>

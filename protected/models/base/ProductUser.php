@@ -17,7 +17,7 @@ class ProductUser extends MyActiveRecord {
 	public function rules() {
 		return array(
 		array('user_id, product_id', 'required'),
-		array('user_id, product_id', 'numerical', 'integerOnly'=>true),
+		array('user_id, product_id', 'numerical', 'integerOnly' => true),
 		array('user_id, product_id', 'safe', 'on' => 'search'),
 		);
 	}
@@ -30,7 +30,7 @@ class ProductUser extends MyActiveRecord {
 	}
 
 	public function search() {
-		$criteria=new CDbCriteria;
+		$criteria = new CDbCriteria;
 		$criteria->compare('user_id', $this->user_id);
 		$criteria->compare('product_id', $this->product_id);
 		$sort = new CSort();

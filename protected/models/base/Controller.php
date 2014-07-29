@@ -22,9 +22,9 @@ class Controller extends MyActiveRecord {
 	public function rules() {
 		return array(
 		array('name, product_id', 'required'),
-		array('product_id', 'numerical', 'integerOnly'=>true),
-		array('name', 'length', 'max'=>100),
-		array('url_controller', 'length', 'max'=>255),
+		array('product_id', 'numerical', 'integerOnly' => true),
+		array('name', 'length', 'max' => 100),
+		array('url_controller', 'length', 'max' => 255),
 		array('product_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => 'Product'),
 		array('id, name, url_controller, product_id', 'safe', 'on' => 'search'),
 		);
@@ -47,7 +47,7 @@ class Controller extends MyActiveRecord {
 	}
 
 	public function search() {
-		$criteria=new CDbCriteria;
+		$criteria = new CDbCriteria;
 		$criteria->compare('id', $this->id);
 		$criteria->compare('name', $this->name, true);
 		$criteria->compare('url_controller', $this->url_controller, true);

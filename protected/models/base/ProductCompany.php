@@ -17,7 +17,7 @@ class ProductCompany extends MyActiveRecord {
 	public function rules() {
 		return array(
 		array('product_id, company_id', 'required'),
-		array('product_id, company_id', 'numerical', 'integerOnly'=>true),
+		array('product_id, company_id', 'numerical', 'integerOnly' => true),
 		array('product_id, company_id', 'safe', 'on' => 'search'),
 		);
 	}
@@ -30,7 +30,7 @@ class ProductCompany extends MyActiveRecord {
 	}
 
 	public function search() {
-		$criteria=new CDbCriteria;
+		$criteria = new CDbCriteria;
 		$criteria->compare('product_id', $this->product_id);
 		$criteria->compare('company_id', $this->company_id);
 		$sort = new CSort();

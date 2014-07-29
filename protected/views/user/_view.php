@@ -20,8 +20,4 @@
 	<?php echo CHtml::encode($data->active); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('date_create')); ?>:</b>
-	<?php echo CHtml::encode($data->date_create); ?>
-	<br />
-
 </div>

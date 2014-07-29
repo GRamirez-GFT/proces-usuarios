@@ -40,7 +40,7 @@ class CompanyModel extends Company {
             $transaction = Yii::app()->db->getCurrentTransaction() ? Yii::app()->db->getCurrentTransaction() : Yii::app()->db->beginTransaction();
             $this->date_create = date('Y-m-d');
             if ($success = parent::save()) {
-                foreach ($this->list_products as $item) {
+                if (is_array($this->list_products)) foreach ($this->list_products as $item) {
                     $procut = new ProductCompany();
                     $procut->product_id = $item;
                     $procut->company_id = $this->id;
@@ -60,15 +60,20 @@ class CompanyModel extends Company {
         $success = false;
         try {
             $transaction = Yii::app()->db->getCurrentTransaction() ? Yii::app()->db->getCurrentTransaction() : Yii::app()->db->beginTransaction();
-            $success = parent::update();
-            ProductCompany::model()->deleteAllByAttributes(array(
-                'company_id' => $this->id
-            ));
-            foreach ($this->list_products as $item) {
-                $procut = new ProductCompany();
-                $procut->product_id = $item;
-                $procut->company_id = $this->id;
-                if (! ($success = $procut->save())) break;
+            if ($success = $this->validate()) {
+                $success = parent::update();
+                ProductCompany::model()->deleteAllByAttributes(
+                    array(
+                        'company_id' => $this->id
+                    ));
+                if (is_array($this->list_products)) {
+                    foreach ($this->list_products as $item) {
+                        $procut = new ProductCompany();
+                        $procut->product_id = $item;
+                        $procut->company_id = $this->id;
+                        if (! ($success = $procut->save())) break;
+                    }
+                }
             }
             if ($success) {
                 $transaction->commit();

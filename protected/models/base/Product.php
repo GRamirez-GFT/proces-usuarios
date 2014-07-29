@@ -22,8 +22,8 @@ class Product extends MyActiveRecord {
 	public function rules() {
 		return array(
 		array('name', 'required'),
-		array('name', 'length', 'max'=>100),
-		array('url_product', 'length', 'max'=>255),
+		array('name', 'length', 'max' => 100),
+		array('url_product', 'length', 'max' => 255),
 		array('id, name, url_product', 'safe', 'on' => 'search'),
 		);
 	}
@@ -45,7 +45,7 @@ class Product extends MyActiveRecord {
 	}
 
 	public function search() {
-		$criteria=new CDbCriteria;
+		$criteria = new CDbCriteria;
 		$criteria->compare('id', $this->id);
 		$criteria->compare('name', $this->name, true);
 		$criteria->compare('url_product', $this->url_product, true);

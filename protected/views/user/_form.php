@@ -2,7 +2,7 @@
 
 <?php $form = $this->beginWidget('CActiveForm', array(
 	'id'=>'user-form',
-	'enableClientValidation' => true,  
+	'enableClientValidation' => true,
 	'htmlOptions' => array(
 		'enctype' => 'multipart/form-data',
 		'autocomplete' => 'off',
@@ -10,8 +10,6 @@
 )); ?>
 
 	<p class="note">Fields with <span class="required">*</span> are required.</p>
-
-	<?php echo $form->errorSummary($model); ?>
 
 	<div class="row">
 		<?php echo $form->labelEx($model, 'name'); ?>
@@ -27,8 +25,14 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($model, 'password'); ?>
-		<?php echo $form->textField($model, 'password', array('maxlength' => 72)); ?>
+		<?php echo $form->passwordField($model, 'password', array('maxlength' => 72)); ?>
 		<?php echo $form->error($model, 'password'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model, 'verify_password'); ?>
+		<?php echo $form->passwordField($model, 'verify_password', array('maxlength' => 72)); ?>
+		<?php echo $form->error($model, 'verify_password'); ?>
 	</div>
 
 	<div class="row">
@@ -44,9 +48,11 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model, 'date_create'); ?>
-		<?php echo $form->textField($model, 'date_create'); ?>
-		<?php echo $form->error($model, 'date_create'); ?>
+	    <?php echo $form->labelEx($model, 'list_products'); ?>
+		<?php echo $form->listBox($model, 'list_products',
+		    CHtml::listData(Product::model()->findAll(), 'id', 'name'),
+		    array('multiple' => true)); ?>
+		<?php echo $form->error($model, 'list_products'); ?>
 	</div>
 
 	<div class="row buttons">
