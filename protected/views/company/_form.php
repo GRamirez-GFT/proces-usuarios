@@ -2,7 +2,7 @@
 
 <?php $form = $this->beginWidget('CActiveForm', array(
 	'id'=>'company-form',
-	'enableClientValidation' => true,  
+	'enableClientValidation' => true,
 	'htmlOptions' => array(
 		'enctype' => 'multipart/form-data',
 		'autocomplete' => 'off',
@@ -32,13 +32,13 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model, 'date_create'); ?>
-		<?php echo $form->textField($model, 'date_create'); ?>
-		<?php echo $form->error($model, 'date_create'); ?>
+	    <?php echo $form->labelEx($model, 'list_products'); ?>
+		<?php echo $form->listBox($model, 'list_products', CHtml::listData(Product::model()->findAll(), 'id', 'name'), array('multiple' => true)); ?>
+		<?php echo $form->error($model, 'list_products'); ?>
 	</div>
 
 	<div class="row buttons">
-		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
+		<?php echo CHtml::button($model->isNewRecord ? 'Create' : 'Save', array('submit' => '#', 'params' => array('id' => $model->id))); ?>
 	</div>
 
 <?php $this->endWidget(); ?>
