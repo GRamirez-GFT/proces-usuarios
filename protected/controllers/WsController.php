@@ -25,14 +25,7 @@ class WsController extends CController {
                 'active' => 1
             ))) {
             if (CPasswordHelper::verifyPassword($password, $user->password)) {
-                $request['id'] = $user->id;
-                $request['name'] = $user->name;
-                $request['username'] = $user->username;
-                $request['company_id'] = $user->company_id;
-                $request['company'] = $user->company_id ? $user->company->name : null;
-                $request['subdomain'] = $user->company_id ? $user->company->subdomain : null;
-                // TODO: CARGAR PERMISOS DEL PRODUCTO
-                $request['permissions'] = '';
+                $request = self::getVars($user);
             }
         }
         return json_encode($request);
@@ -50,14 +43,7 @@ class WsController extends CController {
                 'id' => $user_id,
                 'active' => '1'
             ))) {
-            $request['id'] = $user->id;
-            $request['name'] = $user->name;
-            $request['username'] = $user->username;
-            $request['company_id'] = $user->company_id;
-            $request['company'] = $user->company_id ? $user->company->name : null;
-            $request['subdomain'] = $user->company_id ? $user->company->subdomain : null;
-            // TODO: CARGAR PERMISOS DEL PRODUCTO
-            $request['permissions'] = '';
+            $request = self::getVars($user);
         }
         return json_encode($request);
     }
@@ -107,13 +93,22 @@ class WsController extends CController {
                 ':t1' => $ipv4
             ));
     }
-    /*
-     * public function getPermissions() { $permissions = array(); foreach (Yii::app()->db->createCommand()
-     * ->select('m.name AS module, c.name AS controller, a.name AS action') ->from('controller c') ->join('action a',
-     * 'a.controller_id=c.id') ->join('role_action r', 'r.action_id=a.id AND r.role_id=:t0', array( ':t0' => $role ))
-     * ->join('module m', 'm.id=c.module_id') ->queryAll() as $data) { if (!
-     * isset($permissions[$data['module']][$data['controller']])) { if (! isset($permissions[$data['module']])) {
-     * $permissions[$data['module']] = array(); } $permissions[$data['module']][$data['controller']] = array(); }
-     * $permissions[$data['module']][$data['controller']][] = $data['action']; } return $permissions; }
-     */
+
+    public static function getVars($user, $product = null) {
+        $request = array();
+        $request['id'] = $user->id;
+        $request['name'] = $user->name;
+        $request['username'] = $user->username;
+        $request['company_id'] = $user->company_id;
+        $request['company'] = $user->company_id ? $user->company->name : '';
+        $request['subdomain'] = $user->company_id ? $user->company->subdomain : '';
+        // TODO: CARGAR PERMISOS DEL PRODUCTO
+        $request['permissions'] = self::getPermissions($user->id, $product);
+        return $request;
+    }
+
+    public static function getPermissions($user_id, $product_id) {
+        if ($product_id == null) return;
+    }
+
 }

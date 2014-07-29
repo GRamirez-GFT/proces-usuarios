@@ -1,7 +1,7 @@
 <?php
 /**
  * @property integer $user_id
- * @property integer $user_type_id
+ * @property integer $product_id
  */
 
 class ProductUser extends MyActiveRecord {
@@ -16,23 +16,23 @@ class ProductUser extends MyActiveRecord {
 
 	public function rules() {
 		return array(
-		array('user_id, user_type_id', 'required'),
-		array('user_id, user_type_id', 'numerical', 'integerOnly'=>true),
-		array('user_id, user_type_id', 'safe', 'on' => 'search'),
+		array('user_id, product_id', 'required'),
+		array('user_id, product_id', 'numerical', 'integerOnly'=>true),
+		array('user_id, product_id', 'safe', 'on' => 'search'),
 		);
 	}
 
 	public function attributeLabels() {
 		return array(
 		'user_id' => 'user_id',
-		'user_type_id' => 'user_type_id',
+		'product_id' => 'product_id',
 		);
 	}
 
 	public function search() {
 		$criteria=new CDbCriteria;
 		$criteria->compare('user_id', $this->user_id);
-		$criteria->compare('user_type_id', $this->user_type_id);
+		$criteria->compare('product_id', $this->product_id);
 		$sort = new CSort();
 		$sort->attributes = array('*');
 		$sort->multiSort = true;

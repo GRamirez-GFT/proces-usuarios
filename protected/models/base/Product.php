@@ -6,7 +6,7 @@
  *
  * @property Controller[] $controllers
  * @property Company[] $companies
- * @property UserType[] $userTypes
+ * @property User[] $users
  */
 
 class Product extends MyActiveRecord {
@@ -32,7 +32,7 @@ class Product extends MyActiveRecord {
 		return array(
 		'controllers' => array(self::HAS_MANY, 'Controller', 'product_id'),
 		'companies' => array(self::MANY_MANY, 'Company', 'product_company(product_id, company_id)'),
-		'userTypes' => array(self::HAS_MANY, 'UserType', 'product_id'),
+		'users' => array(self::MANY_MANY, 'User', 'product_user(product_id, user_id)'),
 		);
 	}
 	
