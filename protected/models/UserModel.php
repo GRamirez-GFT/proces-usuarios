@@ -64,6 +64,11 @@ class UserModel extends User {
             $this->password = CPasswordHelper::hashPassword($this->password);
             if ($success = parent::save()) {
                 foreach ($this->list_products as $item) {
+                    if (! ProductCompany::model()->exists('company_id=:t0 AND product_id=:t1',
+                        array(
+                            ':t0' => $this->company_id,
+                            ':t1' => $item
+                        ))) continue;
                     $procut = new ProductUser();
                     $procut->product_id = $item;
                     $procut->user_id = $this->id;
@@ -91,6 +96,11 @@ class UserModel extends User {
                     ));
                 if (is_array($this->list_products)) {
                     foreach ($this->list_products as $item) {
+                        if (! ProductCompany::model()->exists('company_id=:t0 AND product_id=:t1',
+                            array(
+                                ':t0' => $this->company_id,
+                                ':t1' => $item
+                            ))) continue;
                         $procut = new ProductUser();
                         $procut->product_id = $item;
                         $procut->user_id = $this->id;
