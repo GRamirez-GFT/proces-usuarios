@@ -18,21 +18,21 @@ class WsController extends CController {
      */
     public function login($username, $password) {
         $request = array();
-        if (User::model()->exists("username='{$username}' AND active<>0")) {
-            // TODO: CONDICION DE COMPANIA / SUBDOMINIO
-            if ($user = User::model()->findByAttributes(array(
-                'username' => $username
+        // TODO: CONDICION DE COMPANIA / SUBDOMINIO
+        if ($user = User::model()->findByAttributes(
+            array(
+                'username' => $username,
+                'active' => 1
             ))) {
-                if (CPasswordHelper::verifyPassword($password, $user->password)) {
-                    $request['id'] = $user->id;
-                    $request['name'] = $user->name;
-                    $request['username'] = $user->username;
-                    $request['company_id'] = $user->roles[0]->company->id;
-                    $request['company'] = $user->roles[0]->company->name;
-                    $request['subdomain'] = $user->roles[0]->company->subdomain;
-                    // TODO: CARGAR PERMISOS DEL PRODUCTO
-                    $request['permissions'] = '';
-                }
+            if (CPasswordHelper::verifyPassword($password, $user->password)) {
+                $request['id'] = $user->id;
+                $request['name'] = $user->name;
+                $request['username'] = $user->username;
+                $request['company_id'] = $user->company_id;
+                $request['company'] = $user->company_id ? $user->company->name : null;
+                $request['subdomain'] = $user->company_id ? $user->company->subdomain : null;
+                // TODO: CARGAR PERMISOS DEL PRODUCTO
+                $request['permissions'] = '';
             }
         }
         return json_encode($request);
@@ -53,14 +53,13 @@ class WsController extends CController {
             $request['id'] = $user->id;
             $request['name'] = $user->name;
             $request['username'] = $user->username;
-            $request['company_id'] = $user->roles[0]->company->id;
-            $request['company'] = $user->roles[0]->company->name;
-            $request['subdomain'] = $user->roles[0]->company->subdomain;
+            $request['company_id'] = $user->company_id;
+            $request['company'] = $user->company_id ? $user->company->name : null;
+            $request['subdomain'] = $user->company_id ? $user->company->subdomain : null;
             // TODO: CARGAR PERMISOS DEL PRODUCTO
             $request['permissions'] = '';
         }
-        $request = json_encode($request);
-        return $request;
+        return json_encode($request);
     }
 
     /**
@@ -105,7 +104,7 @@ class WsController extends CController {
             ), 'session=:t0 AND ipv4=:t1',
             array(
                 ':t0' => $session,
-                ':t1' => $ipv4,
+                ':t1' => $ipv4
             ));
     }
     /*
