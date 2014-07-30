@@ -4,7 +4,9 @@
  * @property string $name
  * @property string $url_product
  *
+ * @property Controller[] $controllers
  * @property Company[] $companies
+ * @property User[] $users
  */
 
 class Product extends MyActiveRecord {
@@ -20,15 +22,17 @@ class Product extends MyActiveRecord {
 	public function rules() {
 		return array(
 		array('name', 'required'),
-		array('name', 'length', 'max' => 100),
-		array('url_product', 'length', 'max' => 255),
+		array('name', 'length', 'max'=>100),
+		array('url_product', 'length', 'max'=>255),
 		array('id, name, url_product', 'safe', 'on' => 'search'),
 		);
 	}
 
 	public function relations() {
 		return array(
-		'companies' => array(self::MANY_MANY, 'Company', 'company_product(product_id, company_id)'),
+		'controllers' => array(self::HAS_MANY, 'Controller', 'product_id'),
+		'companies' => array(self::MANY_MANY, 'Company', 'product_company(product_id, company_id)'),
+		'users' => array(self::MANY_MANY, 'User', 'product_user(product_id, user_id)'),
 		);
 	}
 	

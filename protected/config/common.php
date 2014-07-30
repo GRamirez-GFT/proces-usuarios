@@ -14,7 +14,6 @@ return CMap::mergeArray(
         'modules' => array(),
         'components' => array(
             'user' => array(
-                'class' => 'MyWebUser',
                 'authTimeout' => 3600
             ),
             'urlManager' => array(

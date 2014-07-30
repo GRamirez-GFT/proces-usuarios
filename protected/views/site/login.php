@@ -13,13 +13,13 @@
 
 	<div id="inputs-login">
 
-		<?php echo $form->textField($model,'username', array('placeholder' => $model->getAttributeLabel('username'))); ?>
+		<?php echo $form->textField($model, 'username', array('placeholder' => $model->getAttributeLabel('username'))); ?>
 
-		<?php echo $form->passwordField($model,'password', array('placeholder' => $model->getAttributeLabel('password'))); ?>
+		<?php echo $form->passwordField($model, 'password', array('placeholder' => $model->getAttributeLabel('password'))); ?>
 
 	</div>
 
-	<?php echo CHtml::submitButton(Yii::t('site/Session','Login')); ?>
+	<?php echo CHtml::submitButton(Yii::t('site/Session', 'Login')); ?>
 
 <?php $this->endWidget(); ?>
 

@@ -3,10 +3,13 @@
  * @property integer $id
  * @property string $name
  * @property string $subdomain
+ * @property integer $user_id
  * @property boolean $active
  * @property string $date_create
  *
+ * @property User $user
  * @property Product[] $products
+ * @property User[] $users
  */
 
 class Company extends MyActiveRecord {
@@ -21,19 +24,20 @@ class Company extends MyActiveRecord {
 
 	public function rules() {
 		return array(
-		array('name', 'required'),
-		array('active', 'numerical', 'integerOnly' => true),
-		array('active', 'boolean', 'allowEmpty' => true),
-		array('name', 'length', 'max' => 100),
-		array('subdomain', 'length', 'max' => 30),
-		array('active', 'length', 'max' => 1),
-		array('id, name, subdomain, active, date_create', 'safe', 'on' => 'search'),
+		array('name, active, date_create', 'required'),
+		array('user_id, active', 'numerical', 'integerOnly'=>true),
+		array('name', 'length', 'max'=>100),
+		array('subdomain', 'length', 'max'=>30),
+		array('user_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => 'User'),
+		array('id, name, subdomain, user_id, active, date_create', 'safe', 'on' => 'search'),
 		);
 	}
 
 	public function relations() {
 		return array(
-		'products' => array(self::MANY_MANY, 'Product', 'company_product(company_id, product_id)'),
+		'user' => array(self::BELONGS_TO, 'User', 'user_id'),
+		'products' => array(self::MANY_MANY, 'Product', 'product_company(company_id, product_id)'),
+		'users' => array(self::HAS_MANY, 'User', 'company_id'),
 		);
 	}
 	
@@ -42,6 +46,7 @@ class Company extends MyActiveRecord {
 		'id' => 'id',
 		'name' => 'name',
 		'subdomain' => 'subdomain',
+		'user_id' => 'user_id',
 		'active' => 'active',
 		'date_create' => 'date_create',
 		);
@@ -52,6 +57,7 @@ class Company extends MyActiveRecord {
 		$criteria->compare('id', $this->id);
 		$criteria->compare('name', $this->name, true);
 		$criteria->compare('subdomain', $this->subdomain, true);
+		$criteria->compare('user_id', $this->user_id);
 		$criteria->compare('active', $this->active);
 		$criteria->compare('date_create', $this->date_create);
 		$sort = new CSort();
