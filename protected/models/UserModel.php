@@ -61,7 +61,6 @@ class UserModel extends User {
         try {
             $transaction = Yii::app()->db->getCurrentTransaction() ? Yii::app()->db->getCurrentTransaction() : Yii::app()->db->beginTransaction();
             $this->date_create = date('Y-m-d');
-            $this->password = CPasswordHelper::hashPassword($this->password);
             if ($success = parent::save()) {
                 foreach ($this->list_products as $item) {
                     if (! ProductCompany::model()->exists('company_id=:t0 AND product_id=:t1',
