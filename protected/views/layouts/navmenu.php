@@ -30,7 +30,6 @@ $options = array(
     'user' => 'Usuarios',
     'company' => 'Compañías',
     'product' => 'Productos',
-    'controller' => 'Controladores',
 ); ?>
 
 <div id="menu">

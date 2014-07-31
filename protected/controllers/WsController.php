@@ -94,6 +94,12 @@ class WsController extends CController {
             ));
     }
 
+    /**
+     *
+     * @param mixed $user
+     * @param string $product
+     * @return array
+     */
     public static function getVars($user, $product = null) {
         $request = array();
         $request['id'] = $user->id;

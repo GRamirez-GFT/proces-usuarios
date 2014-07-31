@@ -8,8 +8,10 @@
  * @property boolean $active
  * @property string $date_create
  *
- * @property Company[] $company
- * @property Product[] $product
+ * @property Company[] $companies
+ * @property Product[] $products
+ * @property Company $company
+ * @property UserSession[] $userSessions
  */
 
 class User extends MyActiveRecord {
@@ -24,26 +26,25 @@ class User extends MyActiveRecord {
 
 	public function rules() {
 		return array(
-		array('name, username, password, active', 'required'),
+		array('name, username, password, date_create', 'required'),
 		array('company_id, active', 'numerical', 'integerOnly' => true),
-		array('active', 'boolean', 'allowEmpty' => true),
 		array('name', 'length', 'max' => 100),
 		array('username', 'length', 'max' => 32),
 		array('password', 'length', 'max' => 72),
-		array('password', 'filter', 'filter' => 'strtolower'),
-		array('date_create', 'date', 'format' => 'dd/mm/yyyy'),
-		array('date_create', 'default', 'value' => date('d/m/Y'), 'setOnEmpty' => false),
+		array('company_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => 'Company'),
 		array('id, name, username, password, company_id, active, date_create', 'safe', 'on' => 'search'),
 		);
 	}
 
 	public function relations() {
 		return array(
-		'company' => array(self::HAS_MANY, 'Company', 'user_id'),
-		'product' => array(self::MANY_MANY, 'Product', 'product_user(user_id, product_id)'),
+		'companies' => array(self::HAS_MANY, 'Company', 'user_id'),
+		'products' => array(self::MANY_MANY, 'Product', 'product_user(user_id, product_id)'),
+		'company' => array(self::BELONGS_TO, 'Company', 'company_id'),
+		'userSessions' => array(self::HAS_MANY, 'UserSession', 'user_id'),
 		);
 	}
-	
+
 	public function attributeLabels() {
 		return array(
 		'id' => 'id',
@@ -70,5 +71,5 @@ class User extends MyActiveRecord {
 		$sort->multiSort = true;
 		return new CActiveDataProvider($this, array('criteria' => $criteria, 'sort' => $sort));
 	}
-	
+
 }
