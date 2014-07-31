@@ -52,7 +52,10 @@
 	<div class="row">
 	    <?php echo $form->labelEx($model, 'list_products'); ?>
 		<?php echo $form->listBox($model, 'list_products',
-		    CHtml::listData(Product::model()->findAll(), 'id', 'name'),
+		    CHtml::listData(Product::model()->with(array(
+	          'companies' => array(
+		          'condition' => "company_id={$model->company_id}"
+            )))->findAll(), 'id', 'name'),
 		    array('multiple' => true)); ?>
 		<?php echo $form->error($model, 'list_products'); ?>
 	</div>
