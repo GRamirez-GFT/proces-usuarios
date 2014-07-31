@@ -110,21 +110,27 @@ class WsController extends CController {
         return json_encode($request);
     }
 
+    /**
+     *
+     * @param mixed $user
+     * @param string $product
+     * @return array
+     */
     public static function getVars($user, $product = null) {
         $request = array();
         $request['id'] = $user->id;
         $request['name'] = $user->name;
         $request['username'] = $user->username;
-        $request['company_id'] = $user->company_id;
-        $request['company'] = $user->company_id ? $user->company->name : '';
-        $request['subdomain'] = $user->company_id ? $user->company->subdomain : '';
-        // TODO: CARGAR PERMISOS DEL PRODUCTO
-        $request['permissions'] = self::getPermissions($user->id, $product);
+        if ($request['company_id'] = $user->company_id) {
+            $request['company'] = $user->company->name;
+            $request['subdomain'] = $user->company->subdomain;
+            $request['role'] = $user->id == $user->company->user_id ? 'company' : 'general';
+        } else {
+            $request['company'] = '';
+            $request['subdomain'] = '';
+            $request['role'] = $user->id == 1 ? 'global' : 'general';
+        }
         return $request;
-    }
-
-    public static function getPermissions($user_id, $product_id) {
-        if ($product_id == null) return;
     }
 
 }
