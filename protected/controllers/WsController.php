@@ -108,13 +108,7 @@ class WsController extends CController {
             $request['subdomain'] = '';
             $request['role'] = $user->id == 1 ? 'global' : 'general';
         }
-        // TODO: CARGAR PERMISOS DEL PRODUCTO
-        $request['permissions'] = self::getPermissions($user->id, $product);
         return $request;
-    }
-
-    public static function getPermissions($user_id, $product_id) {
-        if ($product_id == null) return;
     }
 
 }

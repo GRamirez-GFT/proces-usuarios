@@ -8,11 +8,8 @@
  * @property boolean $active
  * @property string $date_create
  *
- * @property Action[] $actions
- * @property Company[] $companies
- * @property Product[] $products
- * @property Company $company
- * @property UserSession[] $userSessions
+ * @property Company[] $company
+ * @property Product[] $product
  */
 
 class User extends MyActiveRecord {
@@ -27,23 +24,23 @@ class User extends MyActiveRecord {
 
 	public function rules() {
 		return array(
-		array('name, username, password, date_create', 'required'),
+		array('name, username, password, active', 'required'),
 		array('company_id, active', 'numerical', 'integerOnly' => true),
+		array('active', 'boolean', 'allowEmpty' => true),
 		array('name', 'length', 'max' => 100),
 		array('username', 'length', 'max' => 32),
 		array('password', 'length', 'max' => 72),
-		array('company_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => 'Company'),
+		array('password', 'filter', 'filter' => 'strtolower'),
+		array('date_create', 'date', 'format' => 'dd/mm/yyyy'),
+		array('date_create', 'default', 'value' => date('d/m/Y'), 'setOnEmpty' => false),
 		array('id, name, username, password, company_id, active, date_create', 'safe', 'on' => 'search'),
 		);
 	}
 
 	public function relations() {
 		return array(
-		'actions' => array(self::MANY_MANY, 'Action', 'action_user(user_id, action_id)'),
-		'companies' => array(self::HAS_MANY, 'Company', 'user_id'),
-		'products' => array(self::MANY_MANY, 'Product', 'product_user(user_id, product_id)'),
-		'company' => array(self::BELONGS_TO, 'Company', 'company_id'),
-		'userSessions' => array(self::HAS_MANY, 'UserSession', 'user_id'),
+		'company' => array(self::HAS_MANY, 'Company', 'user_id'),
+		'product' => array(self::MANY_MANY, 'Product', 'product_user(user_id, product_id)'),
 		);
 	}
 	

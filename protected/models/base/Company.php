@@ -7,9 +7,7 @@
  * @property boolean $active
  * @property string $date_create
  *
- * @property User $user
- * @property Product[] $products
- * @property User[] $users
+ * @property Product[] $product
  */
 
 class Company extends MyActiveRecord {
@@ -24,20 +22,20 @@ class Company extends MyActiveRecord {
 
 	public function rules() {
 		return array(
-		array('name, date_create', 'required'),
+		array('name, subdomain, user_id, active', 'required'),
 		array('user_id, active', 'numerical', 'integerOnly' => true),
+		array('active', 'boolean', 'allowEmpty' => true),
 		array('name', 'length', 'max' => 100),
 		array('subdomain', 'length', 'max' => 30),
-		array('user_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => 'User'),
+		array('date_create', 'date', 'format' => 'dd/mm/yyyy'),
+		array('date_create', 'default', 'value' => date('d/m/Y'), 'setOnEmpty' => false),
 		array('id, name, subdomain, user_id, active, date_create', 'safe', 'on' => 'search'),
 		);
 	}
 
 	public function relations() {
 		return array(
-		'user' => array(self::BELONGS_TO, 'User', 'user_id'),
-		'products' => array(self::MANY_MANY, 'Product', 'product_company(company_id, product_id)'),
-		'users' => array(self::HAS_MANY, 'User', 'company_id'),
+		'product' => array(self::MANY_MANY, 'Product', 'product_company(company_id, product_id)'),
 		);
 	}
 	

@@ -6,8 +6,6 @@
  * @property string $time_login
  * @property string $time_logout
  * @property integer $user_id
- *
- * @property User $user
  */
 
 class UserSession extends MyActiveRecord {
@@ -26,18 +24,11 @@ class UserSession extends MyActiveRecord {
 		array('user_id', 'numerical', 'integerOnly' => true),
 		array('session', 'length', 'max' => 32),
 		array('ipv4', 'length', 'max' => 15),
-		array('time_login, time_logout', 'safe'),
-		array('user_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => 'User'),
+		array('time_login, time_logout', 'type', 'type' => 'time', 'timeFormat' => 'HH:mm'),
 		array('id, session, ipv4, time_login, time_logout, user_id', 'safe', 'on' => 'search'),
 		);
 	}
 
-	public function relations() {
-		return array(
-		'user' => array(self::BELONGS_TO, 'User', 'user_id'),
-		);
-	}
-	
 	public function attributeLabels() {
 		return array(
 		'id' => 'id',
