@@ -17,11 +17,13 @@
 		<?php echo $form->error($model, 'name'); ?>
 	</div>
 
+	<?php if (Yii::app()->user->role != 'general'):?>
 	<div class="row">
 		<?php echo $form->labelEx($model, 'username'); ?>
 		<?php echo $form->textField($model, 'username', array('maxlength' => 32)); ?>
 		<?php echo $form->error($model, 'username'); ?>
 	</div>
+	<?php endif;?>
 
 	<div class="row">
 		<?php echo $form->labelEx($model, 'password'); ?>
@@ -43,6 +45,7 @@
 	</div>
 	<?php endif; ?>
 
+	<?php if (Yii::app()->user->role != 'general'):?>
 	<div class="row">
 		<?php echo $form->labelEx($model, 'active'); ?>
 		<?php echo $form->checkBox($model, 'active'); ?>
@@ -59,6 +62,7 @@
 		    array('multiple' => true)); ?>
 		<?php echo $form->error($model, 'list_products'); ?>
 	</div>
+	<?php endif; ?>
 
 	<div class="row buttons">
 		<?php echo CHtml::button($model->isNewRecord ? 'Create' : 'Save', array('submit' => '#', 'params' => array('id' => $model->id))); ?>

@@ -26,7 +26,7 @@ class User extends MyActiveRecord {
 
 	public function rules() {
 		return array(
-		array('name, username, password, date_create', 'required'),
+		array('name, username, password, active, date_create', 'required'),
 		array('company_id, active', 'numerical', 'integerOnly' => true),
 		array('name', 'length', 'max' => 100),
 		array('username', 'length', 'max' => 32),
@@ -44,7 +44,7 @@ class User extends MyActiveRecord {
 		'userSessions' => array(self::HAS_MANY, 'UserSession', 'user_id'),
 		);
 	}
-
+	
 	public function attributeLabels() {
 		return array(
 		'id' => 'id',
@@ -71,5 +71,5 @@ class User extends MyActiveRecord {
 		$sort->multiSort = true;
 		return new CActiveDataProvider($this, array('criteria' => $criteria, 'sort' => $sort));
 	}
-
+	
 }

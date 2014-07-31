@@ -4,6 +4,13 @@ class UserController extends MyController {
     public $layout = '//layouts/column2';
     public $defaultAction = 'admin';
 
+    public function init() {
+        parent::init();
+        if (Yii::app()->user->role == 'general') {
+            $this->defaultAction = 'view';
+        }
+    }
+
     public function loadModel($id) {
         $model = new UserModel();
         if ($model->load($id)) {return $model;}
@@ -21,9 +28,18 @@ class UserController extends MyController {
                     ),
                     'expression' => 'in_array(Yii::app()->user->role, array("global", "company"))'
                 ),
+                array(
+                    'allow',
+                    'actions' => array(
+                        'view', 'update'
+                    ),
+                    'users' => array(
+                        '@'
+                    ),
+                    'expression' => 'in_array(Yii::app()->user->role, array("general"))'
+                )
             ), parent::accessRules());
     }
-
 
     public function actions() {
         return array(
@@ -35,6 +51,5 @@ class UserController extends MyController {
             'admin' => 'application.actions.user.AdminAction'
         );
     }
-
 
 }

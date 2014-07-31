@@ -26,11 +26,26 @@ $options = array(
 </div>
 -->
 
-<?php $options = array(
+<?php
+$options = array(
     'user' => 'Usuarios',
     'company' => 'Compañías',
     'product' => 'Productos',
-); ?>
+);
+switch (Yii::app()->user->role) {
+    case 'global':
+        unset($options['user']);
+        break;
+    case 'company':
+        unset($options['company']);
+        unset($options['product']);
+        break;
+    case 'general':
+        unset($options['company']);
+        unset($options['product']);
+        break;
+}
+?>
 
 <div id="menu">
 	<ul>
