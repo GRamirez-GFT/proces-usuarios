@@ -26,7 +26,7 @@ class UserController extends MyController {
                     'users' => array(
                         '@'
                     ),
-                    'expression' => 'in_array(Yii::app()->user->role, array("global", "company"))'
+                    'expression' => 'in_array(Yii::app()->user->role, array("company"))'
                 ),
                 array(
                     'allow',

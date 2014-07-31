@@ -2,6 +2,14 @@
 
 class CompanyModel extends Company {
     public $list_products;
+    public $_user;
+
+    public function init() {
+        if ($this->getScenario() == 'insert') {
+            $this->active = 1;
+        }
+        $this->_user = new UserModel();
+    }
 
     public function attributeLabels() {
         return CMap::mergeArray(parent::attributeLabels(),
@@ -16,6 +24,7 @@ class CompanyModel extends Company {
             if ($name == 'id') continue;
             $this->setAttribute($name, $value);
         }
+        $this->_user->setAttributes(Yii::app()->request->getParam(get_class($this->_user)));
     }
 
     public function load($id) {
@@ -29,6 +38,7 @@ class CompanyModel extends Company {
             foreach ($this->products as $item) {
                 $this->list_products[] = $item->id;
             }
+            $this->_user->load($this->user_id);
             return true;
         }
         return false;
@@ -37,21 +47,35 @@ class CompanyModel extends Company {
     public function save() {
         $success = false;
         try {
-            $transaction = Yii::app()->db->getCurrentTransaction() ? Yii::app()->db->getCurrentTransaction() : Yii::app()->db->beginTransaction();
+            $transaction = Yii::app()->db->getCurrentTransaction() ? null : Yii::app()->db->beginTransaction();
             $this->date_create = date('Y-m-d');
-            if ($success = parent::save()) {
-                if (is_array($this->list_products)) foreach ($this->list_products as $item) {
-                    $procut = new ProductCompany();
-                    $procut->product_id = $item;
-                    $procut->company_id = $this->id;
-                    if (! ($success = $procut->save())) break;
+            if ($success = $this->_user->save()) {
+                $this->user_id = $this->_user->id;
+                if ($success = parent::save()) {
+                    if ($success = $this->_user->updateByPk($this->_user->id,
+                        array(
+                            'company_id' => $this->id
+                        ))) {
+                        if (is_array($this->list_products)) {
+                            foreach ($this->list_products as $item) {
+                                $procut_user = new ProductUser();
+                                $procut_user->user_id = $this->_user->id;
+                                $procut_user->product_id = $item;
+                                if (! ($success = $procut_user->save())) break;
+                                $procut_comp = new ProductCompany();
+                                $procut_comp->product_id = $item;
+                                $procut_comp->company_id = $this->id;
+                                if (! ($success = $procut_comp->save())) break;
+                            }
+                        }
+                    }
                 }
             }
             if ($success) {
-                $transaction->commit();
+                $transaction ? $transaction->commit() : null;
             }
         } catch (Exception $e) {
-            $transaction->rollback();
+            $transaction ? $transaction->rollback() : null;
         }
         return $success;
     }
@@ -59,27 +83,41 @@ class CompanyModel extends Company {
     public function update() {
         $success = false;
         try {
-            $transaction = Yii::app()->db->getCurrentTransaction() ? Yii::app()->db->getCurrentTransaction() : Yii::app()->db->beginTransaction();
+            $transaction = Yii::app()->db->getCurrentTransaction() ? null : Yii::app()->db->beginTransaction();
             if ($success = $this->validate()) {
-                $success = parent::update();
                 ProductCompany::model()->deleteAllByAttributes(
                     array(
                         'company_id' => $this->id
                     ));
+                ProductUser::model()->deleteAllByAttributes(
+                    array(
+                        'user_id' => $this->user_id
+                    ));
+                $success = parent::update();
+                $success = $this->_user->update();
+                User::model()->updateAll(array(
+                    'active' => $this->active
+                ), array(
+                    'condition' => "company_id={$this->id}"
+                ));
                 if (is_array($this->list_products)) {
                     foreach ($this->list_products as $item) {
-                        $procut = new ProductCompany();
-                        $procut->product_id = $item;
-                        $procut->company_id = $this->id;
-                        if (! ($success = $procut->save())) break;
+                        $procut_user = new ProductUser();
+                        $procut_user->user_id = $this->_user->id;
+                        $procut_user->product_id = $item;
+                        if (! ($success = $procut_user->save())) break;
+                        $procut_comp = new ProductCompany();
+                        $procut_comp->product_id = $item;
+                        $procut_comp->company_id = $this->id;
+                        if (! ($success = $procut_comp->save())) break;
                     }
                 }
             }
             if ($success) {
-                $transaction->commit();
+                $transaction ? $transaction->commit() : null;
             }
         } catch (Exception $e) {
-            $transaction->rollback();
+            $transaction ? $transaction->rollback() : null;
         }
         return $success;
     }

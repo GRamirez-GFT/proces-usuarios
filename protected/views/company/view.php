@@ -24,21 +24,50 @@ foreach ($model->products as $item) {
 $products .= "</ul>";
 ?>
 
-<?php $this->widget('zii.widgets.CDetailView', array(
-	'data' => $model,
-	'attributes' => array(
-		'name',
-		'subdomain',
-        array(
-            'name' => 'user_id',
-            'value' => $model->user_id ? $model->user->name : null
+<?php $this->widget('CTabView',array(
+    'activeTab' => 'tab1',
+    'tabs'=>array(
+        'tab1'=>array(
+            'title' => 'Details Company',
+            'content' => $this->widget('zii.widgets.CDetailView', array(
+                'data' => $model,
+                'attributes' => array(
+                    'name',
+                    'subdomain',
+                    array(
+                        'name' => 'user_id',
+                        'value' => $model->user_id ? $model->user->name : null
+                    ),
+                    'active',
+                    'date_create',
+                    array(
+                        'name' => 'list_products',
+                        'type' => 'raw',
+                        'value' => $products
+                    ),
+                ),
+            ), true)
         ),
-		'active',
-		'date_create',
-	    array(
-            'name' => 'list_products',
-            'type' => 'raw',
-            'value' => $products
+        'tab2'=>array(
+            'title' => 'User Company',
+            'content' => $this->widget('zii.widgets.CDetailView', array(
+                'data' => $model->_user,
+                'attributes' => array(
+                    'name',
+                    'username',
+                    array(
+                        'name' => 'company_id',
+                        'value' => $model->_user->company_id ? $model->_user->company->name : null
+                    ),
+                    'active',
+                    'date_create',
+                    array(
+                        'name' => 'list_products',
+                        'type' => 'raw',
+                        'value' => $products
+                    ),
+                ),
+            ), true)
         ),
-	),
+    ),
 )); ?>

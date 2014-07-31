@@ -12,4 +12,38 @@ $this->menu = array(
 
 <h1>Create Company</h1>
 
-<?php $this->renderPartial('_form', array('model'=>$model)); ?>
+<div class="form">
+
+<p class="note">Fields with <span class="required">*</span> are required.</p>
+
+<?php $form = $this->beginWidget('CActiveForm', array(
+	'id'=>'company-form',
+	'enableClientValidation' => true,
+	'htmlOptions' => array(
+		'enctype' => 'multipart/form-data',
+		'autocomplete' => 'off',
+	)
+)); ?>
+
+<?php $this->widget('CTabView',array(
+    'activeTab' => 'tab1',
+    'tabs'=>array(
+        'tab1'=>array(
+            'title' => 'Details Company',
+            'content' => $this->renderPartial('_form', array('model' => $model, 'form' => $form), true)
+        ),
+        'tab2'=>array(
+            'title' => 'User Company',
+            'content' => $this->renderPartial('_user', array('model' => $model->_user, 'form' => $form), true)
+        ),
+    ),
+)); ?>
+
+<div class="row buttons">
+	<?php echo CHtml::button($model->isNewRecord ? 'Create' : 'Save', array('submit' => '#', 'params' => array('id' => $model->id))); ?>
+</div>
+
+
+<?php $this->endWidget(); ?>
+
+</div>
