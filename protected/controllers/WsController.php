@@ -100,7 +100,7 @@ class WsController extends CController {
      * @param string $name
      * @return string @soap
      */
-    public function getUSerCompany($company_id, $name = null) {
+    public function getUserCompany($company_id, $name = null) {
         $request = Yii::app()->db->createCommand()
             ->select('*')
             ->from('user')
