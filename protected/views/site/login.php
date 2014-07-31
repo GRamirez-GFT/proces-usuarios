@@ -17,6 +17,10 @@
 
 		<?php echo $form->passwordField($model, 'password', array('placeholder' => $model->getAttributeLabel('password'))); ?>
 
+		<hr>
+		<!-- OCULTAR CUANDO ESTE UBICADO EN SUBDOMINIO -->
+		<?php echo $form->textField($model, 'company', array('placeholder' => $model->getAttributeLabel('company'))); ?>
+
 	</div>
 
 	<?php echo CHtml::submitButton(Yii::t('site/Session', 'Login')); ?>

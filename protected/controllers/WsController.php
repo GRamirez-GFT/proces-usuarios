@@ -14,16 +14,31 @@ class WsController extends CController {
      *
      * @param string $username
      * @param string $password
+     * @param string $company
      * @return string @soap
      */
-    public function login($username, $password) {
+    public function login($username, $password, $company) {
         $request = array();
-        // TODO: CONDICION DE COMPANIA / SUBDOMINIO
-        if ($user = User::model()->findByAttributes(
-            array(
-                'username' => $username,
-                'active' => 1
-            ))) {
+        if ($company) {
+            $user = User::model()->with(
+                array(
+                    'company' => array(
+                        'condition' => "subdomain='{$company}'"
+                    )
+                ))->findByAttributes(
+                array(
+                    'username' => $username,
+                    'active' => 1
+                ));
+        } else {
+            $user = User::model()->findByAttributes(
+                array(
+                    'id' => 1,
+                    'username' => $username,
+                    'active' => 1
+                ));
+        }
+        if ($user) {
             if (CPasswordHelper::verifyPassword($password, $user->password)) {
                 $request = self::getVars($user);
             }
