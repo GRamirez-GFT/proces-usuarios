@@ -94,6 +94,22 @@ class WsController extends CController {
             ));
     }
 
+    /**
+     *
+     * @param integer $company_id
+     * @param string $name
+     * @return string @soap
+     */
+    public function getUserCompany($company_id, $name = null) {
+        $request = Yii::app()->db->createCommand()
+            ->select('*')
+            ->from('user')
+            ->where("company_id={$company_id} AND LOWER(name) LIKE LOWER('%{$name}%')")
+            ->order('username ASC')
+            ->queryAll();
+        return json_encode($request);
+    }
+
     public static function getVars($user, $product = null) {
         $request = array();
         $request['id'] = $user->id;
