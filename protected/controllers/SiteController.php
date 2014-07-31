@@ -2,37 +2,26 @@
 
 class SiteController extends MyController {
 
-    public function filters() {
-        return array(
-            'accessControl'
-        );
-    }
-
     public function accessRules() {
-        return array(
+        return CMap::mergeArray(
             array(
-                'allow',
-                'actions' => array(),
-                'users' => array(
-                    '@'
-                )
-            ),
-            array(
-                'allow',
-                'actions' => array(
-                    'login',
+                array(
+                    'allow',
+                    'actions' => array(),
+                    'users' => array(
+                        '@'
+                    )
                 ),
-                'users' => array(
-                    '*'
+                array(
+                    'allow',
+                    'actions' => array(
+                        'login'
+                    ),
+                    'users' => array(
+                        '*'
+                    )
                 )
-            ),
-            array(
-                'deny',
-                'users' => array(
-                    '*'
-                )
-            )
-        );
+            ), parent::accessRules());
     }
 
     public function actions() {

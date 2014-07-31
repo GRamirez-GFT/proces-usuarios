@@ -9,7 +9,7 @@ return CMap::mergeArray(
         'import' => array(
             'application.components.*',
             'application.models.*',
-            'application.models.base.*',
+            'application.models.base.*'
         ),
         'modules' => array(),
         'components' => array(

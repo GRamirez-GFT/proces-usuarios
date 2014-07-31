@@ -35,11 +35,13 @@
 		<?php echo $form->error($model, 'verify_password'); ?>
 	</div>
 
+	<?php if (Yii::app()->user->role == 'global'):?>
 	<div class="row">
 		<?php echo $form->labelEx($model, 'company_id'); ?>
 		<?php echo $form->dropDownList($model, 'company_id', CHtml::listData(Company::model()->findAll(), 'id', 'name'), array('prompt' => Yii::t('base', 'select option'))); ?>
 		<?php echo $form->error($model, 'company_id'); ?>
 	</div>
+	<?php endif; ?>
 
 	<div class="row">
 		<?php echo $form->labelEx($model, 'active'); ?>

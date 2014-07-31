@@ -99,9 +99,15 @@ class WsController extends CController {
         $request['id'] = $user->id;
         $request['name'] = $user->name;
         $request['username'] = $user->username;
-        $request['company_id'] = $user->company_id;
-        $request['company'] = $user->company_id ? $user->company->name : '';
-        $request['subdomain'] = $user->company_id ? $user->company->subdomain : '';
+        if ($request['company_id'] = $user->company_id) {
+            $request['company'] = $user->company->name;
+            $request['subdomain'] = $user->company->subdomain;
+            $request['role'] = $user->id == $user->company->user_id ? 'company' : 'general';
+        } else {
+            $request['company'] = '';
+            $request['subdomain'] = '';
+            $request['role'] = $user->id == 1 ? 'global' : 'general';
+        }
         // TODO: CARGAR PERMISOS DEL PRODUCTO
         $request['permissions'] = self::getPermissions($user->id, $product);
         return $request;

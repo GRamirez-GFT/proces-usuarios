@@ -10,6 +10,21 @@ class ProductController extends MyController {
         throw new CHttpException(404, 'The requested page does not exist.');
     }
 
+    public function accessRules() {
+        return CMap::mergeArray(
+            array(
+                array(
+                    'allow',
+                    'actions' => array(),
+                    'users' => array(
+                        '@'
+                    ),
+                    'expression' => 'in_array(Yii::app()->user->role, array("global"))'
+                ),
+            ), parent::accessRules());
+    }
+
+
     public function actions() {
         return array(
             'index' => 'application.actions.product.IndexAction',
