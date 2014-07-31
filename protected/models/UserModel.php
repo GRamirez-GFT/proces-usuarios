@@ -4,12 +4,6 @@ class UserModel extends User {
     public $list_products;
     public $verify_password;
 
-    public function init() {
-        if (Yii::app()->user->role != 'global') {
-            $this->company_id = Yii::app()->user->company_id;
-        }
-    }
-
     public function rules() {
         return CMap::mergeArray(parent::rules(),
             array(

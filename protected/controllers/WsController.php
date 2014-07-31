@@ -96,25 +96,35 @@ class WsController extends CController {
 
     /**
      *
-     * @param mixed $user
-     * @param string $product
-     * @return array
+     * @param integer $company_id
+     * @param string $name
+     * @return string @soap
      */
+    public function getUserCompany($company_id, $name = null) {
+        $request = Yii::app()->db->createCommand()
+            ->select('*')
+            ->from('user')
+            ->where("company_id={$company_id} AND LOWER(name) LIKE LOWER('%{$name}%')")
+            ->order('username ASC')
+            ->queryAll();
+        return json_encode($request);
+    }
+
     public static function getVars($user, $product = null) {
         $request = array();
         $request['id'] = $user->id;
         $request['name'] = $user->name;
         $request['username'] = $user->username;
-        if ($request['company_id'] = $user->company_id) {
-            $request['company'] = $user->company->name;
-            $request['subdomain'] = $user->company->subdomain;
-            $request['role'] = $user->id == $user->company->user_id ? 'company' : 'general';
-        } else {
-            $request['company'] = '';
-            $request['subdomain'] = '';
-            $request['role'] = $user->id == 1 ? 'global' : 'general';
-        }
+        $request['company_id'] = $user->company_id;
+        $request['company'] = $user->company_id ? $user->company->name : '';
+        $request['subdomain'] = $user->company_id ? $user->company->subdomain : '';
+        // TODO: CARGAR PERMISOS DEL PRODUCTO
+        $request['permissions'] = self::getPermissions($user->id, $product);
         return $request;
+    }
+
+    public static function getPermissions($user_id, $product_id) {
+        if ($product_id == null) return;
     }
 
 }
