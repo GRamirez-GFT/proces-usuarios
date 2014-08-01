@@ -3,7 +3,9 @@
 class ProductModel extends Product {
 
     public function init() {
-        if (in_array(Yii::app()->user->role, array("company"))) {
+        if (in_array(Yii::app()->user->role, array(
+            "company"
+        ))) {
             $this->company_id = Yii::app()->user->company_id;
         }
     }
@@ -63,6 +65,28 @@ class ProductModel extends Product {
 
     public function delete() {
         return parent::deleteByPk($this->getPrimaryKey());
+    }
+
+    public function search() {
+        $criteria = new CDbCriteria();
+        $criteria->compare('id', $this->id);
+        $criteria->compare('name', $this->name, true);
+        $criteria->compare('url_product', $this->url_product, true);
+        if (isset(Yii::app()->user->company_id)) {
+            $criteria->compare('company_id', Yii::app()->user->company_id);
+        } else {
+            $criteria->addCondition('company_id IS NULL');
+        }
+        $sort = new CSort();
+        $sort->attributes = array(
+            '*'
+        );
+        $sort->multiSort = true;
+        return new CActiveDataProvider($this,
+            array(
+                'criteria' => $criteria,
+                'sort' => $sort
+            ));
     }
 
 }

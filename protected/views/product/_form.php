@@ -23,14 +23,6 @@
 		<?php echo $form->error($model, 'url_product'); ?>
 	</div>
 
-	<?php if (in_array(Yii::app()->user->role, array("global"))):?>
-	<div class="row">
-		<?php echo $form->labelEx($model, 'company_id'); ?>
-		<?php echo $form->dropDownList($model, 'company_id', CHtml::listData(Company::model()->findAll(), 'id', 'name'), array('prompt' => Yii::t('base', 'select option'))); ?>
-		<?php echo $form->error($model, 'company_id'); ?>
-	</div>
-	<?php endif;?>
-
 	<div class="row buttons">
 		<?php echo CHtml::button($model->isNewRecord ? 'Create' : 'Save', array('submit' => '#', 'params' => array('id' => $model->id))); ?>
 	</div>

@@ -4,8 +4,10 @@ class IndexAction extends CAction {
 
     public function run() {
         $dataProvider = new CActiveDataProvider('User');
-        if (in_array(Yii::app()->user->role, array("company"))) {
+        if (isset(Yii::app()->user->company_id)) {
             $dataProvider->criteria->condition = 'company_id="' . Yii::app()->user->company_id . '"';
+        } else {
+            $dataProvider->criteria->condition = 'company_id IS NULL';
         }
         $this->controller->render('index', array(
             'dataProvider' => $dataProvider
