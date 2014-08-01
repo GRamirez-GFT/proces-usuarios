@@ -7,7 +7,7 @@ class LoginAction extends CAction {
         if (Yii::app()->request->getPost('LoginForm')) {
             $model->setAttributes(Yii::app()->request->getPost('LoginForm'));
             $client = new SoapClient('http://localhost/proces-usuarios/ws/access');
-            $request = json_decode($client->login($model->username, $model->password), true);
+            $request = json_decode($client->login($model->username, $model->password, $model->company), true);
             if ($request && Yii::app()->user->login(new CUserIdentity($model->username, $model->password))) {
                 foreach ($request as $key => $value) {
                     Yii::app()->user->setState($key, $value);
