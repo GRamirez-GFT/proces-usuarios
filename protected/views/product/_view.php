@@ -12,4 +12,8 @@
 	<?php echo CHtml::encode($data->url_product); ?>
 	<br />
 
+	<b><?php echo CHtml::encode($data->getAttributeLabel('company_id')); ?>:</b>
+	<?php echo CHtml::encode($data->company_id ? $data->company->name : null); ?>
+	<br />
+
 </div>

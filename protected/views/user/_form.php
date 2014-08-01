@@ -17,7 +17,7 @@
 		<?php echo $form->error($model, 'name'); ?>
 	</div>
 
-	<?php if (Yii::app()->user->role != 'general'):?>
+	<?php if (in_array(Yii::app()->user->role, array("global", "company"))):?>
 	<div class="row">
 		<?php echo $form->labelEx($model, 'username'); ?>
 		<?php echo $form->textField($model, 'username', array('maxlength' => 32)); ?>
@@ -37,7 +37,7 @@
 		<?php echo $form->error($model, 'verify_password'); ?>
 	</div>
 
-	<?php if (Yii::app()->user->role == 'global'):?>
+	<?php if (in_array(Yii::app()->user->role, array("global"))):?>
 	<div class="row">
 		<?php echo $form->labelEx($model, 'company_id'); ?>
 		<?php echo $form->dropDownList($model, 'company_id', CHtml::listData(Company::model()->findAll(), 'id', 'name'), array('prompt' => Yii::t('base', 'select option'))); ?>
@@ -45,7 +45,7 @@
 	</div>
 	<?php endif; ?>
 
-	<?php if (Yii::app()->user->role != 'general'):?>
+	<?php if (in_array(Yii::app()->user->role, array("global", "company"))):?>
 	<div class="row">
 		<?php echo $form->labelEx($model, 'active'); ?>
 		<?php echo $form->checkBox($model, 'active'); ?>
@@ -57,7 +57,7 @@
 		<?php echo $form->listBox($model, 'list_products',
 		    CHtml::listData(Product::model()->with(array(
 	          'companies' => array(
-		          'condition' => "company_id={$model->company_id}"
+		          'condition' => "companies_companies.company_id={$model->company_id}"
             )))->findAll(), 'id', 'name'),
 		    array('multiple' => true)); ?>
 		<?php echo $form->error($model, 'list_products'); ?>

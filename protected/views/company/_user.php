@@ -4,7 +4,7 @@
 	<?php echo $form->error($model, 'name'); ?>
 </div>
 
-<?php if (Yii::app()->user->role != 'general'):?>
+<?php if (in_array(Yii::app()->user->role, array("global", "company"))):?>
 <div class="row">
 	<?php echo $form->labelEx($model, 'username'); ?>
 	<?php echo $form->textField($model, 'username', array('maxlength' => 32)); ?>

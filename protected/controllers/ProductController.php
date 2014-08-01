@@ -19,7 +19,7 @@ class ProductController extends MyController {
                     'users' => array(
                         '@'
                     ),
-                    'expression' => 'in_array(Yii::app()->user->role, array("global"))'
+                    'expression' => 'in_array(Yii::app()->user->role, array("global", "company"))'
                 ),
             ), parent::accessRules());
     }

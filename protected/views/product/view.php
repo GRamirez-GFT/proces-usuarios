@@ -20,5 +20,9 @@ $this->menu = array(
 	'attributes' => array(
 		'name',
 		'url_product',
+		array(
+			'name' => 'company_id',
+			'value' => $model->company_id ? $model->company->name : null
+		),
 	),
 ));

@@ -5,7 +5,7 @@ class UserModel extends User {
     public $verify_password;
 
     public function init() {
-        if (Yii::app()->user->role != 'global') {
+        if (in_array(Yii::app()->user->role, array("company"))) {
             $this->company_id = Yii::app()->user->company_id;
         }
         if ($this->getScenario() == 'insert') {

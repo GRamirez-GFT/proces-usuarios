@@ -19,7 +19,7 @@ $this->widget('zii.widgets.grid.CGridView', array(
 		array(
 			'name' => 'company_id',
 			'value' => '$data->company_id ? $data->company->name : null',
-		    'visible' => Yii::app()->user->role == 'global',
+		    'visible' => in_array(Yii::app()->user->role, array("global")),
 		),
 		'active',
 		'date_create',

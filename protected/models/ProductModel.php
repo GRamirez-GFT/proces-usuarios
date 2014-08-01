@@ -2,6 +2,12 @@
 
 class ProductModel extends Product {
 
+    public function init() {
+        if (in_array(Yii::app()->user->role, array("company"))) {
+            $this->company_id = Yii::app()->user->company_id;
+        }
+    }
+
     public function attributeLabels() {
         return CMap::mergeArray(parent::attributeLabels(), array());
     }

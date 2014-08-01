@@ -17,6 +17,11 @@ $this->widget('zii.widgets.grid.CGridView', array(
 		'name',
 		'url_product',
 		array(
+			'name' => 'company_id',
+			'value' => '$data->company_id ? $data->company->name : null',
+		    'visible' => in_array(Yii::app()->user->role, array("global")),
+		),
+		array(
 			'class'=>'CButtonColumn',
 		),
 	),

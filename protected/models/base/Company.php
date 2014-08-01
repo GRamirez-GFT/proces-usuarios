@@ -9,6 +9,7 @@
  *
  * @property User $user
  * @property Product[] $products
+ * @property Product[] $products1
  * @property User[] $users
  */
 
@@ -36,7 +37,8 @@ class Company extends MyActiveRecord {
 	public function relations() {
 		return array(
 		'user' => array(self::BELONGS_TO, 'User', 'user_id'),
-		'products' => array(self::MANY_MANY, 'Product', 'product_company(company_id, product_id)'),
+		'products' => array(self::HAS_MANY, 'Product', 'company_id'),
+		'products1' => array(self::MANY_MANY, 'Product', 'product_company(company_id, product_id)'),
 		'users' => array(self::HAS_MANY, 'User', 'company_id'),
 		);
 	}
