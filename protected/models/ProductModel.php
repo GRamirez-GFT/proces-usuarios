@@ -34,7 +34,27 @@ class ProductModel extends Product {
     }
 
     public function save() {
-        return parent::save();
+        $success = false;
+        try {
+            $transaction = Yii::app()->db->getCurrentTransaction() ? null : Yii::app()->db->beginTransaction();
+            if ($success = parent::save()) {
+                $product_user = new ProductUser();
+                $product_user->product_id = $this->id;
+                $product_user->user_id = $this->company->user_id;
+                if ($success = $product_user->save()) {
+                    $product_comp = new ProductCompany();
+                    $product_comp->product_id = $this->id;
+                    $product_comp->company_id = $this->company_id;
+                    $success = $product_comp->save();
+                }
+            }
+            if ($success) {
+                $transaction ? $transaction->commit() : null;
+            }
+        } catch (Exception $e) {
+            $transaction ? $transaction->rollback() : null;
+        }
+        return $success;
     }
 
     public function update() {

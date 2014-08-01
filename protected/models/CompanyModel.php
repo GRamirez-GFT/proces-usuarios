@@ -58,14 +58,14 @@ class CompanyModel extends Company {
                         ))) {
                         if (is_array($this->list_products)) {
                             foreach ($this->list_products as $item) {
-                                $procut_user = new ProductUser();
-                                $procut_user->user_id = $this->_user->id;
-                                $procut_user->product_id = $item;
-                                if (! ($success = $procut_user->save())) break;
-                                $procut_comp = new ProductCompany();
-                                $procut_comp->product_id = $item;
-                                $procut_comp->company_id = $this->id;
-                                if (! ($success = $procut_comp->save())) break;
+                                $product_user = new ProductUser();
+                                $product_user->product_id = $item;
+                                $product_user->user_id = $this->_user->id;
+                                if (! ($success = $product_user->save())) break;
+                                $product_comp = new ProductCompany();
+                                $product_comp->product_id = $item;
+                                $product_comp->company_id = $this->id;
+                                if (! ($success = $product_comp->save())) break;
                             }
                         }
                     }
@@ -102,14 +102,14 @@ class CompanyModel extends Company {
                 ));
                 if (is_array($this->list_products)) {
                     foreach ($this->list_products as $item) {
-                        $procut_user = new ProductUser();
-                        $procut_user->user_id = $this->_user->id;
-                        $procut_user->product_id = $item;
-                        if (! ($success = $procut_user->save())) break;
-                        $procut_comp = new ProductCompany();
-                        $procut_comp->product_id = $item;
-                        $procut_comp->company_id = $this->id;
-                        if (! ($success = $procut_comp->save())) break;
+                        $product_user = new ProductUser();
+                        $product_user->user_id = $this->_user->id;
+                        $product_user->product_id = $item;
+                        if (! ($success = $product_user->save())) break;
+                        $product_comp = new ProductCompany();
+                        $product_comp->product_id = $item;
+                        $product_comp->company_id = $this->id;
+                        if (! ($success = $product_comp->save())) break;
                     }
                 }
             }
