@@ -45,15 +45,13 @@
 	</div>
 	<?php endif; ?>
 
-	<?php if (in_array(Yii::app()->user->role, array("global", "company"))):?>
+	<?php if (in_array(Yii::app()->user->role, array("global", "company")) && $model->company->user_id != Yii::app()->user->id):?>
 
-	<?php if ($model->company->user_id != Yii::app()->user->id):?>
 	<div class="row">
 		<?php echo $form->labelEx($model, 'active'); ?>
 		<?php echo $form->checkBox($model, 'active'); ?>
 		<?php echo $form->error($model, 'active'); ?>
 	</div>
-	<?php endif;?>
 
 	<div class="row">
 	    <?php echo $form->labelEx($model, 'list_products'); ?>
