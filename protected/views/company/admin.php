@@ -16,10 +16,6 @@ $this->widget('zii.widgets.grid.CGridView', array(
 	'columns'=>array(
 		'name',
 		'subdomain',
-		array(
-			'name' => 'user_id',
-			'value' => '$data->user_id ? $data->user->name : null'
-		),
 		'active',
 		'date_create',
 		array(

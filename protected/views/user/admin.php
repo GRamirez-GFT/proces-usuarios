@@ -19,6 +19,9 @@ $this->widget('zii.widgets.grid.CGridView', array(
 		array(
 			'name' => 'company_id',
 			'value' => '$data->company_id ? $data->company->name : null',
+		    'filter' => CHtml::activeDropDownList($model, 'company_id',
+		        CHtml::listData(Company::model()->findAll(), 'id', 'name'),
+		        array('prompt' => Yii::t('base', 'select option'))),
 		    'visible' => in_array(Yii::app()->user->role, array("global")),
 		),
 		'active',
