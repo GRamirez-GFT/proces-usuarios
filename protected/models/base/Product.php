@@ -3,7 +3,9 @@
  * @property integer $id
  * @property string $name
  * @property string $url_product
+ * @property integer $company_id
  *
+ * @property Company $company
  * @property Company[] $companies
  * @property User[] $users
  */
@@ -21,14 +23,17 @@ class Product extends MyActiveRecord {
 	public function rules() {
 		return array(
 		array('name', 'required'),
+		array('company_id', 'numerical', 'integerOnly' => true),
 		array('name', 'length', 'max' => 100),
 		array('url_product', 'length', 'max' => 255),
-		array('id, name, url_product', 'safe', 'on' => 'search'),
+		array('company_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => 'Company'),
+		array('id, name, url_product, company_id', 'safe', 'on' => 'search'),
 		);
 	}
 
 	public function relations() {
 		return array(
+		'company' => array(self::BELONGS_TO, 'Company', 'company_id'),
 		'companies' => array(self::MANY_MANY, 'Company', 'product_company(product_id, company_id)'),
 		'users' => array(self::MANY_MANY, 'User', 'product_user(product_id, user_id)'),
 		);
@@ -39,6 +44,7 @@ class Product extends MyActiveRecord {
 		'id' => 'id',
 		'name' => 'name',
 		'url_product' => 'url_product',
+		'company_id' => 'company_id',
 		);
 	}
 
@@ -47,6 +53,7 @@ class Product extends MyActiveRecord {
 		$criteria->compare('id', $this->id);
 		$criteria->compare('name', $this->name, true);
 		$criteria->compare('url_product', $this->url_product, true);
+		$criteria->compare('company_id', $this->company_id);
 		$sort = new CSort();
 		$sort->attributes = array('*');
 		$sort->multiSort = true;

@@ -5,7 +5,7 @@ class UserModel extends User {
     public $verify_password;
 
     public function init() {
-        if (Yii::app()->user->role != 'global') {
+        if (in_array(Yii::app()->user->role, array("company"))) {
             $this->company_id = Yii::app()->user->company_id;
         }
         if ($this->getScenario() == 'insert') {
@@ -79,10 +79,10 @@ class UserModel extends User {
                                 ':t0' => $this->company_id,
                                 ':t1' => $item
                             ))) continue;
-                        $procut = new ProductUser();
-                        $procut->product_id = $item;
-                        $procut->user_id = $this->id;
-                        if (! ($success = $procut->save())) break;
+                        $product = new ProductUser();
+                        $product->product_id = $item;
+                        $product->user_id = $this->id;
+                        if (! ($success = $product->save())) break;
                     }
                 }
             }
@@ -112,10 +112,10 @@ class UserModel extends User {
                                 ':t0' => $this->company_id,
                                 ':t1' => $item
                             ))) continue;
-                        $procut = new ProductUser();
-                        $procut->product_id = $item;
-                        $procut->user_id = $this->id;
-                        if (! ($success = $procut->save())) break;
+                        $product = new ProductUser();
+                        $product->product_id = $item;
+                        $product->user_id = $this->id;
+                        if (! ($success = $product->save())) break;
                     }
                 }
             }

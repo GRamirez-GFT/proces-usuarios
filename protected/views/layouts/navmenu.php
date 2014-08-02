@@ -38,7 +38,6 @@ switch (Yii::app()->user->role) {
         break;
     case 'company':
         unset($options['company']);
-        unset($options['product']);
         break;
     case 'general':
         unset($options['company']);
