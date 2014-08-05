@@ -30,6 +30,9 @@ class MyController extends CController {
                 setcookie('PROCESID', null, time() - 3600, '/');
             }
         }
+        if (! Yii::app()->user->isGuest && ! $client->validateProduct(Yii::app()->user->id, Yii::app()->params->token)) {
+            $this->redirect(Yii::app()->request->getHostInfo());
+        }
         if (Yii::app()->user->isGuest && ! preg_match('/\/login$/', Yii::app()->request->getRequestUri())) {
             $this->redirect(Yii::app()->createAbsoluteUrl('site/login'));
         }

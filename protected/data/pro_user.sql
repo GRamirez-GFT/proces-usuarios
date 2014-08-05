@@ -50,7 +50,7 @@ CREATE TABLE `product` (
 
 /*Data for the table `product` */
 
-insert  into `product`(`id`,`name`,`url_product`,`company_id`,`token`) values (1,'Proces - Documentos','/documents',NULL,'1AD5BE0D83DCEFB7'),(2,'Proces - Proyectos','/projects',NULL,'1AD5BE0D1AD5BE0D'),(3,'Proces - Usuarios','/users',NULL,'1AD5BE0D6DD28E9B'),(4,'PROPIO','/propio',1,'1AD5BE0DF3B61B38'),(21,'A','A',NULL,'83DCEFB784B12BAE'),(22,'PRUEBA','/prueba2',1,'1AD5BE0D647E170E');
+insert  into `product`(`id`,`name`,`url_product`,`company_id`,`token`) values (1,'Proces - Documentos','/documents',NULL,'1AD5BE0D83DCEFB7'),(2,'Proces - Proyectos','/projects',NULL,'1AD5BE0D1AD5BE0D'),(3,'Proces - Usuarios','/users',NULL,'1AD5BE0D6DD28E9B'),(4,'PROPIO','/propio',1,'1AD5BE0DF3B61B38'),(22,'PRUEBA','/prueba2',1,'1AD5BE0D647E170E');
 
 /*Table structure for table `product_company` */
 
@@ -68,7 +68,7 @@ CREATE TABLE `product_company` (
 
 /*Data for the table `product_company` */
 
-insert  into `product_company`(`product_id`,`company_id`) values (2,1),(3,1),(4,1),(22,1);
+insert  into `product_company`(`product_id`,`company_id`) values (1,1),(2,1),(3,1),(4,1),(22,1);
 
 /*Table structure for table `product_user` */
 
@@ -86,7 +86,7 @@ CREATE TABLE `product_user` (
 
 /*Data for the table `product_user` */
 
-insert  into `product_user`(`user_id`,`product_id`) values (2,2),(2,3),(2,4),(2,22);
+insert  into `product_user`(`user_id`,`product_id`) values (2,1),(2,2),(2,3),(2,4),(2,22);
 
 /*Table structure for table `user` */
 
@@ -123,11 +123,11 @@ CREATE TABLE `user_session` (
   PRIMARY KEY  (`id`),
   KEY `user_user_session` (`user_id`),
   CONSTRAINT `user_user_session` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=88 DEFAULT CHARSET=utf8;
 
 /*Data for the table `user_session` */
 
-insert  into `user_session`(`id`,`session`,`ipv4`,`time_login`,`time_logout`,`user_id`) values (72,'4f0b018c6433848e24abfeb5dd7dfced','127.0.0.1','2014-08-01 08:37:16','2014-08-01 08:47:29',1),(73,'c5ec1b692176f6973aa2eb08641582ad','127.0.0.1','2014-08-01 08:47:35',NULL,2),(74,'103e58fa7907dfaac0a1d2cacea5e701','127.0.0.1','2014-08-01 11:08:49',NULL,1),(75,'d2abf0882f36e9eed05317067549d733','127.0.0.1','2014-08-04 11:13:02','2014-08-04 11:18:17',1),(76,'115615a055fd881737bf46169d9c4459','127.0.0.1','2014-08-04 11:18:25',NULL,2),(77,'38d8af66fe6d3185ba116f56a9ab5aa7','127.0.0.1','2014-08-04 12:09:18',NULL,1),(78,'d47aa7599f2f8011a86b4c9ff05294d7','127.0.0.1','2014-08-04 12:29:08',NULL,2),(79,'4ce1ae0a4398fdc429702c637e462597','127.0.0.1','2014-08-04 16:07:57',NULL,1),(80,'a5452ba60f983ee4cf04f953e35afe46','127.0.0.1','2014-08-04 19:19:36',NULL,1),(81,'b598e2c01aeb87375810dae684e3980f','127.0.0.1','2014-08-04 19:33:16','2014-08-04 19:36:59',1),(82,'1824d2a3ae633542f71aa513623892ff','127.0.0.1','2014-08-04 19:37:08','2014-08-04 20:17:52',2),(83,'c55740208fcfa82d61b086d6616956b9','127.0.0.1','2014-08-04 20:17:57','2014-08-04 20:19:08',1),(84,'0bc7643b64f73ca7e14ded1e4260966a','127.0.0.1','2014-08-05 07:00:10',NULL,2);
+insert  into `user_session`(`id`,`session`,`ipv4`,`time_login`,`time_logout`,`user_id`) values (72,'4f0b018c6433848e24abfeb5dd7dfced','127.0.0.1','2014-08-01 08:37:16','2014-08-01 08:47:29',1),(73,'c5ec1b692176f6973aa2eb08641582ad','127.0.0.1','2014-08-01 08:47:35',NULL,2),(74,'103e58fa7907dfaac0a1d2cacea5e701','127.0.0.1','2014-08-01 11:08:49',NULL,1),(75,'d2abf0882f36e9eed05317067549d733','127.0.0.1','2014-08-04 11:13:02','2014-08-04 11:18:17',1),(76,'115615a055fd881737bf46169d9c4459','127.0.0.1','2014-08-04 11:18:25',NULL,2),(77,'38d8af66fe6d3185ba116f56a9ab5aa7','127.0.0.1','2014-08-04 12:09:18',NULL,1),(78,'d47aa7599f2f8011a86b4c9ff05294d7','127.0.0.1','2014-08-04 12:29:08',NULL,2),(79,'4ce1ae0a4398fdc429702c637e462597','127.0.0.1','2014-08-04 16:07:57',NULL,1),(80,'a5452ba60f983ee4cf04f953e35afe46','127.0.0.1','2014-08-04 19:19:36',NULL,1),(81,'b598e2c01aeb87375810dae684e3980f','127.0.0.1','2014-08-04 19:33:16','2014-08-04 19:36:59',1),(82,'1824d2a3ae633542f71aa513623892ff','127.0.0.1','2014-08-04 19:37:08','2014-08-04 20:17:52',2),(83,'c55740208fcfa82d61b086d6616956b9','127.0.0.1','2014-08-04 20:17:57','2014-08-04 20:19:08',1),(84,'0bc7643b64f73ca7e14ded1e4260966a','127.0.0.1','2014-08-05 07:00:10',NULL,2),(85,'0f75c306b936c328b1cf7097c08e9552','127.0.0.1','2014-08-05 07:34:22','2014-08-05 07:34:23',1),(86,'06930072bac8eec74db10e12e4a09a1d','127.0.0.1','2014-08-05 07:34:37','2014-08-05 07:38:23',1),(87,'aa2ea1241fef5e1c82efc99559cc1122','127.0.0.1','2014-08-05 07:38:36',NULL,2);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

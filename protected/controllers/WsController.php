@@ -4,8 +4,8 @@ class WsController extends CController {
 
     public function actions() {
         return array(
-            'access' => array(
-                'class' => 'CWebServiceAction'
+            "access" => array(
+                "class" => "CWebServiceAction"
             )
         );
     }
@@ -22,20 +22,20 @@ class WsController extends CController {
         if ($company) {
             $user = User::model()->with(
                 array(
-                    'company' => array(
-                        'condition' => "subdomain='{$company}'"
+                    "company" => array(
+                        "condition" => "subdomain='{$company}'"
                     )
                 ))->findByAttributes(
                 array(
-                    'username' => $username,
-                    'active' => 1
+                    "username" => $username,
+                    "active" => 1
                 ));
         } else {
             $user = User::model()->findByAttributes(
                 array(
-                    'id' => 1,
-                    'username' => $username,
-                    'active' => 1
+                    "id" => 1,
+                    "username" => $username,
+                    "active" => 1
                 ));
         }
         if ($user) {
@@ -55,8 +55,8 @@ class WsController extends CController {
         $request = array();
         if ($user = User::model()->findByAttributes(
             array(
-                'id' => $user_id,
-                'active' => '1'
+                "id" => $user_id,
+                "active" => 1
             ))) {
             $request = self::getVars($user);
         }
@@ -72,7 +72,7 @@ class WsController extends CController {
      */
     public function registerSession($sesion, $ipv4, $user_id) {
         $user = new UserSession();
-        $user->session = md5($sesion . date('YmdHis'));
+        $user->session = md5($sesion . date("YmdHis"));
         $user->ipv4 = $ipv4;
         $user->user_id = $user_id;
         return $user->save() ? $user->session : null;
@@ -82,13 +82,14 @@ class WsController extends CController {
      *
      * @param string $session
      * @param string $ipv4
-     * @return boolean @soap
+     * @return integer @soap
      */
     public function validateSession($session, $ipv4) {
         return Yii::app()->db->createCommand()
-            ->select('user_id')
-            ->from('user_session')
+            ->select("user_id")
+            ->from("user_session")
             ->where("session='{$session}' AND ipv4='{$ipv4}' AND time_logout IS NULL")
+            ->limit("1")
             ->queryScalar();
     }
 
@@ -99,13 +100,13 @@ class WsController extends CController {
      * @return boolean @soap
      */
     public function destroySession($session, $ipv4) {
-        return Yii::app()->db->createCommand()->update('user_session',
+        return Yii::app()->db->createCommand()->update("user_session",
             array(
-                'time_logout' => date('Y-m-d H:i:s')
-            ), 'session=:t0 AND ipv4=:t1',
+                "time_logout" => date("Y-m-d H:i:s")
+            ), "session=:t0 AND ipv4=:t1",
             array(
-                ':t0' => $session,
-                ':t1' => $ipv4
+                ":t0" => $session,
+                ":t1" => $ipv4
             ));
     }
 
@@ -117,10 +118,10 @@ class WsController extends CController {
      */
     public function getUserCompany($company_id, $name = null) {
         $request = Yii::app()->db->createCommand()
-            ->select('*')
-            ->from('user')
+            ->select("*")
+            ->from("user")
             ->where("company_id={$company_id} AND LOWER(name) LIKE LOWER('%{$name}%')")
-            ->order('username ASC')
+            ->order("username ASC")
             ->queryAll();
         return json_encode($request);
     }
@@ -133,17 +134,44 @@ class WsController extends CController {
      */
     public static function getVars($user, $product = null) {
         $request = array();
-        $request['id'] = $user->id;
-        $request['name'] = $user->name;
-        $request['username'] = $user->username;
-        if ($request['company_id'] = $user->company_id) {
-            $request['company'] = $user->company->name;
-            $request['subdomain'] = $user->company->subdomain;
-            $request['role'] = $user->id == $user->company->user_id ? 'company' : 'general';
+        $request["id"] = $user->id;
+        $request["name"] = $user->name;
+        $request["username"] = $user->username;
+        if ($request["company_id"] = $user->company_id) {
+            $request["company"] = $user->company->name;
+            $request["subdomain"] = $user->company->subdomain;
+            $request["role"] = $user->id == $user->company->user_id ? "company" : "general";
         } else {
-            $request['company'] = '';
-            $request['subdomain'] = '';
-            $request['role'] = $user->id == 1 ? 'global' : 'general';
+            $request["company"] = "";
+            $request["subdomain"] = "";
+            $request["role"] = $user->id == 1 ? "global" : "general";
+        }
+        return $request;
+    }
+
+    /**
+     *
+     * @param integer $user_id
+     * @param string $token
+     * @return boolean @soap
+     */
+    public function validateProduct($user_id, $token) {
+        $request = null;
+        if ($user_id > 1) {
+            $request = Yii::app()->db->createCommand()
+                ->select("user_id")
+                ->from("product_user")
+                ->join("product p", "p.id=product_id AND p.token='{$token}'")
+                ->where("user_id={$user_id}")
+                ->limit("1")
+                ->queryScalar();
+        } else {
+            $request = Yii::app()->db->createCommand()
+                ->select("id")
+                ->from("product")
+                ->where("token='{$token}' AND company_id IS NULL")
+                ->limit("1")
+                ->queryScalar();
         }
         return $request;
     }

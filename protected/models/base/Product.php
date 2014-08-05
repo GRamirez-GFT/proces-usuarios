@@ -4,6 +4,7 @@
  * @property string $name
  * @property string $url_product
  * @property integer $company_id
+ * @property string $token
  *
  * @property Company $company
  * @property Company[] $companies
@@ -22,12 +23,13 @@ class Product extends MyActiveRecord {
 
 	public function rules() {
 		return array(
-		array('name', 'required'),
+		array('name, token', 'required'),
 		array('company_id', 'numerical', 'integerOnly' => true),
 		array('name', 'length', 'max' => 100),
 		array('url_product', 'length', 'max' => 255),
+		array('token', 'length', 'max' => 16),
 		array('company_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => 'Company'),
-		array('id, name, url_product, company_id', 'safe', 'on' => 'search'),
+		array('id, name, url_product, company_id, token', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -45,6 +47,7 @@ class Product extends MyActiveRecord {
 		'name' => 'name',
 		'url_product' => 'url_product',
 		'company_id' => 'company_id',
+		'token' => 'token',
 		);
 	}
 
@@ -54,6 +57,7 @@ class Product extends MyActiveRecord {
 		$criteria->compare('name', $this->name, true);
 		$criteria->compare('url_product', $this->url_product, true);
 		$criteria->compare('company_id', $this->company_id);
+		$criteria->compare('token', $this->token, true);
 		$sort = new CSort();
 		$sort->attributes = array('*');
 		$sort->multiSort = true;
