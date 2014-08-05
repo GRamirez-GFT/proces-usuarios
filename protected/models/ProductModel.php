@@ -39,15 +39,25 @@ class ProductModel extends Product {
         $success = false;
         try {
             $transaction = Yii::app()->db->getCurrentTransaction() ? null : Yii::app()->db->beginTransaction();
+            if ($this->isNewRecord) {
+                $latest = Yii::app()->db->createCommand()
+                    ->select('MAX(id)')
+                    ->from('product')
+                    ->limit('1')
+                    ->queryScalar();
+                $this->token = strtoupper(hash('crc32b', time()) . hash('crc32b', $latest + 1));
+            }
             if ($success = parent::save()) {
-                $product_user = new ProductUser();
-                $product_user->product_id = $this->id;
-                $product_user->user_id = $this->company->user_id;
-                if ($success = $product_user->save()) {
-                    $product_comp = new ProductCompany();
-                    $product_comp->product_id = $this->id;
-                    $product_comp->company_id = $this->company_id;
-                    $success = $product_comp->save();
+                if ($this->company_id) {
+                    $product_user = new ProductUser();
+                    $product_user->product_id = $this->id;
+                    $product_user->user_id = $this->company->user_id;
+                    if ($success = $product_user->save()) {
+                        $product_comp = new ProductCompany();
+                        $product_comp->product_id = $this->id;
+                        $product_comp->company_id = $this->company_id;
+                        $success = $product_comp->save();
+                    }
                 }
             }
             if ($success) {

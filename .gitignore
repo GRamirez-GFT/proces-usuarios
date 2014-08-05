@@ -1,19 +1,7 @@
 !*/.gitignore
 
-### Visual Paradigm ###
-docs/tmp/*
-docs/.lock
-docs/.vpprefdata/*
-docs/*.vpp~*
-docs/*.zip
-
-### Yii ###
-assets/*
-protected/runtime/*
-protected/data/*
-!protected/data/*.sql
-
 ### Eclipse ###
+*.project
 *.pydevproject
 .metadata
 .gradle
