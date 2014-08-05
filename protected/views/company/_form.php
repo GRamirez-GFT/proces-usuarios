@@ -21,7 +21,7 @@
 <div class="row">
     <?php echo $form->labelEx($model, 'list_products'); ?>
 	<?php echo $form->listBox($model, 'list_products',
-	    CHtml::listData(Product::model()->findAll(), 'id', 'name'),
+	    CHtml::listData(Product::model()->findAll(array('condition' => 'company_id IS NULL')), 'id', 'name'),
 	    array('multiple' => true)); ?>
 	<?php echo $form->error($model, 'list_products'); ?>
 </div>

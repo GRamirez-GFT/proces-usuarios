@@ -45,7 +45,7 @@
 	</div>
 	<?php endif; ?>
 
-	<?php if (in_array(Yii::app()->user->role, array("global", "company")) && $model->company->user_id != Yii::app()->user->id):?>
+	<?php if (in_array(Yii::app()->user->role, array("company")) && $model->company->user_id == Yii::app()->user->id):?>
 
 	<div class="row">
 		<?php echo $form->labelEx($model, 'active'); ?>
