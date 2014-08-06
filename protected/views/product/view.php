@@ -8,7 +8,7 @@ $this->menu = array(
   array('label' => 'List Product', 'url' => array('index')),
   array('label' => 'Create Product', 'url' => array('create')),
   array('label' => 'Update Product', 'url' => '#', 'linkOptions' => array('submit' => array('update'), 'params' => array('id' => $model->id))),
-  array('label' => 'Delete Product', 'url' => '#', 'linkOptions' => array('submit' => array('delete'), 'params' => array('id' => $model->id), 'confirm' => Yii::t('zii', 'Are you sure you want to delete this item?'))),	
+  array('label' => 'Delete Product', 'url' => '#', 'linkOptions' => array('submit' => array('delete'), 'params' => array('id' => $model->id), 'confirm' => Yii::t('zii', 'Are you sure you want to delete this item?'))),
   array('label' => 'Manage Product', 'url' => array('admin')),
 );
 ?>
@@ -24,5 +24,6 @@ $this->menu = array(
 			'name' => 'company_id',
 			'value' => $model->company_id ? $model->company->name : null
 		),
+        'token'
 	),
 ));

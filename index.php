@@ -14,4 +14,3 @@ switch ($_SERVER['SERVER_NAME']) {
         $config = dirname(__FILE__) . '/protected/config/main.php';
 }
 Yii::createWebApplication($config)->run();
-

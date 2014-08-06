@@ -16,6 +16,7 @@ $this->widget('zii.widgets.grid.CGridView', array(
 	'columns'=>array(
 		'name',
 		'url_product',
+	    'token',
 		array(
 			'class'=>'CButtonColumn',
 		),
