@@ -12,8 +12,7 @@ class UserController extends MyController {
     }
 
     public function loadModel($id) {
-        $model = new UserModel();
-        if ($model->load($id)) {return $model;}
+        if ($model = UserModel::model()->findByPk($id)) {return $model;}
         throw new CHttpException(404, 'The requested page does not exist.');
     }
 

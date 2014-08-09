@@ -18,7 +18,7 @@ $this->menu = array(
 
 <?php
 $products = "<ul>";
-foreach ($model->products as $item) {
+foreach ($model->products1 as $item) {
     $products .= "<li>{$item->name}</li>";
 }
 $products .= "</ul>";
@@ -51,21 +51,10 @@ $products .= "</ul>";
         'tab2'=>array(
             'title' => 'User Company',
             'content' => $this->widget('zii.widgets.CDetailView', array(
-                'data' => $model->_user,
+                'data' => $model->user,
                 'attributes' => array(
                     'name',
                     'username',
-                    array(
-                        'name' => 'company_id',
-                        'value' => $model->_user->company_id ? $model->_user->company->name : null
-                    ),
-                    'active',
-                    'date_create',
-                    array(
-                        'name' => 'list_products',
-                        'type' => 'raw',
-                        'value' => $products
-                    ),
                 ),
             ), true)
         ),

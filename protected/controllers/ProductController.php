@@ -5,8 +5,7 @@ class ProductController extends MyController {
     public $defaultAction = 'admin';
 
     public function loadModel($id) {
-        $model = new ProductModel();
-        if ($model->load($id)) {return $model;}
+        if ($model = ProductModel::model()->findByPk($id)) {return $model;}
         throw new CHttpException(404, 'The requested page does not exist.');
     }
 

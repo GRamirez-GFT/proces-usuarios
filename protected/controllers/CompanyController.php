@@ -5,8 +5,7 @@ class CompanyController extends MyController {
     public $defaultAction = 'admin';
 
     public function loadModel($id) {
-        $model = new CompanyModel();
-        if ($model->load($id)) {return $model;}
+        if ($model = CompanyModel::model()->findByPk($id)) {return $model;}
         throw new CHttpException(404, 'The requested page does not exist.');
     }
 

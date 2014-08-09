@@ -22,19 +22,6 @@ class ProductModel extends Product {
         }
     }
 
-    public function load($id) {
-        $this->setIsNewRecord(false);
-        $this->setScenario(Yii::app()->getController()
-            ->getAction()
-            ->getId());
-        if ($model = parent::model()->findByPk($id)) {
-            $this->id = $id;
-            $this->setAttributes($model->getAttributes());
-            return true;
-        }
-        return false;
-    }
-
     public function save() {
         $success = false;
         try {

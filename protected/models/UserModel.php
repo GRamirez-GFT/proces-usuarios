@@ -4,11 +4,17 @@ class UserModel extends User {
     public $list_products;
     public $verify_password;
 
+    public static function model($className = __CLASS__) {
+        return parent::model($className);
+    }
+
     public function init() {
-        if (in_array(Yii::app()->user->role, array("company"))) {
+        if (in_array(Yii::app()->user->role, array(
+            "company"
+        ))) {
             $this->company_id = Yii::app()->user->company_id;
         }
-        if ($this->getScenario() == 'insert') {
+        if ($this->isNewRecord && $this->getScenario() != 'search') {
             $this->active = 1;
         }
     }
@@ -47,23 +53,6 @@ class UserModel extends User {
             if ($name == 'id') continue;
             $this->setAttribute($name, $value);
         }
-    }
-
-    public function load($id) {
-        $this->setIsNewRecord(false);
-        $this->setScenario(Yii::app()->getController()
-            ->getAction()
-            ->getId());
-        if ($model = parent::model()->findByPk($id)) {
-            $this->id = $id;
-            $this->setAttributes($model->getAttributes());
-            foreach ($this->products as $item) {
-                $this->list_products[] = $item->id;
-            }
-            $this->password = null;
-            return true;
-        }
-        return false;
     }
 
     public function save() {
@@ -130,6 +119,13 @@ class UserModel extends User {
 
     public function delete() {
         return parent::deleteByPk($this->getPrimaryKey());
+    }
+
+    public function afterFind() {
+        parent::afterFind();
+        foreach ($this->products as $item) {
+            $this->list_products[] = $item->id;
+        }
     }
 
 }

@@ -2,13 +2,17 @@
 
 class CompanyModel extends Company {
     public $list_products;
-    public $_user;
+    public $user;
+
+    public static function model($className = __CLASS__) {
+        return parent::model($className);
+    }
 
     public function init() {
-        if ($this->getScenario() == 'insert') {
+        if ($this->isNewRecord && $this->getScenario() != 'search') {
+            $this->user = new UserModel();
             $this->active = 1;
         }
-        $this->_user = new UserModel();
     }
 
     public function attributeLabels() {
@@ -24,24 +28,7 @@ class CompanyModel extends Company {
             if ($name == 'id') continue;
             $this->setAttribute($name, $value);
         }
-        $this->_user->setAttributes(Yii::app()->request->getParam(get_class($this->_user)));
-    }
-
-    public function load($id) {
-        $this->setIsNewRecord(false);
-        $this->setScenario(Yii::app()->getController()
-            ->getAction()
-            ->getId());
-        if ($model = parent::model()->findByPk($id)) {
-            $this->id = $id;
-            $this->setAttributes($model->getAttributes());
-            foreach ($this->products as $item) {
-                $this->list_products[] = $item->id;
-            }
-            $this->_user->load($this->user_id);
-            return true;
-        }
-        return false;
+        $this->user->setAttributes(Yii::app()->request->getParam(get_class($this->user)));
     }
 
     public function save() {
@@ -49,10 +36,10 @@ class CompanyModel extends Company {
         try {
             $transaction = Yii::app()->db->getCurrentTransaction() ? null : Yii::app()->db->beginTransaction();
             $this->date_create = date('Y-m-d');
-            if ($success = $this->_user->save()) {
-                $this->user_id = $this->_user->id;
+            if ($success = $this->user->save()) {
+                $this->user_id = $this->user->id;
                 if ($success = parent::save()) {
-                    if ($success = $this->_user->updateByPk($this->_user->id,
+                    if ($success = $this->user->updateByPk($this->user->id,
                         array(
                             'company_id' => $this->id
                         ))) {
@@ -60,7 +47,7 @@ class CompanyModel extends Company {
                             foreach ($this->list_products as $item) {
                                 $product_user = new ProductUser();
                                 $product_user->product_id = $item;
-                                $product_user->user_id = $this->_user->id;
+                                $product_user->user_id = $this->user->id;
                                 if (! ($success = $product_user->save())) break;
                                 $product_comp = new ProductCompany();
                                 $product_comp->product_id = $item;
@@ -85,16 +72,27 @@ class CompanyModel extends Company {
         try {
             $transaction = Yii::app()->db->getCurrentTransaction() ? null : Yii::app()->db->beginTransaction();
             if ($success = $this->validate()) {
-                ProductCompany::model()->deleteAllByAttributes(
+                foreach (ProductCompany::model()->findAll(
                     array(
-                        'company_id' => $this->id
-                    ));
-                ProductUser::model()->deleteAllByAttributes(
-                    array(
-                        'user_id' => $this->user_id
-                    ));
-                $success = parent::update();
-                $success = $this->_user->update();
+                        'condition' => 't.company_id=:t0',
+                        'join' => 'JOIN product p ON p.id=t.product_id AND p.company_id IS NULL',
+                        'params' => array(
+                            ':t0' => $this->id
+                        )
+                    )) as $item) {
+                    ProductCompany::model()->deleteAllByAttributes(
+                        array(
+                            'product_id' => $item->product_id,
+                            'company_id' => $this->id
+                        ));
+                    ProductUser::model()->deleteAllByAttributes(
+                        array(
+                            'product_id' => $item->product_id,
+                            'user_id' => $this->user_id
+                        ));
+                }
+                parent::update();
+                $this->user->update();
                 User::model()->updateAll(array(
                     'active' => $this->active
                 ), array(
@@ -103,7 +101,7 @@ class CompanyModel extends Company {
                 if (is_array($this->list_products)) {
                     foreach ($this->list_products as $item) {
                         $product_user = new ProductUser();
-                        $product_user->user_id = $this->_user->id;
+                        $product_user->user_id = $this->user->id;
                         $product_user->product_id = $item;
                         if (! ($success = $product_user->save())) break;
                         $product_comp = new ProductCompany();
@@ -124,6 +122,14 @@ class CompanyModel extends Company {
 
     public function delete() {
         return parent::deleteByPk($this->getPrimaryKey());
+    }
+
+    public function afterFind() {
+        parent::afterFind();
+        foreach ($this->products1 as $item) {
+            $this->list_products[] = $item->id;
+        }
+        $this->user = UserModel::model()->findByPk($this->user_id);
     }
 
 }

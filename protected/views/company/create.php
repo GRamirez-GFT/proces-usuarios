@@ -34,7 +34,7 @@ $this->menu = array(
         ),
         'tab2'=>array(
             'title' => 'User Company',
-            'content' => $this->renderPartial('_user', array('model' => $model->_user, 'form' => $form), true)
+            'content' => $this->renderPartial('_user', array('model' => $model->user, 'form' => $form), true)
         ),
     ),
 )); ?>
