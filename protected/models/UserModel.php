@@ -23,6 +23,9 @@ class UserModel extends User {
         return CMap::mergeArray(parent::rules(),
             array(
                 array(
+                    'email', 'email'
+                ),
+                array(
                     'verify_password, password',
                     'required'
                 ),
