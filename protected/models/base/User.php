@@ -4,6 +4,7 @@
  * @property string $name
  * @property string $username
  * @property string $password
+ * @property string $email
  * @property integer $company_id
  * @property boolean $active
  * @property string $date_create
@@ -28,11 +29,11 @@ class User extends MyActiveRecord {
 		return array(
 		array('name, username, password, active, date_create', 'required'),
 		array('company_id, active', 'numerical', 'integerOnly' => true),
-		array('name', 'length', 'max' => 100),
+		array('name, email', 'length', 'max' => 100),
 		array('username', 'length', 'max' => 32),
 		array('password', 'length', 'max' => 72),
 		array('company_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => 'Company'),
-		array('id, name, username, password, company_id, active, date_create', 'safe', 'on' => 'search'),
+		array('id, name, username, password, email, company_id, active, date_create', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -51,6 +52,7 @@ class User extends MyActiveRecord {
 		'name' => 'name',
 		'username' => 'username',
 		'password' => 'password',
+		'email' => 'email',
 		'company_id' => 'company_id',
 		'active' => 'active',
 		'date_create' => 'date_create',
@@ -63,6 +65,7 @@ class User extends MyActiveRecord {
 		$criteria->compare('name', $this->name, true);
 		$criteria->compare('username', $this->username, true);
 		$criteria->compare('password', $this->password, true);
+		$criteria->compare('email', $this->email, true);
 		$criteria->compare('company_id', $this->company_id);
 		$criteria->compare('active', $this->active);
 		$criteria->compare('date_create', $this->date_create);

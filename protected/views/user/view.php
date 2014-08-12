@@ -32,6 +32,7 @@ $products .= "</ul>";
 			'name' => 'company_id',
 			'value' => $model->company_id ? $model->company->name : null
 		),
+        'email',
 		'active',
 		'date_create',
         array(

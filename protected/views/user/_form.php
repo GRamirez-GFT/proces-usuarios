@@ -37,6 +37,12 @@
 		<?php echo $form->error($model, 'verify_password'); ?>
 	</div>
 
+	<div class="row">
+		<?php echo $form->labelEx($model, 'email'); ?>
+		<?php echo $form->textField($model, 'email', array('maxlength' => 100)); ?>
+		<?php echo $form->error($model, 'email'); ?>
+	</div>
+
 	<?php if (in_array(Yii::app()->user->role, array("global"))):?>
 	<div class="row">
 		<?php echo $form->labelEx($model, 'company_id'); ?>

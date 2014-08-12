@@ -55,6 +55,7 @@ $products .= "</ul>";
                 'attributes' => array(
                     'name',
                     'username',
+                    'email',
                 ),
             ), true)
         ),
