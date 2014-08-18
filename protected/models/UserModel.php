@@ -23,7 +23,8 @@ class UserModel extends User {
         return CMap::mergeArray(parent::rules(),
             array(
                 array(
-                    'email', 'email'
+                    'email',
+                    'email'
                 ),
                 array(
                     'verify_password, password',
@@ -91,12 +92,17 @@ class UserModel extends User {
         $success = false;
         try {
             $transaction = Yii::app()->db->getCurrentTransaction() ? null : Yii::app()->db->beginTransaction();
-            if ($success = $this->validate()) {
+            $attributes = array();
+            foreach ($this->getAttributes() as $name => $value) {
+                if ($value && $name != 'id') {
+                    $attributes[] = $name;
+                }
+            }
+            if ($success = parent::update($attributes)) {
                 ProductUser::model()->deleteAllByAttributes(
                     array(
                         'user_id' => $this->id
                     ));
-                $success = parent::update();
                 if (is_array($this->list_products)) {
                     foreach ($this->list_products as $item) {
                         if (! ProductCompany::model()->exists('company_id=:t0 AND product_id=:t1',
@@ -107,6 +113,7 @@ class UserModel extends User {
                         $product = new ProductUser();
                         $product->product_id = $item;
                         $product->user_id = $this->id;
+                        echo json_encode($product->getAttributes());
                         if (! ($success = $product->save())) break;
                     }
                 }
