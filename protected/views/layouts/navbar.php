@@ -48,7 +48,7 @@ $options = array(); ?>
 	</div>
 	<div id="user">
 		<div id="company">
-			<?php echo  Yii::app()->user->company; ?>
+			<?php echo  Yii::app()->user->getState('company'); ?>
 		</div>
 		<div id="user-name">
 			<?php echo Yii::app()->user->name; ?>

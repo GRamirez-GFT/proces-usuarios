@@ -140,10 +140,12 @@ class WsController extends CController {
         if ($request["company_id"] = $user->company_id) {
             $request["company"] = $user->company->name;
             $request["subdomain"] = $user->company->subdomain;
+            $request["logo"] = null;
             $request["role"] = $user->id == $user->company->user_id ? "company" : "general";
         } else {
-            $request["company"] = "";
-            $request["subdomain"] = "";
+            $request["company"] = null;
+            $request["subdomain"] = null;
+            $request["logo"] = null;
             $request["role"] = $user->id == 1 ? "global" : "general";
         }
         return $request;
