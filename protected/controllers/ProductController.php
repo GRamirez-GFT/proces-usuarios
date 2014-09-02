@@ -1,8 +1,6 @@
 <?php
 
 class ProductController extends MyController {
-    public $layout = '//layouts/column2';
-    public $defaultAction = 'admin';
 
     public function loadModel($id) {
         if ($model = ProductModel::model()->findByPk($id)) {return $model;}

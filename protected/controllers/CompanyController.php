@@ -1,8 +1,6 @@
 <?php
 
 class CompanyController extends MyController {
-    public $layout = '//layouts/column2';
-    public $defaultAction = 'admin';
 
     public function loadModel($id) {
         if ($model = CompanyModel::model()->findByPk($id)) {return $model;}

@@ -3,9 +3,9 @@
 class LogoutAction extends CAction {
 
     public function run() {
-        if (isset($_COOKIE['PROCESID'])) {
-            $client = new SoapClient('http://localhost/proces-usuarios/ws/access');
-            $client->destroySession($_COOKIE['PROCESID'], $_SERVER["REMOTE_ADDR"]);
+        if (isset($_COOKIE['PROCESID']) && ! Yii::app()->user->isGuest) {
+            $client = new SoapClient(WS_SERVER);
+            $client->destroySession($_COOKIE['PROCESID'], $_SERVER["REMOTE_ADDR"], Yii::app()->user->id);
             setcookie('PROCESID', null, time() - 3600, '/');
         }
         Yii::app()->user->logout();

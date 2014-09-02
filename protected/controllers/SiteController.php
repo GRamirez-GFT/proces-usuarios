@@ -1,6 +1,8 @@
 <?php
 
 class SiteController extends MyController {
+    public $layout = '//layouts/content';
+    public $defaultAction = 'index';
 
     public function accessRules() {
         return CMap::mergeArray(

@@ -1,21 +1,24 @@
 <?php
+require_once dirname(__FILE__) . '/helpers.php';
 
 class MyController extends CController {
-    public $layout = '//layouts/content';
+    public $layout = '//layouts/column2';
+    public $defaultAction = 'admin';
     public $menu = array();
     public $breadcrumbs = array();
     public $assets;
 
     public function init() {
         $this->checkSession();
-        // $this->rewriteUrl();
-        $this->assets = YII_DEBUG ? Yii::app()->theme->baseUrl : Yii::app()->assetManager->publish(
-            Yii::app()->theme->basePath);
+        $this->assets = ! YII_DEBUG ? Yii::app()->assetManager->publish(Yii::app()->theme->basePath) : Yii::app()->theme->baseUrl;
     }
 
     public function checkSession() {
-        $client = new SoapClient('http://localhost/proces-usuarios/ws/access');
+        $client = new SoapClient(WS_SERVER);
         if (isset($_COOKIE['PROCESID'])) {
+            if (! $client->validateProduct(Yii::app()->user->id, Yii::app()->params->token)) {
+                $this->redirect(Yii::app()->request->getHostInfo());
+            }
             if ($user_id = $client->validateSession($_COOKIE['PROCESID'], $_SERVER["REMOTE_ADDR"])) {
                 if (Yii::app()->user->isGuest || Yii::app()->user->id != $user_id) {
                     Yii::app()->user->login(new CUserIdentity('', ''));
@@ -26,22 +29,11 @@ class MyController extends CController {
                     $this->redirect(Yii::app()->user->returnUrl);
                 }
             } else {
-                $client->destroySession($_COOKIE['PROCESID'], $_SERVER["REMOTE_ADDR"]);
-                setcookie('PROCESID', null, time() - 3600, '/');
+                $this->redirect(Yii::app()->createAbsoluteUrl('site/logout'));
             }
-        }
-        if (! Yii::app()->user->isGuest && ! $client->validateProduct(Yii::app()->user->id, Yii::app()->params->token)) {
-            $this->redirect(Yii::app()->request->getHostInfo());
         }
         if (Yii::app()->user->isGuest && ! preg_match('/\/login$/', Yii::app()->request->getRequestUri())) {
             $this->redirect(Yii::app()->createAbsoluteUrl('site/login'));
-        }
-    }
-
-    public function rewriteUrl() {
-        if (Yii::app()->user->isGuest) return;
-        if (! preg_match('/' . Yii::app()->user->subdomain . '/', Yii::app()->request->getServerName())) {
-            $this->redirect('http://' . Yii::app()->user->subdomain . '.proces');
         }
     }
 
