@@ -16,9 +16,6 @@ class MyController extends CController {
     public function checkSession() {
         $client = new SoapClient(WS_SERVER);
         if (isset($_COOKIE['PROCESID'])) {
-            if (! $client->validateProduct(Yii::app()->user->id, Yii::app()->params->token)) {
-                $this->redirect(Yii::app()->request->getHostInfo());
-            }
             if ($user_id = $client->validateSession($_COOKIE['PROCESID'], $_SERVER["REMOTE_ADDR"])) {
                 if (Yii::app()->user->isGuest || Yii::app()->user->id != $user_id) {
                     Yii::app()->user->login(new CUserIdentity('', ''));
