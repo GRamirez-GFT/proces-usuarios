@@ -113,7 +113,6 @@ class UserModel extends User {
                         $product = new ProductUser();
                         $product->product_id = $item;
                         $product->user_id = $this->id;
-                        echo json_encode($product->getAttributes());
                         if (! ($success = $product->save())) break;
                     }
                 }
