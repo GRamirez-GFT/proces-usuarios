@@ -2,7 +2,8 @@
 SQLyog Ultimate v10.00 Beta1
 MySQL - 5.0.91-community-nt : Database - pro_user
 *********************************************************************
-*/
+*/
+
 
 /*!40101 SET NAMES utf8 */;
 
@@ -46,11 +47,11 @@ CREATE TABLE `product` (
   PRIMARY KEY  (`id`),
   KEY `company_product` (`company_id`),
   CONSTRAINT `company_product` FOREIGN KEY (`company_id`) REFERENCES `company` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 /*Data for the table `product` */
 
-insert  into `product`(`id`,`name`,`url_product`,`company_id`,`token`) values (1,'Proces - Documentos','/documents',NULL,'1AD5BE0D83DCEFB7'),(2,'Proces - Proyectos','/projects',NULL,'1AD5BE0D1AD5BE0D'),(3,'Proces - Usuarios','/users',NULL,'1AD5BE0D6DD28E9B'),(4,'PROPIO','/propio',1,'1AD5BE0DF3B61B38'),(21,'A','A',NULL,'83DCEFB784B12BAE'),(22,'PRUEBA','/prueba2',1,'1AD5BE0D647E170E');
+insert  into `product`(`id`,`name`,`url_product`,`company_id`,`token`) values (1,'Proces - Documentos','/documents',NULL,'1AD5BE0D83DCEFB7'),(2,'Proces - Proyectos','/projects',NULL,'1AD5BE0D1AD5BE0D'),(3,'PROPIO','/propio',1,'1AD5BE0DF3B61B38'),(4,'A','A',NULL,'83DCEFB784B12BAE'),(5,'PRUEBA','/prueba2',1,'1AD5BE0D647E170E');
 
 /*Table structure for table `product_company` */
 
@@ -68,7 +69,7 @@ CREATE TABLE `product_company` (
 
 /*Data for the table `product_company` */
 
-insert  into `product_company`(`product_id`,`company_id`) values (1,1),(2,1),(3,1),(4,1),(22,1);
+insert  into `product_company`(`product_id`,`company_id`) values (1,1),(2,1),(3,1),(4,1),(5,1);
 
 /*Table structure for table `product_user` */
 
