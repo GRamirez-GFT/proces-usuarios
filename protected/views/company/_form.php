@@ -10,13 +10,11 @@
 	<?php echo $form->error($model, 'subdomain'); ?>
 </div>
 
-<?php if (!$model->isNewRecord):?>
 <div class="row">
-	<?php echo $form->labelEx($model, 'active'); ?>
-	<?php echo $form->checkBox($model, 'active'); ?>
-	<?php echo $form->error($model, 'active'); ?>
+	<?php echo $form->labelEx($model, 'url_logo'); ?>
+	<?php echo $form->fileField($model, 'url_logo'); ?>
+	<?php echo $form->error($model, 'url_logo'); ?>
 </div>
-<?php endif;?>
 
 <div class="row">
     <?php echo $form->labelEx($model, 'list_products'); ?>

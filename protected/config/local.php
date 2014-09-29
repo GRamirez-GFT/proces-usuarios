@@ -12,7 +12,7 @@ return CMap::mergeArray(require_once dirname(__FILE__) . '/common.php',
                 'class' => 'CDbConnection',
                 'connectionString' => 'mysql:host=localhost;dbname=pro_user',
                 'username' => 'root',
-                'password' => 'root',
+                'password' => '',
                 'charset' => 'utf8'
             ),
         )

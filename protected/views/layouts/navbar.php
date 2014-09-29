@@ -1,5 +1,4 @@
-<?php
-$options = array(); ?>
+
 <div id="topbar">
 	<div id="logo">
 		<a href="<?php Yii::app()->baseUrl; ?>"><img
@@ -20,32 +19,12 @@ $options = array(); ?>
 		id="logout-icon"></span>
 	</a>
 	<!-- end logout -->
-	<div id="options">
-		<ul>
-			<li><a id="notifications-icon" class="button_switch" href=""> <span>3</span>
-			</a>
-				<div class="drop-top">
-					<ul>
-						<li>Notificación</li>
-						<li>Notificación</li>
-						<li>Notificación</li>
-					</ul>
-					<span></span>
-				</div></li>
-			<li><a id="settings-icon" class="button_switch" href=""></a>
-				<div class="drop-top">
-					<ul>
-<?php foreach ($options as $label => $url): ; ?>
-    <li><a href="<?php echo Yii::app()->createAbsoluteUrl($url); ?>"><?php echo $label; ?></a></li>
-<?php endforeach; ?>
-					</ul>
-					<span></span>
-				</div></li>
-		</ul>
-	</div>
+	<?php if(!empty(Yii::app()->user->getState('company'))): ?>
 	<div id="company-logo">
-		<img src="<?php echo $this->assets; ?>/img/company-logo.png">
+		<img src="<?php echo Yii::app()->user->getState('url_logo'); ?>">
 	</div>
+	<?php endif; ?>
+
 	<div id="user">
 		<div id="company">
 			<?php echo  Yii::app()->user->getState('company'); ?>

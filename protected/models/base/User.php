@@ -48,14 +48,14 @@ class User extends MyActiveRecord {
 	
 	public function attributeLabels() {
 		return array(
-		'id' => 'id',
-		'name' => 'name',
-		'username' => 'username',
-		'password' => 'password',
-		'email' => 'email',
-		'company_id' => 'company_id',
-		'active' => 'active',
-		'date_create' => 'date_create',
+		'id' => Yii::t('models/User', 'id'),
+		'name' => Yii::t('models/User', 'name'),
+		'username' => Yii::t('models/User', 'username'),
+		'password' => Yii::t('models/User', 'password'),
+		'email' => Yii::t('models/User', 'email'),
+		'company_id' => Yii::t('models/User', 'company_id'),
+		'active' => Yii::t('models/User', 'active'),
+		'date_create' => Yii::t('models/User', 'date_create'),
 		);
 	}
 

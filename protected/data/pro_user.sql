@@ -3,7 +3,10 @@ SQLyog Ultimate v10.00 Beta1
 MySQL - 5.0.91-community-nt : Database - pro_user
 *********************************************************************
 */
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 
 /*!40101 SET NAMES utf8 */;
 
@@ -24,6 +27,7 @@ CREATE TABLE `company` (
   `user_id` int(11) NOT NULL,
   `active` tinyint(1) NOT NULL COMMENT '0 = Inactivo\n1 = Activo',
   `date_create` date NOT NULL,
+  `url_logo` varchar(200) default NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `subdomain` (`subdomain`),
   KEY `user_company` (`user_id`),

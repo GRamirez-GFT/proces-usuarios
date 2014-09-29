@@ -24,8 +24,8 @@ class ProductCompany extends MyActiveRecord {
 
 	public function attributeLabels() {
 		return array(
-		'product_id' => 'product_id',
-		'company_id' => 'company_id',
+		'product_id' => Yii::t('models/ProductCompany', 'product_id'),
+		'company_id' => Yii::t('models/ProductCompany', 'company_id'),
 		);
 	}
 
