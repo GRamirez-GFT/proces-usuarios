@@ -33,7 +33,8 @@ class UserModel extends User {
                 array(
                     'verify_password',
                     'ruleComparePassword'
-                )
+                ),
+                array('name, username', 'required', 'on' => 'update'),
             ));
     }
 
@@ -46,8 +47,8 @@ class UserModel extends User {
     public function attributeLabels() {
         return CMap::mergeArray(parent::attributeLabels(),
             array(
-                'list_products' => 'list_products',
-                'verify_password' => 'verify_password'
+                'list_products' => Yii::t('models/User', 'list_products'),
+                'verify_password' => Yii::t('models/User', 'verify_password'),
             ));
     }
 
@@ -64,6 +65,7 @@ class UserModel extends User {
         try {
             $transaction = Yii::app()->db->getCurrentTransaction() ? null : Yii::app()->db->beginTransaction();
             $this->date_create = date('Y-m-d');
+            $this->active =  true;
             if ($success = parent::save()) {
                 if (is_array($this->list_products)) {
                     foreach ($this->list_products as $item) {

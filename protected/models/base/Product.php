@@ -43,11 +43,11 @@ class Product extends MyActiveRecord {
 	
 	public function attributeLabels() {
 		return array(
-		'id' => 'id',
-		'name' => 'name',
-		'url_product' => 'url_product',
-		'company_id' => 'company_id',
-		'token' => 'token',
+		'id' => Yii::t('models/Product', 'id'),
+		'name' => Yii::t('models/Product', 'name'),
+		'url_product' => Yii::t('models/Product', 'url_product'),
+		'company_id' => Yii::t('models/Product', 'company_id'),
+		'token' => Yii::t('models/Product', 'token'),
 		);
 	}
 

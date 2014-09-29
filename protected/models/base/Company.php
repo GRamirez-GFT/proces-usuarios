@@ -29,8 +29,9 @@ class Company extends MyActiveRecord {
 		array('user_id, active', 'numerical', 'integerOnly' => true),
 		array('name', 'length', 'max' => 100),
 		array('subdomain', 'length', 'max' => 30),
+		array('url_logo', 'length', 'max' => 200),
 		array('user_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => 'User'),
-		array('id, name, subdomain, user_id, active, date_create', 'safe', 'on' => 'search'),
+		array('id, name, subdomain, user_id, url_logo, active, date_create', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -45,12 +46,13 @@ class Company extends MyActiveRecord {
 	
 	public function attributeLabels() {
 		return array(
-		'id' => 'id',
-		'name' => 'name',
-		'subdomain' => 'subdomain',
-		'user_id' => 'user_id',
-		'active' => 'active',
-		'date_create' => 'date_create',
+		'id' => Yii::t('models/Company', 'id'),
+		'name' => Yii::t('models/Company', 'name'),
+		'subdomain' => Yii::t('models/Company', 'subdomain'),
+		'user_id' => Yii::t('models/Company', 'user_id'),
+		'active' => Yii::t('models/Company', 'active'),
+		'date_create' => Yii::t('models/Company', 'date_create'),
+		'url_logo' => Yii::t('models/Company', 'url_logo'),
 		);
 	}
 

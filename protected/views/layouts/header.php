@@ -13,7 +13,6 @@
 <?php
 // TODO: REVISAR ESTILOS QUE NO SE USAN
 Yii::app()->clientScript
-    ->registerCssFile('http://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic')
 //    ->registerCssFile($this->assets . '/css/screen.css')
 //    ->registerCssFile($this->assets . '/css/table.css')
 //    ->registerCssFile($this->assets . '/css/jui/jquery.ui.css')

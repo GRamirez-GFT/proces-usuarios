@@ -11,7 +11,7 @@ class ProductModel extends Product {
     }
 
     public function attributeLabels() {
-        return CMap::mergeArray(parent::attributeLabels(), array());
+        return parent::attributeLabels();
     }
 
     public function setAttributes($values) {

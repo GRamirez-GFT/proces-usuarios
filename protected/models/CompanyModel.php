@@ -15,10 +15,18 @@ class CompanyModel extends Company {
         }
     }
 
+    public function rules() {
+        return CMap::mergeArray(parent::rules(),
+            array(
+                array('name, subdomain, user_id', 'required', 'on' => 'update'),
+                array('url_logo', 'file', 'types'=>'jpg, png', 'allowEmpty' => true),
+            ));
+    }
+
     public function attributeLabels() {
         return CMap::mergeArray(parent::attributeLabels(),
             array(
-                'list_products' => 'list_products'
+                'list_products' => Yii::t('models/Company', 'list_products'),
             ));
     }
 

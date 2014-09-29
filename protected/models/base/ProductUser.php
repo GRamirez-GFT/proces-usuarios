@@ -24,8 +24,8 @@ class ProductUser extends MyActiveRecord {
 
 	public function attributeLabels() {
 		return array(
-		'user_id' => 'user_id',
-		'product_id' => 'product_id',
+		'user_id' => Yii::t('models/ProductUser', 'user_id'),
+		'product_id' => Yii::t('models/ProductUser', 'product_id'),
 		);
 	}
 
