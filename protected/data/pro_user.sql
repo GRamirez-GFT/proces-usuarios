@@ -3,10 +3,6 @@ SQLyog Ultimate v10.00 Beta1
 MySQL - 5.0.91-community-nt : Database - pro_user
 *********************************************************************
 */
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 
 /*!40101 SET NAMES utf8 */;
 
