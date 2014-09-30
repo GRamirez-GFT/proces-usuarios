@@ -14,6 +14,8 @@ return array(
 	'Update' => 'Actualizar',
 	'Delete' => 'Eliminar',
 	'Create' => 'Crear',
+	'Save' => 'Guardar',
+	'Cancel' => 'Cancelar',
 	'Create new' => 'Crear nuevo',
 	'Details' => 'Detalles',
 	'User details' => 'Detalles de usuario',
