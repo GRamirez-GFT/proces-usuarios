@@ -16,7 +16,7 @@ class ProductController extends MyController {
                     'users' => array(
                         '@'
                     ),
-                    'expression' => 'in_array(Yii::app()->user->role, array("global", "company"))'
+                    'expression' => 'in_array(Yii::app()->user->role, array("company"))'
                 ),
             ), parent::accessRules());
     }
@@ -24,7 +24,6 @@ class ProductController extends MyController {
 
     public function actions() {
         return array(
-            'index' => 'application.actions.product.IndexAction',
             'view' => 'application.actions.product.ViewAction',
             'create' => 'application.actions.product.CreateAction',
             'update' => 'application.actions.product.UpdateAction',

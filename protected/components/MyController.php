@@ -2,7 +2,7 @@
 require_once dirname(__FILE__) . '/helpers.php';
 
 class MyController extends CController {
-    public $layout = '//layouts/column2';
+    public $layout = '//layouts/content';
     public $defaultAction = 'admin';
     public $menu = array();
     public $breadcrumbs = array();
@@ -11,6 +11,16 @@ class MyController extends CController {
     public function init() {
         $this->checkSession();
         $this->assets = ! YII_DEBUG ? Yii::app()->assetManager->publish(Yii::app()->theme->basePath) : Yii::app()->theme->baseUrl;
+
+        if(isset(Yii::app()->user->role) && ($this->uniqueid != 'user' && $this->uniqueid != 'site'))
+        {
+            if (in_array(Yii::app()->user->role, array("general"))) {
+                $this->redirect(array(
+                    'user/view',
+                    'id' => Yii::app()->user->id
+                ));
+            }
+        }
     }
 
     public function checkSession() {

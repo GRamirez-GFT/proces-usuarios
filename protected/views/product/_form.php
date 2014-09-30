@@ -1,32 +1,48 @@
-<div class="form">
+<?php 
+	$form = $this->beginWidget('CActiveForm', array(
+		'id'=>'product-form',
+		'enableClientValidation' => true,
+	    'enableAjaxValidation' => true,
+		'htmlOptions' => array(
+			'enctype' => 'multipart/form-data',
+			'autocomplete' => 'off',
+			'class' => isset($ajaxRequest) ? 'ajax-submit' : '',
+		)
+	)); 
 
-<?php $form = $this->beginWidget('CActiveForm', array(
-	'id'=>'product-form',
-	'enableClientValidation' => true,
-	'htmlOptions' => array(
-		'enctype' => 'multipart/form-data',
-		'autocomplete' => 'off',
-	)
-)); ?>
+	$columnSize = '3';
 
-	<p class="note">Fields with <span class="required">*</span> are required.</p>
+	if(isset($ajaxRequest)) {
+		$columnSize = '6';
+	}
+?>
 
-	<div class="row">
-		<?php echo $form->labelEx($model, 'name'); ?>
-		<?php echo $form->textField($model, 'name', array('maxlength' => 100)); ?>
-		<?php echo $form->error($model, 'name'); ?>
+<div class="row">
+
+	<div class="col-md-<?php echo $columnSize; ?>">
+
+		<div class="form-group">
+			<?php echo $form->labelEx($model, 'name'); ?>
+			<?php echo $form->textField($model, 'name', array('maxlength' => 100)); ?>
+			<?php echo $form->error($model, 'name'); ?>
+		</div>
+
 	</div>
+	
+</div>
 
-	<div class="row">
-		<?php echo $form->labelEx($model, 'url_product'); ?>
-		<?php echo $form->textField($model, 'url_product', array('maxlength' => 255)); ?>
-		<?php echo $form->error($model, 'url_product'); ?>
-	</div>
+<div class="row buttons" style="margin-top: 30px;">
 
-	<div class="row buttons">
-		<?php echo CHtml::button($model->isNewRecord ? 'Create' : 'Save', array('submit' => '#', 'params' => array('id' => $model->id))); ?>
-	</div>
+    <div class="col-md-<?php echo $columnSize; ?>">
+        <?php echo CHtml::submitButton(Yii::t('base', $model->isNewRecord ? 'Create' : 'Save'), 
+										array('class' => 'btn btn-proces-red btn-block')); ?>
+    </div>
 
-<?php $this->endWidget(); ?>
+    <div class="col-md-<?php echo $columnSize; ?>">
+        <?php echo CHtml::link(Yii::t('base', 'Cancel'), 
+								$this->createAbsoluteUrl('area/admin'), 
+								array('class'=> 'btn btn-proces-white btn-block cancel-button')); ?>
+    </div>
 
 </div>
+<?php $this->endWidget(); ?>

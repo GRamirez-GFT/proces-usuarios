@@ -1,19 +1,11 @@
 <?php
-$this->breadcrumbs = array(
-	'Companies' => array('index'),
-	$model->name,
-);
-
-$this->menu = array(
-  array('label' => 'List Company', 'url' => array('index')),
-  array('label' => 'Create Company', 'url' => array('create')),
-  array('label' => 'Update Company', 'url' => '#', 'linkOptions' => array('submit' => array('update'), 'params' => array('id' => $model->id))),
-  array('label' => 'Delete Company', 'url' => '#', 'linkOptions' => array('submit' => array('delete'), 'params' => array('id' => $model->id), 'confirm' => Yii::t('zii', 'Are you sure you want to delete this item?'))),
-  array('label' => 'Manage Company', 'url' => array('admin')),
-);
+    $this->breadcrumbs = array(
+        Yii::t('base','Companies') => array('admin'),
+        $model->name,
+    );
 ?>
 
-<h1>View Company #<?php echo $model->id; ?></h1>
+<h1><?php echo Yii::t('base', 'Company details') ?></h1>
 
 
 <?php
@@ -24,40 +16,38 @@ foreach ($model->products1 as $item) {
 $products .= "</ul>";
 ?>
 
+<div class="col-md-12 <?php echo isset($ajaxRequest) ? 'panel-actions' : ''; ?>" style="margin-bottom:10px;">
+
+<?php
+    echo CHtml::link('', Yii::app()->createAbsoluteUrl('Company/update/?id='.$model->id), 
+        array(
+        'class' => 'btn btn-proces-white phantom-btn fa fa-pencil mws-tooltip-s',
+        'original-title' => Yii::t('base','Update')
+    ));
+    
+    if(in_array(Yii::app()->user->getState('role'), array("global"))) {
+        echo CHtml::link('', Yii::app()->createAbsoluteUrl('Company/delete/?id='.$model->id), 
+            array(
+            'class' => 'btn btn-proces-white phantom-btn fa fa-trash mws-tooltip-s confirm-action',
+            'original-title' => Yii::t('base','Delete')
+        ));
+    }
+?>
+</div>
+
 <?php $this->widget('CTabView',array(
     'activeTab' => 'tab1',
+    'htmlOptions' => array(
+        'class' => 'proces-tab',
+    ),
     'tabs'=>array(
         'tab1'=>array(
-            'title' => 'Details Company',
-            'content' => $this->widget('zii.widgets.CDetailView', array(
-                'data' => $model,
-                'attributes' => array(
-                    'name',
-                    'subdomain',
-                    array(
-                        'name' => 'user_id',
-                        'value' => $model->user_id ? $model->user->name : null
-                    ),
-                    'active',
-                    'date_create',
-                    array(
-                        'name' => 'list_products',
-                        'type' => 'raw',
-                        'value' => $products
-                    ),
-                ),
-            ), true)
+            'title' => Yii::t('base', 'Details'),
+            'content' =>  $this->renderPartial('_view', array('model' => $model), true)
         ),
         'tab2'=>array(
-            'title' => 'User Company',
-            'content' => $this->widget('zii.widgets.CDetailView', array(
-                'data' => $model->user,
-                'attributes' => array(
-                    'name',
-                    'username',
-                    'email',
-                ),
-            ), true)
+            'title' => Yii::t('models/User', 'id'),
+            'content' => $this->renderPartial('_userDetails', array('model' => $model), true)
         ),
     ),
 )); ?>

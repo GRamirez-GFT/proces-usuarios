@@ -1,29 +1,66 @@
 <?php
-$this->breadcrumbs = array(
-	'Products' => array('index'),
-	$model->name,
-);
+    $this->breadcrumbs = array(
+        Yii::t('base','Products') => array('admin'),
+        $model->name,
+    );
 
-$this->menu = array(
-  array('label' => 'List Product', 'url' => array('index')),
-  array('label' => 'Create Product', 'url' => array('create')),
-  array('label' => 'Update Product', 'url' => '#', 'linkOptions' => array('submit' => array('update'), 'params' => array('id' => $model->id))),
-  array('label' => 'Delete Product', 'url' => '#', 'linkOptions' => array('submit' => array('delete'), 'params' => array('id' => $model->id), 'confirm' => Yii::t('zii', 'Are you sure you want to delete this item?'))),
-  array('label' => 'Manage Product', 'url' => array('admin')),
-);
+	$columnSize = '5';
+
+	if(isset($ajaxRequest)) {
+		$columnSize = '12';
+	}
 ?>
 
-<h1>View Product #<?php echo $model->id; ?></h1>
+<?php if(isset($ajaxRequest)): ?>
+	<div class="panel-options">
+<?php endif; ?>
 
-<?php $this->widget('zii.widgets.CDetailView', array(
-	'data' => $model,
-	'attributes' => array(
-		'name',
-		'url_product',
+
+<<?php echo isset($ajaxRequest) ? 'h2' : 'h1';?>>
+	<?php echo Yii::t('base', 'Product details') ?>
+</<?php echo isset($ajaxRequest) ? 'h2' : 'h1';?>>
+
+<?php if(isset($ajaxRequest)): ?>
+	</div> <!-- end panel-options -->
+
+	<div class="panel-content">
+<?php endif; ?>
+
+<div class="row">
+
+	<div class="col-md-12 <?php echo isset($ajaxRequest) ? 'panel-actions' : ''; ?>">
+
+<?php
+	$ajaxUpdate = isset($ajaxRequest) ? 'panel-trigger' : '';
+
+	echo CHtml::link('', Yii::app()->createAbsoluteUrl('product/update/?id='.$model->id), 
 		array(
-			'name' => 'company_id',
-			'value' => $model->company_id ? $model->company->name : null
-		),
-        'token'
-	),
-));
+		'class' => 'btn btn-proces-white phantom-btn fa fa-pencil mws-tooltip-s '.$ajaxUpdate,
+		'original-title' => Yii::t('base','Update')
+	));
+	
+	$ajaxDelete = isset($ajaxRequest) ? 'ajax-delete' : '';
+	
+	echo CHtml::link('', Yii::app()->createAbsoluteUrl('product/delete/?id='.$model->id), 
+		array(
+		'class' => 'btn btn-proces-white phantom-btn fa fa-trash mws-tooltip-s confirm-action '.$ajaxDelete,
+		'original-title' => Yii::t('base','Delete')
+	));
+?>
+	</div>
+
+	<div class="col-md-<?php echo $columnSize; ?>">
+		
+		<p>
+			<span class="labeling"><?php echo  Yii::t('models/Product', 'name'); ?>:</span>
+			<?php echo $model->name; ?>
+		</p>
+
+		<p>
+			<span class="labeling"><?php echo  Yii::t('models/Product', 'token'); ?>:</span>
+			<?php echo $model->token; ?>
+		</p>
+
+	</div>
+
+</div>

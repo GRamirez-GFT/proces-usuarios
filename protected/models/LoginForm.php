@@ -8,9 +8,10 @@ class LoginForm extends CFormModel {
     public function rules() {
         return array(
             array(
-                'username, password, company',
-                'required'
-            )
+                'username, password',
+                'required',
+            ),
+            array('company', 'length', 'max' => 30),
         );
     }
 

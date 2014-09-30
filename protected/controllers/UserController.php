@@ -33,14 +33,13 @@ class UserController extends MyController {
                     'users' => array(
                         '@'
                     ),
-                    'expression' => 'in_array(Yii::app()->user->role, array("general"))'
+                    'expression' => 'in_array(Yii::app()->user->role, array("company","general"))'
                 )
             ), parent::accessRules());
     }
 
     public function actions() {
         return array(
-            'index' => 'application.actions.user.IndexAction',
             'view' => 'application.actions.user.ViewAction',
             'create' => 'application.actions.user.CreateAction',
             'update' => 'application.actions.user.UpdateAction',

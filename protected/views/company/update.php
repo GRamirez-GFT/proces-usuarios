@@ -1,50 +1,62 @@
 <?php
 $this->breadcrumbs = array(
-	'Companies' => array('index'),
+	Yii::t('base', 'Companies') => array('admin'),
 	$model->name => array('view','id' => $model->id),
-	'Update',
-);
-
-$this->menu = array(
-  array('label' => 'List Company', 'url' => array('index')),
-  array('label' => 'Create Company', 'url' => array('create')),
-  array('label' => 'View Company', 'url' => array('view', 'id' => $model->id)),
-  array('label' => 'Delete Company', 'url' => '#', 'linkOptions' => array('submit' => array('delete'), 'params' => array('id' => $model->id), 'confirm' => Yii::t('zii', 'Are you sure you want to delete this item?'))),
-  array('label' => 'Manage Company', 'url' => array('admin')),
+	Yii::t('base', 'Update'),
 );
 ?>
 
-<h1>Update Company <?php echo $model->id; ?></h1>
+<h1><?php echo Yii::t('base', 'Update').' '.Yii::t('models/Company', 'id'); ?></h1>
 
 <div class="form">
 
-<p class="note">Fields with <span class="required">*</span> are required.</p>
-
 <?php $form = $this->beginWidget('CActiveForm', array(
 	'id'=>'company-form',
-	'enableClientValidation' => true,
+	'enableClientValidation' => false,
 	'htmlOptions' => array(
 		'enctype' => 'multipart/form-data',
 		'autocomplete' => 'off',
 	)
 )); ?>
 
-<?php $this->widget('CTabView',array(
-    'activeTab' => 'tab1',
-    'tabs'=>array(
-        'tab1'=>array(
-            'title' => 'Details Company',
-            'content' => $this->renderPartial('_form', array('model' => $model, 'form' => $form), true)
-        ),
-        'tab2'=>array(
-            'title' => 'User Company',
-            'content' => $this->renderPartial('_user', array('model' => $model->user, 'form' => $form), true)
-        ),
-    ),
-)); ?>
+<?php
+    $tabs = array(
+            'tab1'=>array(
+                'title' => Yii::t('base', 'Details'),
+                'content' => $this->renderPartial('_form', array('model' => $model, 'form' => $form), true)
+            ),
+        );
 
-<div class="row buttons">
-	<?php echo CHtml::button($model->isNewRecord ? 'Create' : 'Save', array('submit' => '#', 'params' => array('id' => $model->id))); ?>
+    if(in_array(Yii::app()->user->role, array('global'))){
+
+        $tabs['tab2']=  array(
+                'title' => Yii::t('models/User', 'id'),
+                'content' => $this->renderPartial('_user', array('model' => $model->user, 'form' => $form), true),
+            );
+    }
+
+    $this->widget('CTabView',array(
+        'activeTab' => 'tab1',
+        'htmlOptions' => array(
+            'class' => 'proces-tab',
+        ),
+        'tabs'=> $tabs,
+    )); 
+?>
+
+<div class="row buttons" style="margin-top: 30px;">
+
+    <div class="col-md-3">
+        <?php echo CHtml::submitButton(Yii::t('base', $model->isNewRecord ? 'Create' : 'Save'), 
+                                        array('class' => 'btn btn-proces-red btn-block')); ?>
+    </div>
+
+    <div class="col-md-3">
+        <?php echo CHtml::link(Yii::t('base', 'Cancel'), 
+                                $this->createAbsoluteUrl('company/admin'), 
+                                array('class'=> 'btn btn-proces-white btn-block cancel-button')); ?>
+    </div>
+
 </div>
 
 

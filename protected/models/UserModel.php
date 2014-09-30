@@ -34,7 +34,6 @@ class UserModel extends User {
                     'verify_password',
                     'ruleComparePassword'
                 ),
-                array('name, username', 'required', 'on' => 'update'),
             ));
     }
 
@@ -65,7 +64,7 @@ class UserModel extends User {
         try {
             $transaction = Yii::app()->db->getCurrentTransaction() ? null : Yii::app()->db->beginTransaction();
             $this->date_create = date('Y-m-d');
-            $this->active =  true;
+            $this->active =  1;
             if ($success = parent::save()) {
                 if (is_array($this->list_products)) {
                     foreach ($this->list_products as $item) {
@@ -100,6 +99,7 @@ class UserModel extends User {
                     $attributes[] = $name;
                 }
             }
+
             if ($success = parent::update($attributes)) {
                 ProductUser::model()->deleteAllByAttributes(
                     array(

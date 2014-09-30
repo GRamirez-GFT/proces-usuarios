@@ -18,7 +18,7 @@ class CompanyModel extends Company {
     public function rules() {
         return CMap::mergeArray(parent::rules(),
             array(
-                array('name, subdomain, user_id', 'required', 'on' => 'update'),
+                array('name, subdomain', 'required', 'on' => 'update'),
                 array('url_logo', 'file', 'types'=>'jpg, png', 'allowEmpty' => true),
             ));
     }
@@ -80,24 +80,26 @@ class CompanyModel extends Company {
         try {
             $transaction = Yii::app()->db->getCurrentTransaction() ? null : Yii::app()->db->beginTransaction();
             if ($success = $this->validate()) {
-                foreach (ProductCompany::model()->findAll(
-                    array(
-                        'condition' => 't.company_id=:t0',
-                        'join' => 'JOIN product p ON p.id=t.product_id AND p.company_id IS NULL',
-                        'params' => array(
-                            ':t0' => $this->id
-                        )
-                    )) as $item) {
-                    ProductCompany::model()->deleteAllByAttributes(
+                if(!empty($this->list_products)) {
+                    foreach (ProductCompany::model()->findAll(
                         array(
-                            'product_id' => $item->product_id,
-                            'company_id' => $this->id
-                        ));
-                    ProductUser::model()->deleteAllByAttributes(
-                        array(
-                            'product_id' => $item->product_id,
-                            'user_id' => $this->user_id
-                        ));
+                            'condition' => 't.company_id=:t0',
+                            'join' => 'JOIN product p ON p.id=t.product_id AND p.company_id IS NULL',
+                            'params' => array(
+                                ':t0' => $this->id
+                            )
+                        )) as $item) {
+                        ProductCompany::model()->deleteAllByAttributes(
+                            array(
+                                'product_id' => $item->product_id,
+                                'company_id' => $this->id
+                            ));
+                        ProductUser::model()->deleteAllByAttributes(
+                            array(
+                                'product_id' => $item->product_id,
+                                'user_id' => $this->user_id
+                            ));
+                    }
                 }
                 parent::update();
                 $this->user->update();
@@ -106,7 +108,7 @@ class CompanyModel extends Company {
                 ), array(
                     'condition' => "company_id={$this->id}"
                 ));
-                if (is_array($this->list_products)) {
+                if (is_array($this->list_products) && !empty($this->list_products)) {
                     foreach ($this->list_products as $item) {
                         $product_user = new ProductUser();
                         $product_user->user_id = $this->user->id;

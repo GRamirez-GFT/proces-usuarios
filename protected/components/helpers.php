@@ -22,24 +22,21 @@ function saveFile(&$file, &$model, $attribute, $prevUrl = null) {
     if (!$file) return false;
     $namePattern = 'company_'.$model->subdomain.'_logo';
     $namePattern .= ($file->extensionName) ? '.'.$file->extensionName : '';
-    $finalUrl = DOCUMENT_URL . date('Y/m/d/') . $namePattern;
+    $fullPath = DOCUMENT_URL . date('Y/m/d/');
+    $finalUrl = $fullPath . strtolower($namePattern);
 
     if ($file->saveAs(str_replace('documents', DOCUMENT_PATH, $finalUrl))) {
         if($prevUrl)
         {
-            unlink(str_replace('documents', DOCUMENT_PATH, $prevUrl));
+            if (is_dir($fullPath)) {
+                unlink(str_replace('documents', DOCUMENT_PATH, $prevUrl));
+            }
         }
         $model->setAttribute($attribute, $finalUrl);
         return true;
     }
     return false;
 }
-
-// function removeFile(&$file, &$model, $attribute) {
-//     $model->setAttribute($attribute, $file->name);
-//     $full_path = DOCUMENT_PATH . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, date('Y/m/d/'));
-//     if (is_dir($full_path)) unlink($full_path . $file->name);
-// }
 
 function getUserCompany($id = null) {
     $client = new SoapClient(WS_SERVER);
