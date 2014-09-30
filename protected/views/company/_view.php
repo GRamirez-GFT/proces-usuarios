@@ -1,5 +1,4 @@
 <p>
-	<span class="labeling"><?php echo  Yii::t('models/Company', 'url_logo'); ?>:</span>
 	<span class="logo-details">
 		<img src="<?php echo "http://" . $_SERVER['HTTP_HOST'] . Yii::app()->baseUrl .DIRECTORY_SEPARATOR.$model->url_logo; ?>" />
 	</span>
