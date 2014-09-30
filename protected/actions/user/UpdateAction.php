@@ -23,7 +23,7 @@ class UpdateAction extends CAction {
 
             $model->setAttributes($postAttributes);
 
-            if($model->list_products)
+            if(!isset($postAttributes['list_products']))
             {
                 $model->list_products = array();
             }
