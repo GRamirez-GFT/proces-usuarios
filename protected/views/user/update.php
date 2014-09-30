@@ -1,19 +1,32 @@
 <?php
-$this->breadcrumbs = array(
-	'Users' => array('index'),
-	$model->name => array('view','id' => $model->id),
-	'Update',
-);
+	$this->breadcrumbs = array(
+		Yii::t('base', 'Users') => array('admin'),
+		$model->name => array('view','id' => $model->id),
+		Yii::t('base', 'Update'),
+	);
 
-$this->menu = array(
-  array('label' => 'List User', 'url' => array('index'), 'visible' => in_array(Yii::app()->user->role, array("global", "company"))),
-  array('label' => 'Create User', 'url' => array('create'), 'visible' => in_array(Yii::app()->user->role, array("global", "company"))),
-  array('label' => 'View User', 'url' => array('view', 'id' => $model->id)),
-  array('label' => 'Delete User', 'url' => '#', 'linkOptions' => array('submit' => array('delete'), 'params' => array('id' => $model->id), 'confirm' => Yii::t('zii', 'Are you sure you want to delete this item?')), 'visible' => in_array(Yii::app()->user->role, array("global", "company"))),
-  array('label' => 'Manage User', 'url' => array('admin'), 'visible' => in_array(Yii::app()->user->role, array("global", "company"))),
-);
+	if(isset($ajaxRequest)) {
+		$cs = Yii::app()->clientScript;
+		$cs->scriptMap['jquery.js'] = false;
+	}
 ?>
 
-<h1>Update User <?php echo $model->id; ?></h1>
+<?php if(isset($ajaxRequest)): ?>
+	<div class="panel-options">
+<?php endif; ?>
 
-<?php $this->renderPartial('_form', array('model'=>$model)); ?>
+<<?php echo isset($ajaxRequest) ? 'h2' : 'h1';?>>
+	<?php echo Yii::t('base', 'Update').' '.Yii::t('models/User', 'id'); ?>
+</<?php echo isset($ajaxRequest) ? 'h2' : 'h1';?>>
+
+<?php if(isset($ajaxRequest)): ?>
+	</div> <!-- end panel-options -->
+
+	<div class="panel-content">
+<?php endif; ?>
+
+<?php $this->renderPartial('_form', array('model'=>$model, 'ajaxRequest' => $ajaxRequest)); ?>
+
+<?php if(isset($ajaxRequest)): ?>
+	</div> <!-- end panel-content -->
+<?php endif; ?>

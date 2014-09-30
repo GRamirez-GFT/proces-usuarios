@@ -1,44 +1,96 @@
 <?php
-$this->breadcrumbs = array(
-	'Users' => array('index'),
-	$model->name,
-);
+    $this->breadcrumbs = array(
+        Yii::t('base','Users') => array('admin'),
+        $model->name,
+    );
 
-$this->menu = array(
-  array('label' => 'List User', 'url' => array('index'), 'visible' => in_array(Yii::app()->user->role, array("global", "company"))),
-  array('label' => 'Create User', 'url' => array('create'), 'visible' => in_array(Yii::app()->user->role, array("global", "company"))),
-  array('label' => 'Update User', 'url' => '#', 'linkOptions' => array('submit' => array('update'), 'params' => array('id' => $model->id))),
-  array('label' => 'Delete User', 'url' => '#', 'linkOptions' => array('submit' => array('delete'), 'params' => array('id' => $model->id), 'confirm' => Yii::t('zii', 'Are you sure you want to delete this item?')), 'visible' => in_array(Yii::app()->user->role, array("global", "company"))),
-  array('label' => 'Manage User', 'url' => array('admin'), 'visible' => in_array(Yii::app()->user->role, array("global", "company"))),
-);
+	$columnSize = '5';
+
+	if(isset($ajaxRequest)) {
+		$columnSize = '12';
+	}
 ?>
 
-<h1>View User #<?php echo $model->id; ?></h1>
+<?php if(isset($ajaxRequest)): ?>
+	<div class="panel-options">
+<?php endif; ?>
+
+
+<<?php echo isset($ajaxRequest) ? 'h2' : 'h1';?>>
+	<?php echo Yii::t('base', 'User details') ?>
+</<?php echo isset($ajaxRequest) ? 'h2' : 'h1';?>>
+
+<?php if(isset($ajaxRequest)): ?>
+	</div> <!-- end panel-options -->
+
+	<div class="panel-content">
+<?php endif; ?>
+
+<div class="row">
+
+	<div class="col-md-12 <?php echo isset($ajaxRequest) ? 'panel-actions' : ''; ?>">
 
 <?php
-$products = "<ul>";
-foreach ($model->products as $item) {
-    $products .= "<li>{$item->name}</li>";
-}
-$products .= "</ul>";
-?>
+		$ajaxUpdate = isset($ajaxRequest) ? 'panel-trigger' : '';
 
-<?php $this->widget('zii.widgets.CDetailView', array(
-	'data' => $model,
-	'attributes' => array(
-		'name',
-		'username',
-		array(
-			'name' => 'company_id',
-			'value' => $model->company_id ? $model->company->name : null
-		),
-        'email',
-		'active',
-		'date_create',
-        array(
-            'name' => 'list_products',
-            'type' => 'raw',
-            'value' => $products
-        ),
-	),
-));
+		echo CHtml::link('', Yii::app()->createAbsoluteUrl('user/update/?id='.$model->id), 
+			array(
+			'class' => 'btn btn-proces-white phantom-btn fa fa-pencil mws-tooltip-s '.$ajaxUpdate,
+			'original-title' => Yii::t('base','Update')
+		));
+		
+		if (in_array(Yii::app()->user->role, array("company"))) {
+			$ajaxDelete = isset($ajaxRequest) ? 'ajax-delete' : '';
+			
+			echo CHtml::link('', Yii::app()->createAbsoluteUrl('user/delete/?id='.$model->id), 
+				array(
+				'class' => 'btn btn-proces-white phantom-btn fa fa-trash mws-tooltip-s confirm-action '.$ajaxDelete,
+				'original-title' => Yii::t('base','Delete')
+			));
+		}
+?>
+	</div>
+
+	<div class="col-md-<?php echo $columnSize; ?>">
+
+		<p>
+			<span class="labeling"><?php echo  Yii::t('models/User', 'name'); ?>:</span>
+			<?php echo $model->name; ?>
+		</p>
+	
+		<p>
+			<span class="labeling"><?php echo  Yii::t('models/User', 'username'); ?>:</span>
+			<?php echo $model->username; ?>
+		<p>
+
+		<p>
+			<span class="labeling"><?php echo  Yii::t('models/User', 'company_id'); ?>:</span>
+			<?php echo $model->company_id ? $model->company->name : null; ?>
+		<p>
+
+		<p>
+			<span class="labeling"><?php echo  Yii::t('models/User', 'email'); ?>:</span>
+			<?php echo $model->email; ?>
+		<p>
+
+		<p>
+			<span class="labeling"><?php echo  Yii::t('models/User', 'date_create'); ?>:</span>
+			<?php echo $model->date_create; ?>
+		<p>
+
+		<p>
+			<span class="labeling"><?php echo  Yii::t('models/User', 'list_products'); ?>:</span>
+				<ul>
+				<?php foreach ($model->products as $item) : ?>
+	    			<li><?php echo $item->name; ?></li>
+				<?php endforeach; ?>
+				</ul>
+		<p>
+
+	</div>
+
+</div>
+
+<?php if(isset($ajaxRequest)): ?>
+	</div> <!-- end panel-content -->
+<?php endif; ?>

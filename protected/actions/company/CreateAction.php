@@ -4,6 +4,9 @@ class CreateAction extends CAction {
 
     public function run() {
         $model = new CompanyModel();
+        $this->performAjaxValidation($model);
+        $ajaxRequest = Yii::app()->request->getParam('ajaxRequest');
+
         if (Yii::app()->request->getPost(get_class($model))) {
             assignFile($file, $model, 'url_logo');
             $model->setAttributes(Yii::app()->request->getPost(get_class($model)));
@@ -13,16 +16,38 @@ class CreateAction extends CAction {
                 $model->url_logo = $prevUrl;
             }
             if ($model->save()) {
-                $this->controller->redirect(
-                    array(
+                $redirectParms = array(
                         'view',
                         'id' => $model->id
-                    ));
+                );
+
+                if($ajaxRequest) {
+                    $redirectParms['ajaxRequest'] = true;
+                } 
+                
+                $this->controller->redirect($redirectParms);
             }
         }
-        $this->controller->render('create', array(
-            'model' => $model
-        ));
+
+        if($ajaxRequest) {
+            $this->controller->renderPartial('create', array(
+                'model' => $model,
+                'ajaxRequest' => true,
+            ), false, true);
+        } else {
+            $this->controller->render('create', array(
+                'model' => $model
+            ));
+        }
+    }
+
+    protected function performAjaxValidation($model)
+    {
+        if(isset($_POST['ajax']) && $_POST['ajax']==='company-form')
+        {
+            echo CActiveForm::validate($model);
+            Yii::app()->end();
+        }
     }
 
 }

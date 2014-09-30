@@ -1,20 +1,13 @@
 <?php
-$this->breadcrumbs = array(
-	'Companies' => array('index'),
-	'Create',
-);
-
-$this->menu = array(
-  array('label' => 'List Company', 'url' => array('index')),
-  array('label' => 'Manage Company', 'url' => array('admin')),
-);
+    $this->breadcrumbs = array(
+        Yii::t('base', 'Companies') => array('admin'),
+        Yii::t('base', 'Create'),
+    );
 ?>
 
-<h1>Create Company</h1>
+<h1><?php echo Yii::t('base', 'Create').' '.Yii::t('models/Company', 'id'); ?></h1>
 
 <div class="form">
-
-<p class="note">Fields with <span class="required">*</span> are required.</p>
 
 <?php $form = $this->beginWidget('CActiveForm', array(
 	'id'=>'company-form',
@@ -27,22 +20,35 @@ $this->menu = array(
 
 <?php $this->widget('CTabView',array(
     'activeTab' => 'tab1',
+    'htmlOptions' => array(
+        'class' => 'proces-tab',
+    ),
     'tabs'=>array(
         'tab1'=>array(
-            'title' => 'Details Company',
+            'title' => Yii::t('base', 'Details'),
             'content' => $this->renderPartial('_form', array('model' => $model, 'form' => $form), true)
         ),
         'tab2'=>array(
-            'title' => 'User Company',
+            'title' => Yii::t('models/User', 'id'),
             'content' => $this->renderPartial('_user', array('model' => $model->user, 'form' => $form), true)
         ),
     ),
 )); ?>
 
-<div class="row buttons">
-	<?php echo CHtml::button($model->isNewRecord ? 'Create' : 'Save', array('submit' => '#', 'params' => array('id' => $model->id))); ?>
-</div>
+<div class="row buttons" style="margin-top: 30px;">
 
+    <div class="col-md-3">
+        <?php echo CHtml::submitButton(Yii::t('base', $model->isNewRecord ? 'Create' : 'Save'), 
+                                        array('class' => 'btn btn-proces-red btn-block')); ?>
+    </div>
+
+    <div class="col-md-3">
+        <?php echo CHtml::link(Yii::t('base', 'Cancel'), 
+                                $this->createAbsoluteUrl('company/admin'), 
+                                array('class'=> 'btn btn-proces-white btn-block cancel-button')); ?>
+    </div>
+
+</div>
 
 <?php $this->endWidget(); ?>
 

@@ -1,15 +1,31 @@
 <?php
-$this->breadcrumbs = array(
-	'Users' => array('index'),
-	'Create',
-);
+	$this->breadcrumbs = array(
+		Yii::t('base', 'Products') => array('admin'),
+		Yii::t('base', 'Create'),
+	);
 
-$this->menu = array(
-  array('label' => 'List User', 'url' => array('index')),
-  array('label' => 'Manage User', 'url' => array('admin')),
-);
+	if(isset($ajaxRequest)) {
+		$cs = Yii::app()->clientScript;
+		$cs->scriptMap['jquery.js'] = false;
+	}
 ?>
 
-<h1>Create User</h1>
+<?php if(isset($ajaxRequest)): ?>
+	<div class="panel-options">
+<?php endif; ?>
 
-<?php $this->renderPartial('_form', array('model'=>$model)); ?>
+<<?php echo isset($ajaxRequest) ? 'h2' : 'h1';?>>
+	<?php echo Yii::t('base', 'Create').' '.Yii::t('models/User', 'id'); ?>
+</<?php echo isset($ajaxRequest) ? 'h2' : 'h1';?>>
+
+<?php if(isset($ajaxRequest)): ?>
+	</div> <!-- end panel-options -->
+
+	<div class="panel-content">
+<?php endif; ?>
+
+<?php $this->renderPartial('_form', array('model'=>$model, 'ajaxRequest' => $ajaxRequest)); ?>
+
+<?php if(isset($ajaxRequest)): ?>
+	</div> <!-- end panel-content -->
+<?php endif; ?>

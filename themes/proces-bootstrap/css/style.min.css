@@ -1,0 +1,121 @@
+/*** GENERAL ***/
+body {
+    color: #878787;
+    background-color: #F3F3F3;
+}
+
+/*** LOGIN ***/
+.body-login {
+    background-color: #DA2525;
+}
+
+.footer-login {
+    text-align: center;
+    padding-top: 10px;
+    color: white;
+    background-color: #B80F0F;
+    position: fixed;
+    width: 100%;
+    bottom: 0px;
+}
+
+.logo-login {
+    background-image: url("../img/logo-login.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 400px;
+    height: 200px;
+}
+
+.group-login {
+    margin-bottom: 0px;
+    width: 320px;
+}
+
+.addon-login {
+    background-color: white;
+    border: none;
+}
+
+.input-login {
+    border: none;
+}
+
+.error-login {
+    background-color: white;
+    padding-left: 10px;
+}
+
+/*** HEADER ***/
+.navbar-head {
+    margin-bottom: 0px;
+}
+
+/*** FOOTER ***/
+.footer {
+    padding-top: 5px;
+    border-top: 1px solid;
+    border-color: #DEDEDE;
+}
+
+.footer-link {
+    color: #878787;
+}
+
+/*** MENU ***/
+.navbar-menu {
+    margin-bottom: 0px;
+    background-color: #5B5656;
+    height: 82px;
+}
+
+.menu-link {
+    color: #878787;
+    padding: 10px;
+}
+
+.menu-link:hover {
+    background-color: #F3F3F3;
+}
+
+/*** CONTENT ***/
+#container {
+    color: black; background-color : white;
+    border: 1px solid #E4E4E4;
+    border-radius: 8px;
+    margin-left: 2%;
+    margin-top: -17px;
+    margin-bottom: 50px;
+    padding: 20px;
+    width: 96%;
+    position: relative;
+    min-height: 460px;
+    background-color: white;
+}
+
+.logout-btn {
+    border-left: 2px solid #E4E4E4;
+    padding: 5px 0px 5px 10px;
+    color: #E4E4E4;
+}
+
+.breadcrumb {
+    float: left;
+    font-size: 12px;
+    border-radius: 3px;
+    padding: 5px 10px 5px 10px;
+    margin-top: 10px;
+    margin-bottom: 0px;
+    border: 1px solid #E7E7E7;
+    font-weight: bold;
+    color: #D42424;
+}
+
+.separator {
+    padding: 5px;
+    color: #878787;
+}
+
+.breadcrumb a {
+    color: #878787;
+}

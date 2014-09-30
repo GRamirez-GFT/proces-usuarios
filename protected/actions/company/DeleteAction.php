@@ -7,7 +7,7 @@ class DeleteAction extends CAction {
             $model = $this->controller->loadModel(Yii::app()->request->getParam('id', $id));
             if ($model->delete()) {
                 $this->controller->redirect(array(
-                    'index'
+                    'admin'
                 ));
             }
         } catch (Exception $e) {

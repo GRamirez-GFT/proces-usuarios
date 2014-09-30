@@ -1,23 +1,35 @@
-<div class="view">
+<p>
+	<span class="labeling"><?php echo  Yii::t('models/Company', 'url_logo'); ?>:</span>
+	<span class="logo-details">
+		<img src="<?php echo "http://" . $_SERVER['HTTP_HOST'] . Yii::app()->baseUrl .DIRECTORY_SEPARATOR.$model->url_logo; ?>" />
+	</span>
+</p>
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('id')); ?>:</b>
-	<?php echo CHtml::link(CHtml::encode($data->id), array('view', 'id'=>$data->id)); ?>
-	<br />
+<p>
+	<span class="labeling"><?php echo  Yii::t('models/Company', 'name'); ?>:</span>
+	<?php echo $model->name; ?>
+</p>
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('name')); ?>:</b>
-	<?php echo CHtml::encode($data->name); ?>
-	<br />
+<p>
+	<span class="labeling"><?php echo  Yii::t('models/Company', 'subdomain'); ?>:</span>
+	<?php echo $model->subdomain; ?>
+</p>
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('subdomain')); ?>:</b>
-	<?php echo CHtml::encode($data->subdomain); ?>
-	<br />
+<p>
+	<span class="labeling"><?php echo  Yii::t('models/Company', 'user_id'); ?>:</span>
+	<?php echo $model->user->name ? $model->user->name : $model->user->username; ?>
+</p>
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('user_id')); ?>:</b>
-	<?php echo CHtml::encode($data->user_id ? $data->user->name : null); ?>
-	<br />
-
-	<b><?php echo CHtml::encode($data->getAttributeLabel('active')); ?>:</b>
-	<?php echo CHtml::encode($data->active); ?>
-	<br />
-
-</div>
+<p>
+	<span class="labeling"><?php echo  Yii::t('models/Company', 'list_products'); ?>:</span>
+	<ul>
+	<?php foreach ($model->list_products as $productId) :?>
+		<li>
+		<?php 
+			$thisProduct = Product::model()->findByPk($productId);
+			echo $thisProduct->name; 
+		?>
+		</li>
+	<?php endforeach; ?>
+	</ul>
+</p>

@@ -4,7 +4,7 @@ return CMap::mergeArray(
         'basePath' => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
         'name' => 'Proces | Administración de Proyectos',
         'charset' => 'UTF-8',
-        'theme' => 'proyectos',
+        'theme' => 'proces-bootstrap',
         'language' => 'es',
         'import' => array(
             'application.components.*',
@@ -13,6 +13,9 @@ return CMap::mergeArray(
         ),
         'modules' => array(),
         'components' => array(
+            'widgetFactory' => array(
+                'widgets' => require_once dirname(__FILE__) . '/widgets.php'
+            ),
             'user' => array(
                 'authTimeout' => 3600
             ),

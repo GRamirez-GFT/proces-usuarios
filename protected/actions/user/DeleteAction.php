@@ -3,11 +3,19 @@
 class DeleteAction extends CAction {
 
     public function run($id = null) {
+
+        if (in_array(Yii::app()->user->role, array("general"))) {
+            $this->controller->redirect(array(
+                'user/view',
+                'id' => Yii::app()->user->id
+            ));
+        }
+
         try {
             $model = $this->controller->loadModel(Yii::app()->request->getParam('id', $id));
             if ($model->delete()) {
                 $this->controller->redirect(array(
-                    'index'
+                    'admin'
                 ));
             }
         } catch (Exception $e) {

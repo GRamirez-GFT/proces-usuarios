@@ -18,12 +18,27 @@ class CompanyController extends MyController {
                     ),
                     'expression' => 'in_array(Yii::app()->user->role, array("global"))'
                 ),
+                array(
+                    'allow',
+                    'actions' => array('view'),
+                    'users' => array(
+                        '@'
+                    ),
+                    'expression' => 'in_array(Yii::app()->user->role, array("company", "global"))'
+                ),
+                array(
+                    'allow',
+                    'actions' => array('update'),
+                    'users' => array(
+                        '@'
+                    ),
+                    'expression' => 'in_array(Yii::app()->user->role, array("global")) || (in_array(Yii::app()->user->role, array("company")) && Yii::app()->request->getParam("id") == Yii::app()->user->company_id)'
+                ),
             ), parent::accessRules());
     }
 
     public function actions() {
         return array(
-            'index' => 'application.actions.company.IndexAction',
             'view' => 'application.actions.company.ViewAction',
             'create' => 'application.actions.company.CreateAction',
             'update' => 'application.actions.company.UpdateAction',

@@ -1,19 +1,32 @@
 <?php
-$this->breadcrumbs = array(
-	'Products' => array('index'),
-	$model->name => array('view','id' => $model->id),
-	'Update',
-);
+	$this->breadcrumbs = array(
+		Yii::t('base', 'Products') => array('admin'),
+		$model->name => array('view','id' => $model->id),
+		Yii::t('base', 'Update'),
+	);
 
-$this->menu = array(
-  array('label' => 'List Product', 'url' => array('index')),
-  array('label' => 'Create Product', 'url' => array('create')),
-  array('label' => 'View Product', 'url' => array('view', 'id' => $model->id)),
-  array('label' => 'Delete Product', 'url' => '#', 'linkOptions' => array('submit' => array('delete'), 'params' => array('id' => $model->id), 'confirm' => Yii::t('zii', 'Are you sure you want to delete this item?'))),	
-  array('label' => 'Manage Product', 'url' => array('admin')),
-);
+	if(isset($ajaxRequest)) {
+		$cs = Yii::app()->clientScript;
+		$cs->scriptMap['jquery.js'] = false;
+	}
 ?>
 
-<h1>Update Product <?php echo $model->id; ?></h1>
+<?php if(isset($ajaxRequest)): ?>
+	<div class="panel-options">
+<?php endif; ?>
 
-<?php $this->renderPartial('_form', array('model'=>$model)); ?>
+<<?php echo isset($ajaxRequest) ? 'h2' : 'h1';?>>
+	<?php echo Yii::t('base', 'Update').' '.Yii::t('models/Product', 'id'); ?>
+</<?php echo isset($ajaxRequest) ? 'h2' : 'h1';?>>
+
+<?php if(isset($ajaxRequest)): ?>
+	</div> <!-- end panel-options -->
+
+	<div class="panel-content">
+<?php endif; ?>
+
+<?php $this->renderPartial('_form', array('model'=>$model, 'ajaxRequest' => $ajaxRequest)); ?>
+
+<?php if(isset($ajaxRequest)): ?>
+	</div> <!-- end panel-content -->
+<?php endif; ?>

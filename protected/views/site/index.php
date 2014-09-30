@@ -1,5 +1,4 @@
-<div id="notificaciones" class="content">
 
-	<div id="imagen-notificacion"><img src="<?php echo $this->assets; ?>/img/notifi.png" class="imagen" height="100%"></div>
-
+<div class="imagen-notificacion col-md-6">
+	<img src="<?php echo $this->assets; ?>/img/notifications_welcome.png" class="imagen" height="100%">
 </div>
