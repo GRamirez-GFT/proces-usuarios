@@ -10,7 +10,7 @@ class UpdateAction extends CAction {
         $model->user->password = null;
         $prevUrl = $model->url_logo;
         $prevSubdomain = $model->subdomain;
-        $prevListProducts = unserialize($model->list_products);
+        $prevListProducts = $model->list_products;
 
         if (Yii::app()->request->getPost(get_class($model))) {
             assignFile($file, $model, 'url_logo');
