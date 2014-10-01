@@ -1,6 +1,6 @@
 <?php
 return array(
-    'id' => 'Usuario',
+    'id' => 'Producto',
     'name' => 'Nombre',
     'url_product' => 'URL de producto',
     'company_id' => Company::model()->getAttributeLabel('id'),

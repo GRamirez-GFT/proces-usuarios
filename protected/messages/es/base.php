@@ -10,6 +10,7 @@ return array(
 	'Companies' => 'Empresas',
 	'Products' => 'Productos',
 
+        'Access' => 'Acceder',
 	'Manage' => 'Administración',
 	'Update' => 'Actualizar',
 	'Delete' => 'Eliminar',
@@ -21,5 +22,11 @@ return array(
 	'User details' => 'Detalles de usuario',
 	'Company details' => 'Detalles de empresa',
 	'Product details' => 'Detalles de producto',
+        'Company profile' => 'Perfil de la empresa',
+    
+        'Privacy' => 'Políticas de privacidad',
+        'Manual' => 'Manual de usuario',
+        'Contact' => 'Contacto',
+    
 	);
 ?>
