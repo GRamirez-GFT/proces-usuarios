@@ -111,6 +111,20 @@ CREATE TABLE `user` (
 
 insert  into `user`(`id`,`name`,`username`,`password`,`email`,`company_id`,`active`,`date_create`) values (1,'Administrador','admin','$2a$08$WMUurR64q1wxOwyTsJYydOSihBHx6dwV74I1N8vhAlfXd3mvU6/9i',NULL,NULL,1,'2014-01-01'),(2,'Jorge Gonzalez','endor','$2a$13$PAthe2Xhq1zfUeWXmvAFCeISo57lD3azDCS0hRgph2V15Pt.AClEW','jgonzalez@grupoendor.com',1,1,'2014-01-01'),(3,'Rafael J Torres','rafael','$2a$08$WMUurR64q1wxOwyTsJYydOSihBHx6dwV74I1N8vhAlfXd3mvU6/9i','rafaelt88@gmail.com',2,1,'2014-01-01'),(4,'Dummy','dummy','$2a$13$ZoXJXdI4RRRy1BYReuO97.RN57UXztTLsWOTeJf9itV40HlYU/HWK','rafaelt88@gmail.com',1,1,'2014-08-06'),(5,'prueba','prueba','$2a$13$RoBhjDZjuOBWOBc1NmYss.bjQwxeZyGOeOB/yg2GyxTuO7L.mqnYq','prueba@prueba.com',1,1,'2014-08-12'),(6,'pedro','pedro','$2a$13$LSizp0cqyLB9Z/A3gvA3KeBNL/bJ0ip690zNzqSuUvCJVwIwRKPbi','',1,1,'2014-08-18');
 
+/*Table structure for table `product_use_user` */
+
+DROP TABLE IF EXISTS `product_use_user`;
+
+CREATE TABLE `product_use_user` (
+  `user_id` int(11) NOT NULL,
+  `product_id` smallint(5) NOT NULL,
+  PRIMARY KEY  (`user_id`,`product_id`),
+  KEY `user_product_use_user` (`user_id`),
+  KEY `product_product_use_user` (`product_id`),
+  CONSTRAINT `product_product_use_user` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`),
+  CONSTRAINT `user_product_use_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 /*Table structure for table `user_session` */
 
 DROP TABLE IF EXISTS `user_session`;

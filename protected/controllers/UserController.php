@@ -4,8 +4,10 @@ class UserController extends MyController {
 
     public function init() {
         parent::init();
-        if (Yii::app()->user->role == 'general') {
-            $this->defaultAction = 'view';
+        if(!Yii::app()->user->isGuest) {
+            if (Yii::app()->user->role == 'general') {
+                $this->defaultAction = 'view';
+            }
         }
     }
 
