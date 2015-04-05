@@ -18,7 +18,7 @@ class WsController extends CController {
      * @return string @soap
      */
     public function login($username, $password, $company) {
-        $request = array();
+
         if ($company) {
             $user = User::model()->with(
                 array(
@@ -213,9 +213,7 @@ class WsController extends CController {
                     'user_id' => $user_id
                 ));
 
-            $deleted = $deleted ? true : false
-
-            return $deleted;
+            return $deleted ? true : false;
         } else {
             return false;
         }
