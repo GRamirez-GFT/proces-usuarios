@@ -18,7 +18,7 @@ class WsController extends CController {
      * @return string @soap
      */
     public function login($username, $password, $company) {
-        $request = array();
+
         if ($company) {
             $user = User::model()->with(
                 array(
@@ -177,5 +177,48 @@ class WsController extends CController {
         }
         return $request;
     }
+
+   /**
+     *
+     * @param integer $user_id
+     * @param string $token
+     * @return boolean @soap
+    */
+    public function registerProductUser($user_id, $token) {
+        $product = Product::model()->findByAttributes(array('token' => $token));
+
+        if($product) {
+            $model = new ProductUseUser();
+            $model->user_id = $user_id;
+            $model->product_id = $product->id;
+
+            return $model->save() ? true : false;
+        } else {
+            return false;
+        }
+        
+    }
+
+   /**
+     *
+     * @param integer $user_id
+     * @param string $token
+     * @return boolean @soap
+    */
+    public function unregisterProductUser($user_id, $token) {
+        $product = Product::model()->findByAttributes(array('token' => $token));
+        if($product) {
+            $deleted = ProductUseUser::model()->deleteAllByAttributes(array(
+                    'product_id' => $product->id,
+                    'user_id' => $user_id
+                ));
+
+            return $deleted ? true : false;
+        } else {
+            return false;
+        }
+        
+    }
+
 
 }
