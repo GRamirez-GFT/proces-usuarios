@@ -76,6 +76,7 @@ class UserModel extends User {
                         $product = new ProductUser();
                         $product->product_id = $item;
                         $product->user_id = $this->id;
+                        $product->is_used = '0';
                         if (! ($success = $product->save())) break;
                     }
                 }
@@ -84,7 +85,7 @@ class UserModel extends User {
                 $transaction ? $transaction->commit() : null;
             }
         } catch (Exception $e) {
-            $transaction ? $transaction->commit() : null;
+            $transaction ? $transaction->rollback() : null;
         }
         return $success;
     }
@@ -123,13 +124,29 @@ class UserModel extends User {
                 $transaction ? $transaction->commit() : null;
             }
         } catch (Exception $e) {
-            $transaction ? $transaction->commit() : null;
+            $transaction ? $transaction->rollback() : null;
         }
         return $success;
     }
 
     public function delete() {
-        return parent::deleteByPk($this->getPrimaryKey());
+
+        $success = false;
+        try {
+            $transaction = Yii::app()->db->getCurrentTransaction() ? null : Yii::app()->db->beginTransaction();
+            
+            ProductUserModel::deleteByUser($this->id, false);
+
+            $success = parent::delete();
+            
+            if ($success) {
+                $transaction ? $transaction->commit() : null;
+            }
+        } catch (Exception $e) {
+            $transaction ? $transaction->rollback() : null;
+        }
+        return $success;
+
     }
 
     public function afterFind() {

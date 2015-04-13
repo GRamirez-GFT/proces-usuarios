@@ -16,6 +16,7 @@
  * @version $Id: yii.php 1901 2010-03-14 03:51:17Z qiang.xue $
 */
 return array (
+  'Your request is invalid.' => 'Lo sentimos, ocurrió un error con su consulta.',
   'Active record class "{class}" does not have a scope named "{scope}".' => 'La clase de registro activo "{class}" no tiene un ámbito llamado "{scope}".',
   'Base path "{path}" is not a valid directory.' => 'La ruta base "{path}" no es un directorio válido',
   'CEAcceleratorCache requires PHP eAccelerator extension to be loaded, enabled or compiled with the "--with-eaccelerator-shared-memory" option.' => 'CEAcceleratorCache requiere la extensión eAccelerator de PHP para ser cargada, activada o cargada con la opción "--with-eaccelerator-shared-memory".',

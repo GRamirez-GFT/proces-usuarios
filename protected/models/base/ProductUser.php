@@ -2,6 +2,7 @@
 /**
  * @property integer $user_id
  * @property integer $product_id
+ * @property integer $is_used
  */
 
 class ProductUser extends MyActiveRecord {
@@ -16,16 +17,26 @@ class ProductUser extends MyActiveRecord {
 
 	public function rules() {
 		return array(
-		array('user_id, product_id', 'required'),
-		array('user_id, product_id', 'numerical', 'integerOnly' => true),
-		array('user_id, product_id', 'safe', 'on' => 'search'),
+		array('user_id, product_id, is_used', 'required'),
+		array('user_id, product_id, is_used', 'numerical', 'integerOnly' => true),
+        array('user_id', 'exist', 'allowEmpty' => false, 'attributeName' => 'id', 'className' => 'User'),
+        array('product_id', 'exist', 'allowEmpty' => false, 'attributeName' => 'id', 'className' => 'Product'),
+		array('user_id, product_id, is_used', 'safe', 'on' => 'search'),
 		);
 	}
 
+	public function relations() {
+		return array(
+		'user' => array(self::BELONGS_TO, 'User', 'user_id'),
+        'product' => array(self::BELONGS_TO, 'Product', 'product_id'),
+		);
+	}
+    
 	public function attributeLabels() {
 		return array(
 		'user_id' => Yii::t('models/ProductUser', 'user_id'),
 		'product_id' => Yii::t('models/ProductUser', 'product_id'),
+        'is_used' => Yii::t('models/ProductUser', 'is_used'),
 		);
 	}
 

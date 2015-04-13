@@ -185,14 +185,12 @@ class WsController extends CController {
      * @return boolean @soap
     */
     public function registerProductUser($user_id, $token) {
-        $product = Product::model()->findByAttributes(array('token' => $token));
+        $productUser = ProductUser::model()->with('product')->findByAttributes(array('token' => $token, 'user_id' => $user_id));
 
-        if($product) {
-            $model = new ProductUseUser();
-            $model->user_id = $user_id;
-            $model->product_id = $product->id;
+        if($productUser) {
+            $productUser->in_use = true;
 
-            return $model->save() ? true : false;
+            return $productUser->save() ? true : false;
         } else {
             return false;
         }
@@ -206,14 +204,12 @@ class WsController extends CController {
      * @return boolean @soap
     */
     public function unregisterProductUser($user_id, $token) {
-        $product = Product::model()->findByAttributes(array('token' => $token));
-        if($product) {
-            $deleted = ProductUseUser::model()->deleteAllByAttributes(array(
-                    'product_id' => $product->id,
-                    'user_id' => $user_id
-                ));
+        $productUser = ProductUser::model()->with('product')->findByAttributes(array('token' => $token, 'user_id' => $user_id));
+        
+        if($productUser) {
+            $productUser->in_use = false;
 
-            return $deleted ? true : false;
+            return $productUser->save() ? true : false;
         } else {
             return false;
         }

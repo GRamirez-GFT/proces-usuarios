@@ -4,23 +4,18 @@ class DeleteAction extends CAction {
 
     public function run($id = null) {
 
-        if (in_array(Yii::app()->user->role, array("general"))) {
-            $this->controller->redirect(array(
-                'user/view',
-                'id' => Yii::app()->user->id
-            ));
-        }
-
-        try {
-            $model = $this->controller->loadModel(Yii::app()->request->getParam('id', $id));
+        $model = $this->controller->loadModel(Yii::app()->request->getParam('id', $id));
+        
+        if($model->id != $model->company->user_id) {
             if ($model->delete()) {
                 $this->controller->redirect(array(
                     'admin'
                 ));
             }
-        } catch (Exception $e) {
-            throw new CHttpException(400, Yii::t('yii', 'Your request is invalid.'));
         }
+        
+        throw new CHttpException(400, Yii::t('yii', 'Your request is invalid.'));
+
     }
 
 }

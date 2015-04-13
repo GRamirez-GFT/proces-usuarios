@@ -15,7 +15,7 @@
                                 );
     $menu[] = array('label' => Yii::t('base', 'Products'), 
                                 'url' => Yii::app()->createAbsoluteUrl('product'),
-                                'icon' => 'fa fa-shopping-cart',
+                                'icon' => 'fa fa-code',
                                 'controller' => 'product'
                                 );
     }

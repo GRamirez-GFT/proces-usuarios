@@ -17,7 +17,7 @@
 
 
 <<?php echo isset($ajaxRequest) ? 'h2' : 'h1';?>>
-	<?php echo Yii::t('base', 'User details') ?>
+	<?php echo (Yii::app()->user->id == $model->id) ? Yii::t('base', 'User profile') : Yii::t('base', 'User details'); ?>
 </<?php echo isset($ajaxRequest) ? 'h2' : 'h1';?>>
 
 <?php if(isset($ajaxRequest)): ?>

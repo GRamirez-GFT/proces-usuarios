@@ -2,6 +2,10 @@
 
 class ProductModel extends Product {
 
+    public static function model($className = __CLASS__) {
+        return parent::model($className);
+    }
+    
     public function init() {
         if (in_array(Yii::app()->user->role, array(
             "company"

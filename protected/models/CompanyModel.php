@@ -131,7 +131,47 @@ class CompanyModel extends Company {
     }
 
     public function delete() {
-        return parent::deleteByPk($this->getPrimaryKey());
+
+        $success = false;
+        try {
+            $transaction = Yii::app()->db->getCurrentTransaction() ? null : Yii::app()->db->beginTransaction();
+            
+            $users = User::model()->findAllByAttributes(array('company_id' => $this->id));
+
+            if($users) {
+                foreach($users as $user) {
+                    ProductUserModel::deleteByUser($user->id, true);
+                    $user->company_id = null;
+                    $success = $user->update();
+                    if(!$success) break;
+                }
+            }
+            
+            ProductCompanyModel::deleteByCompany($this->id);
+            $success = parent::delete();
+
+            if($users) {
+                foreach($users as $user) {
+                    UserSession::model()->deleteAllByAttributes(array('user_id' => $user->id));
+                    if(!$success) break;
+                    
+                    $success = User::model()->deleteByPk($user->id);
+                    if(!$success) break;
+                }
+            }            
+            
+            if ($success) {
+                $transaction ? $transaction->commit() : null;
+            }
+        } catch (Exception $e) {
+            echo $e;
+            $transaction ? $transaction->rollback() : null;
+        }
+        if($success) {
+         echo "zzzzs";   
+        }
+        return $success;
+
     }
 
     public function afterFind() {

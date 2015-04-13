@@ -46,7 +46,8 @@ class MyController extends CController {
 
     public function filters() {
         return array(
-            'accessControl'
+            'accessControl',
+            'postOnly + delete'
         );
     }
 

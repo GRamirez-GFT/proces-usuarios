@@ -5,7 +5,7 @@
     );
 ?>
 
-<h1><?php echo Yii::t('base', 'Company details') ?></h1>
+<h1><?php echo Yii::t('base', 'Company profile') ?></h1>
 
 
 <?php
@@ -26,10 +26,12 @@ $products .= "</ul>";
     ));
     
     if(in_array(Yii::app()->user->getState('role'), array("global"))) {
-        echo CHtml::link('', Yii::app()->createAbsoluteUrl('Company/delete/?id='.$model->id), 
+        echo CHtml::link('','', 
             array(
-            'class' => 'btn btn-proces-white phantom-btn fa fa-trash mws-tooltip-s confirm-action',
-            'original-title' => Yii::t('base','Delete')
+            'class' => 'btn btn-proces-white phantom-btn fa fa-trash mws-tooltip-s',
+            'original-title' => Yii::t('base','Delete'),
+            'confirm' => Yii::t('base','Are you sure you want to delete this company?'),
+            'submit' => Yii::app()->createAbsoluteUrl('company/delete/?id='.$model->id),
         ));
     }
 ?>

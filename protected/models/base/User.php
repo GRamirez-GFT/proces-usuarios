@@ -28,7 +28,7 @@ class User extends MyActiveRecord {
 	public function rules() {
 		return array(
 		array('name, username, password, active, date_create', 'required'),
-		array('company_id, active', 'numerical', 'integerOnly' => true),
+		array('active', 'numerical', 'integerOnly' => true),
 		array('name, email', 'length', 'max' => 100),
 		array('username', 'length', 'max' => 32),
 		array('password', 'length', 'max' => 72),

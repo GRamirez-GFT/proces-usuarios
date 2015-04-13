@@ -20,13 +20,20 @@ return array(
 	'Create new' => 'Crear nuevo',
 	'Details' => 'Detalles',
 	'User details' => 'Detalles de usuario',
+    'User profile' => 'Perfil',
 	'Company details' => 'Detalles de empresa',
 	'Product details' => 'Detalles de producto',
-        'Company profile' => 'Perfil de la empresa',
+    'Company profile' => 'Perfil de empresa',
+    'Privacy' => 'Políticas de privacidad',
+    'Manual' => 'Manual de usuario',
+    'Contact' => 'Contacto',
     
-        'Privacy' => 'Políticas de privacidad',
-        'Manual' => 'Manual de usuario',
-        'Contact' => 'Contacto',
+    
+    // Alerts 
+    
+    'Are you sure you want to delete this user?' => '¿Está seguro de borrar este usuario?',
+    'Are you sure you want to delete this company?' => '¿Está seguro de borrar esta empresa?',
+    
     
 	);
 ?>
