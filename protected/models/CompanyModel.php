@@ -80,38 +80,35 @@ class CompanyModel extends Company {
         try {
             $transaction = Yii::app()->db->getCurrentTransaction() ? null : Yii::app()->db->beginTransaction();
             if ($success = $this->validate()) {
-                if(!empty($this->list_products)) {
-                    foreach (ProductCompany::model()->findAll(
-                        array(
-                            'condition' => 't.company_id=:t0',
-                            'join' => 'JOIN product p ON p.id=t.product_id AND p.company_id IS NULL',
-                            'params' => array(
-                                ':t0' => $this->id
-                            )
-                        )) as $item) {
-                        ProductCompany::model()->deleteAllByAttributes(
-                            array(
-                                'product_id' => $item->product_id,
-                                'company_id' => $this->id
-                            ));
-                        ProductUser::model()->deleteAllByAttributes(
-                            array(
-                                'product_id' => $item->product_id,
-                                'user_id' => $this->user_id
-                            ));
-                    }
-                }
+                
+                ProductCompany::model()->deleteAllByAttributes(
+                    array(
+                        'company_id' => $this->id
+                    ));
+                ProductUser::model()->with('user.company')->deleteAllByAttributes(
+                    array(
+                        'user_id' => $this->user_id
+                    ));
+                
+                /*
+                * TODO: Revisar cuales se están removiendo para quitar unicamente esos tanto a la compañia como al resto de los usuarios
+                * No se puede simplemente eliminar todos y reasignar todos en el caso de los usuarios generales ya que no necesariamente los
+                * nuevos productos asignados a la compañia serán asignados a todos los usuarios 
+                */
+                
                 parent::update();
                 $this->user->update();
+                
                 User::model()->updateAll(array(
                     'active' => $this->active
                 ), array(
                     'condition' => "company_id={$this->id}"
                 ));
+                
                 if (is_array($this->list_products) && !empty($this->list_products)) {
                     foreach ($this->list_products as $item) {
                         $product_user = new ProductUser();
-                        $product_user->user_id = $this->user->id;
+                        $product_user->user_id = $this->user_id;
                         $product_user->product_id = $item;
                         if (! ($success = $product_user->save())) break;
                         $product_comp = new ProductCompany();
@@ -164,11 +161,7 @@ class CompanyModel extends Company {
                 $transaction ? $transaction->commit() : null;
             }
         } catch (Exception $e) {
-            echo $e;
             $transaction ? $transaction->rollback() : null;
-        }
-        if($success) {
-         echo "zzzzs";   
         }
         return $success;
 

@@ -22,6 +22,13 @@ class ProductCompany extends MyActiveRecord {
 		);
 	}
 
+	public function relations() {
+		return array(
+		'company' => array(self::BELONGS_TO, 'Company', 'company_id'),
+        'product' => array(self::BELONGS_TO, 'Product', 'product_id'),
+		);
+	}
+
 	public function attributeLabels() {
 		return array(
 		'product_id' => Yii::t('models/ProductCompany', 'product_id'),

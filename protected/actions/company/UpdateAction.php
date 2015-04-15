@@ -13,6 +13,8 @@ class UpdateAction extends CAction {
         $prevListProducts = $model->list_products;
 
         if (Yii::app()->request->getPost(get_class($model))) {
+            
+            $model->list_products = array();
             assignFile($file, $model, 'url_logo');
             $model->setAttributes(Yii::app()->request->getPost(get_class($model)));
             if ($file) {
