@@ -20,7 +20,7 @@ class CreateAction extends CAction {
                     $redirectParms['ajaxRequest'] = true;
                 } 
                 
-//                $this->controller->redirect($redirectParms);
+                $this->controller->redirect($redirectParms);
             }
         }
 

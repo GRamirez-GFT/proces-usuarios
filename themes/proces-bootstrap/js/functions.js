@@ -450,6 +450,7 @@ $(function(){
 			{
 				panel.find('.panel-content, .panel-options').remove();
 				panel.append(data);
+                createAjaxChoosen();
 
 				var gridView = $('.grid-view');
 
