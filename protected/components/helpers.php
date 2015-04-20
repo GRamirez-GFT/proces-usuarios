@@ -2,6 +2,7 @@
 defined('DOCUMENT_PATH') or define('DOCUMENT_PATH', preg_replace('/protected/', 'documents', Yii::app()->basePath));
 defined('DOCUMENT_URL') or define('DOCUMENT_URL', 'documents/');
 defined('WS_SERVER') or define('WS_SERVER', "http://" . $_SERVER['HTTP_HOST'] . Yii::app()->baseUrl . "/ws/access");
+ini_set("soap.wsdl_cache_enabled", "0");
 
 function assignFile(&$file, &$model, $attribute) {
     $full_path = DOCUMENT_PATH . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, date('Y/m/d/'));

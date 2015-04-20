@@ -85,7 +85,8 @@
 
 		<div class="form-group">
 			<?php echo $form->labelEx($model, 'company_id'); ?>
-			<?php echo $form->dropDownList($model, 'company_id', CHtml::listData(Company::model()->findAll(), 'id', 'name'), array('prompt' => Yii::t('base', 'select option'))); ?>
+			<?php echo $form->dropDownList($model, 'company_id', CHtml::listData(Company::model()->findAll(), 'id', 'name'), 
+                    array('prompt' => Yii::t('base', 'select option'))); ?>
 			<?php echo $form->error($model, 'company_id'); ?>
 		</div>
 
@@ -96,8 +97,10 @@
 
 <div class="row">
 
-	<?php if (in_array(Yii::app()->user->role, array("global", "company")) && $model->company->user_id != $model->id):?>
-
+    <?php 
+    $notAdmin = $model->isNewRecord ? true : ($model->company->user_id != $model->id ? true : false);
+    if(in_array(Yii::app()->user->role, array("company")) && $notAdmin): ?>
+	
 	<div class="col-md-<?php echo $columnSizeLarge; ?>">
 
 		<div class="form-group">
@@ -105,8 +108,8 @@
 			<?php echo $form->listBox($model, 'list_products',
 			    CHtml::listData(Product::model()->with(array(
 		          'companies' => array(
-			          'condition' => "companies_companies.company_id={$model->company_id}"
-	            )))->findAll(), 'id', 'name'),
+			          'condition' => "companies_companies.company_id=".Yii::app()->user->company_id
+	            )))->findAll("t.id <> '1'"), 'id', 'name'),
 			    array('multiple' => true)); ?>
 			<?php echo $form->error($model, 'list_products'); ?>
 		</div>

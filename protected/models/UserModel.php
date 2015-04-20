@@ -9,11 +9,6 @@ class UserModel extends User {
     }
 
     public function init() {
-        if (in_array(Yii::app()->user->role, array(
-            "company"
-        ))) {
-            $this->company_id = Yii::app()->user->company_id;
-        }
         if ($this->isNewRecord && $this->getScenario() != 'search') {
             $this->active = 1;
         }
@@ -154,6 +149,23 @@ class UserModel extends User {
         foreach ($this->products as $item) {
             $this->list_products[] = $item->id;
         }
+    }
+    
+    public function search() {
+        $criteria = new CDbCriteria();
+        $criteria->compare('id', $this->id);
+        $criteria->compare('name', $this->name, true);
+        $criteria->compare('company_id', Yii::app()->user->company_id);
+        $sort = new CSort();
+        $sort->attributes = array(
+            '*'
+        );
+        $sort->multiSort = true;
+        return new CActiveDataProvider($this,
+            array(
+                'criteria' => $criteria,
+                'sort' => $sort
+            ));
     }
 
 }

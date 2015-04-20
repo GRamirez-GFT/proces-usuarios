@@ -15,20 +15,29 @@ class WsController extends CController {
      * @param string $username
      * @param string $password
      * @param string $company
+     * @param string $token
      * @return string @soap
      */
-    public function login($username, $password, $company) {
+    public function login($username, $password, $company, $token = null) {
 
-        if ($company) {
-            $user = User::model()->with(
-                array(
-                    "company" => array(
-                        "condition" => "subdomain='{$company}'"
-                    )
-                ))->findByAttributes(
-                array(
-                    "active" => 1
-                ), array('condition' => "(`t`.`username`='{$username}' OR `t`.`email`='{$username}')"));
+        if ($company) {     
+            $criteria = new CDbCriteria;
+            $criteria->select = '*';
+
+            $criteria->join = 'LEFT JOIN `company` ON (`t`.`company_id` = `company`.`id`) ';
+            $criteria->join .= 'LEFT JOIN `product_company` ON (`product_company`.`company_id` = `company`.`id`) ';
+            $criteria->join .= 'LEFT JOIN `product_user` ON (`product_user`.`user_id` = `t`.`id`) ';
+            $criteria->join .= "LEFT JOIN `product` ON (`product_company`.`product_id` = `product`.`id`) ";
+
+            $criteria->condition = "`t`.`username` = '{$username}' AND ";
+            $criteria->condition .= " `company`.`subdomain` = '{$company}' AND";
+            $criteria->condition .= " `product`.`token` = '{$token}'";
+            
+            if($token != Yii::app()->params->token) {
+                $criteria->condition .= " AND `product_user`.`product_id` IS NOT NULL";
+            }
+
+            $user = UserModel::model()->find($criteria);
         } else {
             $user = User::model()->findByAttributes(
                 array(

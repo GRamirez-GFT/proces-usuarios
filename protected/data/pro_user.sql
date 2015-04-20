@@ -47,7 +47,7 @@ CREATE TABLE `product` (
 
 /*Data for the table `product` */
 
-insert  into `product`(`id`,`name`,`url_product`,`company_id`,`token`) values (1,'Proces - Documentos','/documents',NULL,'1AD5BE0D83DCEFB7'),(2,'Proces - Proyectos','/projects',NULL,'1AD5BE0D1AD5BE0D');
+insert  into `product`(`id`,`name`,`url_product`,`company_id`,`token`) values (1,'Proces - Usuarios','/usuarios',NULL,'CE6204AC6DD28E9B'),(2,'Proces - Documentos','/documentos',NULL,'1AD5BE0D83DCEFB7'),(3,'Proces - Proyectos','/projectos',NULL,'1AD5BE0D1AD5BE0D');
 
 /*Table structure for table `product_company` */
 

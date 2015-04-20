@@ -1,6 +1,6 @@
 <?php
 return array(
     'params' => array(
-        'token' => '1AD5BE0D6DD28E9B'
+        'token' => 'CE6204AC6DD28E9B'
     ),
 );
