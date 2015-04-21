@@ -60,7 +60,7 @@ class UserModel extends User {
             $transaction = Yii::app()->db->getCurrentTransaction() ? null : Yii::app()->db->beginTransaction();
             $this->date_create = date('Y-m-d');
             $this->active =  1;
-            $this->company_id = Yii::app()->user->company_id;
+            if(Yii::app()->user->getState('role') == 'company') $this->company_id = Yii::app()->user->company_id;
             if ($success = parent::save()) {
                 if (is_array($this->list_products)) {
                     foreach ($this->list_products as $item) {

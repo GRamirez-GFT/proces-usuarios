@@ -33,10 +33,6 @@ class UpdateAction extends CAction {
                         'view',
                         'id' => $model->id
                 );
-
-                if($ajaxRequest) {
-                    $redirectParms['ajaxRequest'] = true;
-                } 
                 
                 $this->controller->redirect($redirectParms);
             }
