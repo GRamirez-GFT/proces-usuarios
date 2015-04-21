@@ -842,6 +842,7 @@ body.body-login {
 	-moz-background-size   : cover;
 	-o-background-size     : cover;
 	background-size        : cover;
+    color: #fff;
 }
 
 .login-container {

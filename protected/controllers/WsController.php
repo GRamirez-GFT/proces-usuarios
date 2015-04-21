@@ -12,15 +12,15 @@ class WsController extends CController {
 
     /**
      *
-     * @param string $username
-     * @param string $password
-     * @param string $company
+     * @param array $userInfo
      * @param string $token
      * @return string @soap
      */
-    public function login($username, $password, $company, $token = null) {
-
-        if ($company) {     
+    public function login($userInfo, $token) {
+        
+        $request = array();
+        
+        if ($userInfo['company']) {     
             $criteria = new CDbCriteria;
             $criteria->select = '*';
 
@@ -29,9 +29,9 @@ class WsController extends CController {
             $criteria->join .= 'LEFT JOIN `product_user` ON (`product_user`.`user_id` = `t`.`id`) ';
             $criteria->join .= "LEFT JOIN `product` ON (`product_company`.`product_id` = `product`.`id`) ";
 
-            $criteria->condition = "`t`.`username` = '{$username}' AND ";
-            $criteria->condition .= " `company`.`subdomain` = '{$company}' AND";
-            $criteria->condition .= " `product`.`token` = '{$token}'";
+            $criteria->condition = "`t`.`username` = '".$userInfo['username']."' AND ";
+            $criteria->condition .= " `company`.`subdomain` = '".$userInfo['company']."' AND";
+            $criteria->condition .= " `product`.`token` = '".$token."'";
             
             if($token != Yii::app()->params->token) {
                 $criteria->condition .= " AND `product_user`.`product_id` IS NOT NULL";
@@ -42,12 +42,12 @@ class WsController extends CController {
             $user = User::model()->findByAttributes(
                 array(
                     "id" => 1,
-                    "username" => $username,
+                    "username" => $userInfo['username'],
                     "active" => 1
                 ));
         }
         if ($user) {
-            if (CPasswordHelper::verifyPassword($password, $user->password)) {
+            if (CPasswordHelper::verifyPassword($userInfo['password'], $user->password)) {
                 $request = self::getVars($user);
             }
         }
@@ -218,12 +218,9 @@ class WsController extends CController {
                 ->limit("1")
                 ->queryScalar();
         } else {
-            $request = Yii::app()->db->createCommand()
-                ->select("id")
-                ->from("product")
-                ->where("token='{$token}' AND company_id IS NULL")
-                ->limit("1")
-                ->queryScalar();
+            if($token == Yii::app()->params->token) {
+                return true;   
+            }
         }
         return $request;
     }

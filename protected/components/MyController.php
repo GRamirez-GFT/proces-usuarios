@@ -11,31 +11,21 @@ class MyController extends CController {
     public function init() {
         $this->checkSession();
         $this->assets = ! YII_DEBUG ? Yii::app()->assetManager->publish(Yii::app()->theme->basePath) : Yii::app()->theme->baseUrl;
-
-        if(isset(Yii::app()->user->role) && ($this->uniqueid != 'user' && $this->uniqueid != 'site'))
-        {
-            if (in_array(Yii::app()->user->role, array("general"))) {
-                $this->redirect(array(
-                    'user/view',
-                    'id' => Yii::app()->user->id
-                ));
-            }
-        }
     }
 
     public function checkSession() {
         $client = new SoapClient(WS_SERVER);
-        if (isset($_COOKIE['PROCESID'])) {
-            if ($user_id = $client->validateSession($_COOKIE['PROCESID'], $_SERVER["REMOTE_ADDR"])) {
-                if (Yii::app()->user->isGuest || Yii::app()->user->id != $user_id) {
-                    Yii::app()->user->login(new CUserIdentity('', ''));
-                    $request = json_decode($client->startSession($user_id), true);
-                    foreach ($request as $key => $value) {
-                        Yii::app()->user->setState($key, $value);
-                    }
-                    $this->redirect(Yii::app()->user->returnUrl);
+        if ($user_id = $client->validateSession(isset($_COOKIE['PROCESID']) ? $_COOKIE['PROCESID'] : 0, $_SERVER["REMOTE_ADDR"])) {
+            if (Yii::app()->user->isGuest || Yii::app()->user->id != $user_id) {
+                Yii::app()->user->login(new CUserIdentity('', ''));
+                $request = json_decode($client->startSession($user_id), true);
+                foreach ($request as $key => $value) {
+                    Yii::app()->user->setState($key, $value);
                 }
-            } else {
+                $this->redirect(Yii::app()->user->returnUrl);
+            }
+        } else {
+            if(!preg_match('/\/logout$/', Yii::app()->request->getRequestUri()) && !preg_match('/\/login$/', Yii::app()->request->getRequestUri())){
                 $this->redirect(Yii::app()->createAbsoluteUrl('site/logout'));
             }
         }
