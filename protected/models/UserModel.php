@@ -98,21 +98,57 @@ class UserModel extends User {
             }
 
             if ($success = parent::update($attributes)) {
-                ProductUser::model()->deleteAllByAttributes(
-                    array(
-                        'user_id' => $this->id
-                    ));
-                if (is_array($this->list_products)) {
-                    foreach ($this->list_products as $item) {
-                        if (! ProductCompany::model()->exists('company_id=:t0 AND product_id=:t1',
-                            array(
-                                ':t0' => $this->company_id,
-                                ':t1' => $item
-                            ))) continue;
-                        $product = new ProductUser();
-                        $product->product_id = $item;
-                        $product->user_id = $this->id;
-                        if (! ($success = $product->save())) break;
+                if(is_array($this->list_products)) {
+                    
+//                    #### Lógica usada ####
+//
+//                    TENGO
+//                    A, B, C
+//                        
+//                    ENVIO
+//                    A, C, D 
+//                    
+//                    NUEVO ¿Cuales de "ENVIO" no estan en "TENGO"? Y por lo tanto voy a agregar
+//                    D
+//                    
+//                    YA TENGO ¿Cuales de "TENGO" estan en "ENVIO"? Da el mismo resultado que "NUEVO"
+//                    A, C ---> Quito de "ENVIO"
+//                    D    ---> Me queda para agregar 
+//                    
+//                    QUITO DE "TENGO" ¿Cuales de TENGO no estan en ENVIO? Y por lo tanto voy a quitar
+//                    B --- 
+
+                    foreach($this->products as $product) {
+                        if(in_array($product->id, $this->list_products)) {
+                            $idKey = array_search($product->id, $this->list_products);
+                            unset($this->list_products[$idKey]); 
+                        } else {
+                            $productUserDeleted = ProductUser::model()->deleteAllByAttributes(
+                                array(
+                                    'user_id' => $this->id,
+                                    'product_id' => $product->id,
+                                    'is_used' => 0
+                                ));
+                            if(!$productUserDeleted) {
+                                $this->addError('list_products', Yii::t('models/User', 'Some products are in use and cant be deleted.'));   
+                                $success = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    if ($success) {
+                        foreach ($this->list_products as $product_id) {
+                            if (! ProductCompany::model()->exists('company_id=:t0 AND product_id=:t1',
+                                array(
+                                    ':t0' => $this->company_id,
+                                    ':t1' => $product_id
+                                ))) continue;
+                            $product = new ProductUser();
+                            $product->product_id = $product_id;
+                            $product->user_id = $this->id;
+                            if (! ($success = $product->save())) break;
+                        }
                     }
                 }
             }

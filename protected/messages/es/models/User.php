@@ -10,4 +10,7 @@ return array(
     'date_create' => 'Fecha de creación',
     'list_products' => 'Productos',
     'verify_password' => 'Confirmar contraseña',
+    
+    /* Messages */
+    'Some products are in use and cant be deleted.' => 'El usuario tiene productos asignados en uso y no pueden ser borrados.',
 );

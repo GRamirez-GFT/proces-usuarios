@@ -30,7 +30,7 @@
 	</div>
 
 
-	<?php if (in_array(Yii::app()->user->role, array("global", "company"))):?>
+	<?php if (in_array(Yii::app()->user->role, array("global", "company")) && $model->isNewRecord):?>
 	<div class="col-md-<?php echo $columnSize; ?>">
 
 		<div class="form-group">
