@@ -15,7 +15,7 @@ class ContactAction extends CAction{
                                 $model->name
                             ),
                             'cc' => array(
-                                "rafaelt88@gmail.com", 'Rafael J Torres'
+                                "contacto@iconoconsultoria.com", 'Icono Consultoria'
                             ),
                             'subject' => $model->subject
                         )

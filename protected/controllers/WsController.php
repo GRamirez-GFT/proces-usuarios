@@ -237,11 +237,12 @@ class WsController extends CController {
         
         if(!$product) return false;
         
-        $productUser = ProductUser::model()->findByAttributes(array('user_id'=>$user_id));
-
+        $productUser = ProductUser::model()->findByAttributes(array('user_id'=>$user_id, 'product_id' => $product->id));
+        
         if($productUser) {
-            $productUser->is_used = true;
 
+            $productUser->is_used = '1';
+        
             return $productUser->update() ? true : false;
         } else {
             return true;
@@ -261,7 +262,7 @@ class WsController extends CController {
         
         if(!$product) return false;
         
-        $productUser = ProductUser::model()->findByAttributes(array('user_id'=>$user_id));
+        $productUser = ProductUser::model()->findByAttributes(array('user_id'=>$user_id, 'product_id' => $product->id));
         
         if($productUser) {
             $productUser->is_used = false;
