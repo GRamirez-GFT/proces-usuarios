@@ -32,14 +32,15 @@
 
 <?php
 		$ajaxUpdate = isset($ajaxRequest) ? 'panel-trigger' : '';
+        $companyModel = Company::model()->findByPk($model->company_id);
 
 		echo CHtml::link('', Yii::app()->createAbsoluteUrl('user/update/?id='.$model->id), 
 			array(
 			'class' => 'btn btn-proces-white phantom-btn fa fa-pencil mws-tooltip-s '.$ajaxUpdate,
 			'original-title' => Yii::t('base','Update')
 		));
-		
-		if (in_array(Yii::app()->user->role, array("company"))) {
+
+		if (in_array(Yii::app()->user->role, array("company")) && $companyModel->user_id != $model->id) {
 			$ajaxDelete = isset($ajaxRequest) ? 'ajax-delete' : '';
 			
 			echo CHtml::link('', Yii::app()->createAbsoluteUrl('user/delete/?id='.$model->id), 
