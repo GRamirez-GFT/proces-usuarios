@@ -167,6 +167,19 @@ label span.required {
 	color: red;
 }
 
+.grid-view .pager {
+    text-align: center;
+}
+
+ul.yiiPager {
+    display: table;
+    margin: 0 auto; 
+}
+
+ul.yiiPager li {
+    margin-right: 5px;
+}
+
 /* Icons */
 .fa-logout:before {
 	background: url(../img/logout-icon.png);
@@ -182,13 +195,15 @@ label span.required {
 
 /* Buttons */
 
-.btn {
+.btn,
+ul.yiiPager .pager-btn a {
 	padding      : 8px 12px;
 	border-radius: 3px;
 }
 
-.btn-proces-white, .btn-proces-white.active, .btn-proces-white:focus,
-.list-view .sorter a, .list-view .sorter a:focus {
+.btn-proces-white, .btn-proces-white.active,
+.list-view .sorter a, .list-view .sorter a:focus,
+ul.yiiPager .white-pager-btn a {
 	color             : #6D6D6D;
 	outline           : none;
 	background        : #fff;
@@ -209,7 +224,8 @@ label span.required {
 	background: none;
 }
 
-.btn-proces-white:hover {
+.btn-proces-white:hover,.btn-proces-white:focus,
+ul.yiiPager .white-pager-btn a:hover, ul.yiiPager .white-pager-btn a:focus {
 	color             : #6D6D6D;
 	outline           : none;
 	background        : #fff;
@@ -220,7 +236,8 @@ label span.required {
 	border            : 1px solid #D3D3D3;
 }
 
-.btn-proces-white:active {
+.btn-proces-white:active,
+ul.yiiPager .white-pager-btn a:active {
 	outline           : none;
 	-moz-box-shadow   : 0 3px #DFDFDF inset;
 	-webkit-box-shadow: 0 3px #DFDFDF inset;
@@ -229,7 +246,8 @@ label span.required {
 }
 
 .btn-proces-white .fa,
-.btn-proces-white.fa {
+.btn-proces-white.fa,
+ul.yiiPager .white-pager-btn a .fa {
 	color: #A8A8A8;
 }
 
@@ -238,7 +256,8 @@ label span.required {
 	color: #A8A8A8;
 }
 
-.btn-proces-red, .btn-proces-red.active, .btn-proces-red:focus {
+.btn-proces-red, .btn-proces-red.active,
+ul.yiiPager .red-pager-btn a {
 	color             : #fff;
 	outline           : none;
 	background        : #D50101;
@@ -254,7 +273,8 @@ label span.required {
 	box-shadow        : none;
 }
 
-.btn-proces-red:hover {
+.btn-proces-red:hover, .btn-proces-red:focus,
+ul.yiiPager .red-pager-btn a:hover, ul.yiiPager .red-pager-btn a:focus {
 	color             : #fff;
 	outline           : none;
 	background        : #D50101;
@@ -265,7 +285,8 @@ label span.required {
 	border            : 1px solid #D50101;
 }
 
-.btn-proces-red:active, .btn-proces-red:active:focus {
+.btn-proces-red:active, .btn-proces-red:active:focus,
+ul.yiiPager .red-pager-btn a:active, ul.yiiPager .red-pager-btn a:active:focus {
 	outline           : none;
 	-moz-box-shadow   : 0 3px #AD0000 inset;
 	-webkit-box-shadow: 0 3px #AD0000 inset;
@@ -274,8 +295,24 @@ label span.required {
 }
 
 .btn-proces-red .fa,
-.btn-proces-red.fa {
+.btn-proces-red.fa,
+ul.yiiPager .red-pager-btn a .fa {
 	color: #fff;
+}
+
+ul.yiiPager li.hidden {
+    visibility: visible !important;
+    display: inline-block !important;
+    opacity: .4;
+}
+
+ul.yiiPager li.hidden a {
+    box-shadow: none !important;
+    top: initial !important;
+}
+
+ul.yiiPager li.selected-page-proces a {
+   color: #D50101;
 }
 
 /* Tabs */

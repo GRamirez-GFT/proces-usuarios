@@ -31,7 +31,12 @@
 	$this->widget('zii.widgets.grid.CGridView', array(
 		'id'=>'user-grid',
 	    'dataProvider' => $model->search(),
-	    'template' => '{items}',
+        'pager' => array(
+            'firstPageLabel' => '<span class="fa fa-arrow-circle-left mws-tooltip-s" original-title="'.Yii::t('base', 'First').'"></span>',
+            'lastPageLabel' => '<span class="fa fa-arrow-circle-right mws-tooltip-s" original-title="'.Yii::t('base', 'Last').'"></span>',
+            'prevPageLabel' => '<span class="fa fa-arrow-circle-o-left mws-tooltip-s" original-title="'.Yii::t('base', 'Previous').'"></span>',
+            'nextPageLabel' => '<span class="fa fa-arrow-circle-o-right mws-tooltip-s" original-title="'.Yii::t('base', 'Next').'"></span>',
+        ),
 		'columns'=>array(
 			'name',
 			'username',

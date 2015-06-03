@@ -99,25 +99,25 @@ class UserModel extends User {
 
             if ($success = parent::update($attributes)) {
                 if(is_array($this->list_products)) {
-                    
-//                    #### Lógica usada ####
-//
-//                    TENGO
-//                    A, B, C
-//                        
-//                    ENVIO
-//                    A, C, D 
-//                    
-//                    NUEVO ¿Cuales de "ENVIO" no estan en "TENGO"? Y por lo tanto voy a agregar
-//                    D
-//                    
-//                    YA TENGO ¿Cuales de "TENGO" estan en "ENVIO"? Da el mismo resultado que "NUEVO"
-//                    A, C ---> Quito de "ENVIO"
-//                    D    ---> Me queda para agregar 
-//                    
-//                    QUITO DE "TENGO" ¿Cuales de TENGO no estan en ENVIO? Y por lo tanto voy a quitar
-//                    B --- 
-
+/*                  
+*               #### Lógica usada ####
+*
+*                TENGO
+*                A, B, C
+*
+*                ENVIO
+*                A, C, D 
+*
+*                NUEVO ¿Cuales de "ENVIO" no estan en "TENGO"? Y por lo tanto voy a agregar
+*                D
+*
+*                YA TENGO ¿Cuales de "TENGO" estan en "ENVIO"? Da el mismo resultado que "NUEVO"
+*                A, C ---> Quito de "ENVIO"
+*                D    ---> Me queda para agregar 
+*
+*                QUITO DE "TENGO" ¿Cuales de TENGO no estan en ENVIO? Y por lo tanto voy a quitar
+*                B --- 
+*/
                     foreach($this->products as $product) {
                         if(in_array($product->id, $this->list_products)) {
                             $idKey = array_search($product->id, $this->list_products);

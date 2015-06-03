@@ -28,6 +28,10 @@ return array(
     'Manual' => 'Manual de usuario',
     'Contact' => 'Contacto',
     
+    'First' => 'Primera',
+    'Last' => 'Última',
+    'Previous' => 'Anterior',
+    'Next' => 'Siguiente',
     
     // Alerts 
     
