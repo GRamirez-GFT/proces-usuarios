@@ -355,7 +355,6 @@ $(function(){
 		{
 			$(".mws-tooltip-"+gravity[i]).tipsy({
 				gravity: gravity[i], 
-				live: true, 
 				delayIn: 250, 
 				offset: 7,
 				fade: true,
