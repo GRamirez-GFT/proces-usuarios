@@ -56,9 +56,6 @@ mod_gzip_item_include handler ^application/x-httpd-php
 mod_gzip_item_exclude mime ^image/.*
 </IfModule>
 
-php_flag zlib.output_compression On
-php_value zlib.output_compression_level 2 
-
 <IfModule mod_deflate.c>
 AddOutputFilterByType DEFLATE text/xml
 AddOutputFilterByType DEFLATE text/css
