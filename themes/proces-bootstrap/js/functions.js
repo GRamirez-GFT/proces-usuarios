@@ -49,44 +49,115 @@ $(function(){
     /* #####	DROPDOWN LIST 	 		#####################################################				*/
     /* *****	 						*****************************************************				*/
 
-	body.on('click', '.button_switch', function(e)
-	{
+	body.on('click', '.button_switch', function(e) {
 		e.stopPropagation();
 		e.preventDefault();
 
-		var this_element	= $(this);
-		var drop			= this_element.parent().find('.drop-list');
+		var this_element = $(this);
+		var drop = this_element.parent().find('.drop-list');
 
-		if(this_element.hasClass('active'))
-		{
+		if(this_element.hasClass('active')) {
 			this_element.removeClass('active');
+            drop.stop().fadeOut(300);
+            
 		} else{
 			var anotherActive     = $('.button_switch.active');
 			var dropAnotherActive = anotherActive.parent().find('.drop-list');
 
-			if(anotherActive.length)
-			{
+			if(anotherActive.length){
 				anotherActive.removeClass('active');
-				dropAnotherActive.fadeToggle('fast');
+                dropAnotherActive.fadeOut(300);
 			}
 
 			this_element.addClass('active');
+            drop.stop().fadeIn(300);
 		}
-
-		drop.fadeToggle('fast');
 	});
+    
+    var dropTimer;
+    
+    body.on('mouseout', '.button_switch, .drop-list', function(e) {
+        
+        var currentTarget = $(e.currentTarget);
+        var nextSibling = $(e.currentTarget.nextElementSibling);
+        var prevSibling = $(e.currentTarget.previousElementSibling);
+        var toElement = $(e.toElement);
+        var fromElement = $(e.fromElement);
+        var dropElement;
+        var buttonSwitch;
+                
+        if(currentTarget.hasClass('button_switch')) {
+            dropElement = nextSibling;
+            buttonSwitch = currentTarget;
+        } else {
+            dropElement = currentTarget;
+            buttonSwitch = prevSibling;
+        }
+        
+        if( (toElement.hasClass('drop-list') && (toElement.prev())[0] === fromElement[0] )
+            || (toElement[0] === (fromElement.parents('.drop-list'))[0]) 
+            || (fromElement[0] === (toElement.parents('.drop-list'))[0]) 
+            || (toElement[0] === (fromElement.prev())[0])
+            || ((toElement.parents('.drop-list'))[0] === (fromElement.parents('.drop-list'))[0] 
+                && (fromElement.parents('.drop-list'))[0] !== undefined) ) {
+            
+            clearTimeout(dropTimer);   
+            
+            buttonSwitch.addClass('active');
+            buttonSwitch.addClass('toggled');
+            showActiveDrop();
+            
+        } else {
+            console.log("fade");
+            dropTimer = setTimeout(function() {
+                hideActiveDrop();
+            },500);
+        }
+        
+    });
+    
+    body.on('mouseenter', '.button_switch, .drop-list', function(e) {
+        
+        var currentTarget = $(e.currentTarget);
+        var activeButtonSwitch = $('.button_switch.active');
+        var activeDrop = activeButtonSwitch.parent().find('.drop-list');
+        
+        if(currentTarget[0] === activeButtonSwitch[0] || currentTarget[0] === activeDrop[0]) {               
+            clearTimeout(dropTimer);
+            console.log("show");
+            showActiveDrop();
+        } else {
+            hideActiveDrop();
+        }
+        
+    });
 
 	//Cerrar el cuadro de búsqueda cuando se haga click fuera
 
-	body.click(function() 
-	{
-		var button_switch	= $(".button_switch.active"),
-		drop				= button_switch.parent().find('.drop-list');
-
-		button_switch.removeClass("toggled");
-		drop.fadeToggle('fast');
-		button_switch.removeClass('active');
+	body.click(function() {
+        hideActiveDrop();
 	});
+    
+    function hideActiveDrop() {
+        clearTimeout(dropTimer);
+		var buttonSwitch = $(".button_switch.active"),
+        activeDrop = buttonSwitch.parent().find('.drop-list');
+            
+        activeDrop.stop().fadeOut(300, function() {
+            buttonSwitch.removeClass("toggled");
+            buttonSwitch.removeClass('active');
+        });
+    }
+    
+    function showActiveDrop() {
+        clearTimeout(dropTimer);
+		var buttonSwitch = $(".button_switch.active"),
+        activeDrop = buttonSwitch.parent().find('.drop-list');
+            
+        buttonSwitch.addClass("toggled");
+        activeDrop.fadeIn(300);
+        buttonSwitch.addClass('active');
+    }
 
     /* *****					  		*****************************************************				*/
     /* #####	PANEL INTERACTIONS 	 	#####################################################				*/

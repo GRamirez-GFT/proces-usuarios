@@ -785,6 +785,11 @@ ul.yiiPager li.selected-page-proces a {
 	box-shadow           : 0px 1px 4px 0px rgba(0, 0, 0, 0.1);
 }
 
+.drop-list.left-drop {
+    right: initial;
+    left: -8px;
+}
+
 .drop-list ul{
 	min-width : 150px;
 	list-style: none;
@@ -829,6 +834,11 @@ ul.yiiPager li.selected-page-proces a {
     width        : 0;
     top          : -10px;
     right        : 12px;
+}
+
+.drop-list.left-drop span.arrow {
+    right: initial;
+    left: 12px;
 }
 
 .drop-list span.arrow:after {
@@ -980,8 +990,15 @@ body.body-login {
 	padding-right: 0;
 }
 
+.navbar-brand-container {
+    position: relative;
+    top: 0;
+    left: 0;
+}
+
 .info-bar .navbar-brand {
 	height: 60px;
+    cursor: pointer;
 }
 
 .info-bar .user-info {

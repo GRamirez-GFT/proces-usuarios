@@ -12,8 +12,27 @@
 
 	<div class="container-fluid info-bar">
 
-        <div class="navbar-left">
-            <?php echo CHtml::image($this->assets . "/img/logo.png", Yii::app()->name, array('class' => 'navbar-brand')); ?>
+        <div class="navbar-left navbar-brand-container">
+           
+            <?php echo CHtml::image($this->assets . "/img/logo_header.png", Yii::app()->name, array(
+                    'class' => 'navbar-brand button_switch'
+            )); ?>
+            
+            <?php if($userProducts = ProductUserModel::model()->with(array('product'))->findAllByAttributes(array(
+                'user_id' => Yii::app()->user->getState('id')
+            ), "product.token <> '".Yii::app()->params->token."'")): ?>
+            <div class="drop-list left-drop">
+                <ul>
+                    <?php foreach($userProducts as $product):?>
+                        <li>
+                            <?php echo CHtml::link($product->product->name, $product->product->url_product); ?>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+                <span class="arrow"></span>
+            </div>
+            <?php endif;?>
+        
         </div>
 
 
@@ -27,7 +46,7 @@
             <span class="fa fa-logout"></span>
         </a>
 
-<?php if (!empty($controlPanelMenu)) :?>
+        <?php if (!empty($controlPanelMenu)) :?>
         <div class="control-panel-container navbar-right">
 
             <a href="javascript:;" class="btn btn-proces-white button_switch phantom-btn control-panel-button fa fa-cog"></a>
@@ -42,12 +61,13 @@
             </div>
 
         </div>
-<?php endif;?>
+        <?php endif;?>
 
         <?php if(Yii::app()->user->getState('url_logo')): ?>
         <div class="navbar-right company-logo">
-            <?php echo CHtml::image(Yii::app()->user->getState('url_logo'),
-                Yii::app()->user->getState("company")); ?>
+           
+            <?php echo CHtml::image(Yii::app()->user->getState('url_logo'),Yii::app()->user->getState("company")); ?>
+
         </div>
         <?php endif; ?>
 
