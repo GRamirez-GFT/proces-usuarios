@@ -2,7 +2,7 @@
 return CMap::mergeArray(
     array(
         'basePath' => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
-        'name' => 'Proces | Administración de Proyectos',
+        'name' => 'Proces | Administración de Usuarios',
         'charset' => 'UTF-8',
         'theme' => 'proces-bootstrap',
         'language' => 'es',
