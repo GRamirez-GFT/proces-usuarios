@@ -31,7 +31,7 @@ class LoginAction extends CAction {
                 
                 if ($session = $client->registerSession(Yii::app()->user->getStateKeyPrefix(), $_SERVER["REMOTE_ADDR"],
                     Yii::app()->user->id)) {
-                    setcookie('PROCESID', $session, time() + 3600, '/');
+                    setcookie('PROCESID', $session, time() + 36000, '/');
                     $this->controller->redirect(Yii::app()->user->returnUrl);
                 } else {
                     Yii::app()->user->logout();
