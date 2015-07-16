@@ -18,37 +18,96 @@ class WsController extends CController {
      */
     public function login($userInfo, $token) {
         
-        $request = array();
+        $request = array(
+            'status' => false,
+            'response' => array(),
+            'errors' => array(
+                'company' => 'No existe la empresa ingresada',
+                'user' => 'El usuario ingresado es inválido',
+                'product' => '',
+                'password' => '',
+            ),
+        );
         
-        if ($userInfo['company']) {     
-            $criteria = new CDbCriteria;
-            $criteria->select = '*';
-
-            $criteria->join = 'LEFT JOIN `company` ON (`t`.`company_id` = `company`.`id`) ';
-            $criteria->join .= 'LEFT JOIN `product_company` ON (`product_company`.`company_id` = `company`.`id`) ';
-            $criteria->join .= 'LEFT JOIN `product_user` ON (`product_user`.`user_id` = `t`.`id`) ';
-            $criteria->join .= "LEFT JOIN `product` ON (`product_company`.`product_id` = `product`.`id`) ";
-
-            $criteria->condition = "`t`.`username` = '".$userInfo['username']."' AND ";
-            $criteria->condition .= " `company`.`subdomain` = '".$userInfo['company']."' AND";
-            $criteria->condition .= " `product`.`token` = '".$token."'";
+        $user = false;
+        
+        if ($userInfo['company']) {
             
-            if($token != Yii::app()->params->token) {
-                $criteria->condition .= " AND `product_user`.`product_id` IS NOT NULL";
+            $validProduct = false;
+            
+            if($company = Company::model()->findByAttributes(array(
+                'subdomain' => $userInfo['company']
+            ))) {
+                
+                $request['errors']['company'] = null;
+                
+                if($user = User::model()->findByAttributes(array(
+                    'username' => $userInfo['username'], 
+                    'company_id' => $company->id
+                ))) {
+                    
+                    $request['errors']['user'] = null;
+                }
+            } else {
+                $request['errors']['user'] = null;
             }
 
-            $user = UserModel::model()->find($criteria);
         } else {
-            $user = User::model()->findByAttributes(
-                array(
-                    "id" => 1,
-                    "username" => $userInfo['username'],
-                    "active" => 1
-                ));
+            
+            $request['errors']['company'] = null;
+            
+            $user = User::model()->findByAttributes(array(
+                "id" => 1,
+                'username' => $userInfo['username'], 
+                'active' => 1
+            ));
+            
+            // Basically on this case means that input username is not admin
+            if(!$user) {
+                $request['errors']['company'] = 'Ingrese una empresa';
+                $request['errors']['user'] = null;
+            }
+            
         }
+        
         if ($user) {
-            if (CPasswordHelper::verifyPassword($userInfo['password'], $user->password)) {
-                $request = self::getVars($user);
+            
+            $request['errors']['user'] = null;
+            
+            if($user->id != 1) {
+                $validToken = Product::model()->findByAttributes(array('token' => $token));
+
+                if($validToken) {
+
+                    if(ProductUser::model()->findByAttributes(array(
+                        'product_id' => $validToken->id,
+                        'user_id' => $user->id,
+                    ))) {
+
+                        $validProduct = true;
+                        $request['errors']['product'] = null;
+
+                    }
+
+                }
+            } else {
+                $validProduct = true;
+                $request['errors']['product'] = null;   
+            }
+
+            if($validProduct || $token == Yii::app()->params->token) {
+
+                if (CPasswordHelper::verifyPassword($userInfo['password'], $user->password)) {
+
+                    $request['status'] = true;
+                    $request['response'] = self::getVars($user);
+
+                } else {
+                    $request['errors']['password'] = 'El password ingresado es incorrecto';
+                }
+            } else {
+
+                $request['errors']['product'] = 'El usuario no tiene acceso al producto';
             }
         }
         return json_encode($request);
