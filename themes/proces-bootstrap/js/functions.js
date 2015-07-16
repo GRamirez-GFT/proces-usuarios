@@ -108,7 +108,6 @@ $(function(){
             showActiveDrop();
             
         } else {
-            console.log("fade");
             dropTimer = setTimeout(function() {
                 hideActiveDrop();
             },500);
@@ -124,7 +123,6 @@ $(function(){
         
         if(currentTarget[0] === activeButtonSwitch[0] || currentTarget[0] === activeDrop[0]) {               
             clearTimeout(dropTimer);
-            console.log("show");
             showActiveDrop();
         } else {
             hideActiveDrop();
@@ -133,7 +131,6 @@ $(function(){
     });
 
 	//Cerrar el cuadro de búsqueda cuando se haga click fuera
-
 	body.click(function() {
         hideActiveDrop();
 	});
