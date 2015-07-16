@@ -12,11 +12,13 @@ Yii::app()->clientScript->registerLinkTag('shortcut icon', null, $this->assets .
     ->registerCssFile($this->assets . '/css/font-awesome.min.css')
     ->registerCssFile($this->assets . '/css/select2.css')
     ->registerCssFile($this->assets . '/css/tipsy.css')
+    ->registerCssFile($this->assets . '/css/pwdwidget.css')
     ->registerCssFile($this->assets . '/css/style.css')
     ->registerCoreScript('jquery')
     ->registerScriptFile($this->assets . '/js/bootstrap.min.js', CClientScript::POS_END)
     ->registerScriptFile($this->assets . '/js/select2.min.js', CClientScript::POS_END)
     ->registerScriptFile($this->assets . '/js/jquery.tipsy.min.js', CClientScript::POS_END)
+    ->registerScriptFile($this->assets . '/js/pwdwidget.js', CClientScript::POS_END)
     ->registerScriptFile($this->assets . '/js/functions.js', CClientScript::POS_END);
 ?>
 </head>

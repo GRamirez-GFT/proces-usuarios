@@ -241,22 +241,23 @@ $(function(){
 
 	var panelAnimation = false;
 
-	function openPanel(this_element, custom_view)
-	{
+	function openPanel(this_element, custom_view) {
+
 		if(custom_view === undefined){
+            
 			var data_view = this_element.attr('data-view');
 
-			if(data_view === undefined)
-			{
+			if(data_view === undefined) {
+                
 				data_view = this_element.attr('href');
 			}
 
-		} else{
+		} else {
 			var data_view	= custom_view;
 		}
 		
-		var panel			= $('.active_panel');
-		var sub_panel		= this_element.attr('data-subpanel');
+		var panel = $('.active_panel');
+		var sub_panel = this_element.attr('data-subpanel');
 
 		if (data_view !== undefined && !panelAnimation) {
 				
@@ -268,18 +269,18 @@ $(function(){
 				//Hidde all tooltips
 				this_element.mouseout();
 				//Hidde all choosens
-				if($('.select2-offscreen').length)
-				{
+				if($('.select2-offscreen').length) {
+                    
 					$('.select2-offscreen').select2('close');
 				}
 
-				if($('.proces-panel').length)
-				{
-					if( sub_panel == 'true' && sub_panel !== undefined )
-					{
+				if($('.proces-panel').length) {
+                    
+					if( sub_panel == 'true' && sub_panel !== undefined ) {
+                        
 						//If there are more than two panels, remove active
-						if( $('.proces-panel').length >= 2 )
-						{
+						if( $('.proces-panel').length >= 2 ) {
+                            
 							panel.remove();
 							animate = 0;
 						} else {
@@ -303,8 +304,8 @@ $(function(){
 
 				$('.active_panel').css('right', '-35%')
 								  .css('opacity', 0)
-								  .animate({right: '2%', opacity: 1}, animate, function()
-								  {
+								  .animate({right: '2%', opacity: 1}, animate, function() {
+                    
 										panelAnimation = false;
 										body.css('overflow-x','auto');
 								   });
@@ -317,16 +318,15 @@ $(function(){
 					type: 'POST',
 					data: { ajaxRequest: true },
 					dataType: 'html',
-					success: function(data) 
-					{
+					success: function(data) {
+                        
 						$('.active_panel').append(data);
-
 						createAjaxChoosen();
+                        createPasswordWidget();
 					},
-					error: function(data) 
-					{
+					error: function(data) {
+                        
 						$('.active_panel').append(data);
-						
 					},
 					complete: function() {
 						
@@ -336,22 +336,20 @@ $(function(){
 
 	}
 
-	body.on('click', '.close_panel, .proces-panel .cancel-button', function(event) 
-	{
+	body.on('click', '.close_panel, .proces-panel .cancel-button', function(event) {
+        
 		event.preventDefault();
-
 		closePanel( $(this) );
 	});
 
-	body.on('click', '.content .cancel-button', function(event) 
-	{
+	body.on('click', '.content .cancel-button', function(event) {
+        
 		event.preventDefault();
-
 		window.history.back();
 	});
 
-	$(document).keyup(function(e) 
-	{
+	$(document).keyup(function(e)  {
+        
 	  if (e.keyCode == 27) // Escape
 	  { 
 	  	closePanel();
@@ -360,12 +358,12 @@ $(function(){
 
 
      //Close panel
-    function closePanel(this_element)
-    {
+    function closePanel(this_element) {
+        
 		var current_panel;
 
-		if( this_element === undefined )
-		{
+		if( this_element === undefined ) {
+            
 			current_panel = $('.active_panel');
 		} else{
 			current_panel = this_element.parents('.active_panel');
@@ -373,12 +371,11 @@ $(function(){
 
 		if(current_panel.length)
 		{		
-			if(!panelAnimation)
-			{
+			if(!panelAnimation) {
+                
 				panelAnimation = true;
 
-				if($('.tipsy'))
-				{
+				if($('.tipsy')) {
 					$('.tipsy').remove();
 				}
 
@@ -386,8 +383,7 @@ $(function(){
 
 				current_panel.animate({right: '-30%'}, {
 				    duration: 300,
-				    complete: function()
-				    {
+				    complete: function() {
 				    	body.css('overflow-x', 'auto');
 
 						panelAnimation = false;
@@ -395,13 +391,11 @@ $(function(){
 						$(this).remove();
 
 						//Si no queda ningun panel abierto
-						if( $('.proces-panel').length == 1 )
-						{
+						if( $('.proces-panel').length == 1 ) {
 							$('.proces-panel').addClass('active_panel');
 						}
 
-						if($('.tipsy').length)
-						{
+						if($('.tipsy').length) {
 							$('.tipsy').remove();
 						}
 				    }
@@ -418,12 +412,12 @@ $(function(){
 
 	var someTooltip = $('[class*="mws-tooltip"]');
 
-	if(someTooltip.length)
-	{
+	if(someTooltip.length) {
+        
 		var gravity = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw'];
 
-		for(var i in gravity) 
-		{
+		for(var i in gravity) {
+            
 			$(".mws-tooltip-"+gravity[i]).tipsy({
 				gravity: gravity[i], 
 				delayIn: 250, 
@@ -433,8 +427,7 @@ $(function(){
 			});
 		}
 
-		body.on('click', '.tipsy', function(event)
-		{
+		body.on('click', '.tipsy', function(event) {
 			$(this).remove();
 		});
 	}
@@ -443,10 +436,8 @@ $(function(){
     /* #####	CHOOSEN 				#####################################################				*/
     /* *****				 			*****************************************************				*/
 
-	function format(item, container) 
-	{
-	    if(item.id == 'create')
-	    {
+	function format(item, container) {
+	    if(item.id == 'create') {
 		    return '<a href="#" class="choosen_create panel-trigger" data-subpanel="true">'+item.text+'</a>';
 		} else {
 			return '<p class="choosen_item">'+item.text+'</p>';
@@ -455,14 +446,13 @@ $(function(){
 
 	var selectsCount = 0;
 
-	function createAjaxChoosen()
-	{
+	function createAjaxChoosen() {
 
 		// Normal select choosen
 		var selectChoosen = $('select');
 
-		selectChoosen.each(function()
-		{
+		selectChoosen.each(function() {
+            
 			var this_element    = $(this);
 			var data_new        = this_element.attr('data-new');
 			var placeholder 	= this_element.attr('placeholder');
@@ -475,25 +465,21 @@ $(function(){
 				formatLoadMore     : 'Cargando resultados...',
 			};
 
-			if(data_new)
-			{
-				var customData     = {};
+			if(data_new) {
+				var customData = {};
 				var optionsElement = this_element.find('option');
 
-				optionsElement.each(function(index, el)
-				{
+				optionsElement.each(function(index, el) {
 					data[index] = {id: el.value, text: el.text};
 				});
 
 				thisChoosenConfig.data = customData;
 			}
 
-			if(placeholder !== undefined && thisChoosenConfig.allowClear)
-			{
+			if(placeholder !== undefined && thisChoosenConfig.allowClear) {
 				this_element.prepend('<option></option>');
 
-				if(!this_element.find('option[selected]').length)
-				{
+				if(!this_element.find('option[selected]').length) {
 					this_element.prop("selectedIndex", 0);
 				}	
 			}
@@ -504,10 +490,48 @@ $(function(){
 
 	createAjaxChoosen();
 
+    var passwordWidgetCount = 0;
+    
+    function createPasswordWidget() {
+     
+        var passwordWidgets = $('.password-widget');
+        
+        passwordWidgets.each(function() {
+            
+            var thisWidget = $(this);
+            var name = thisWidget.attr('name');
+            var value = thisWidget.attr('value');
+            
+            if(name !== undefined && !thisWidget.hasClass('active-password-widget')) {
+                
+                passwordWidgetCount++;
+                
+                thisWidget.after('<div id="password-widget-'+passwordWidgetCount+'"></div>');
+                thisWidget.remove();
+                
+                var pwdwidget = new PasswordWidget('password-widget-'+passwordWidgetCount, name);
+                pwdwidget.txtShow = 'Mostrar';
+                pwdwidget.txtMask = 'Ocultar';
+                pwdwidget.txtGenerate = 'Generar';
+                pwdwidget.txtWeak = 'Débil';
+                pwdwidget.txtMedium = 'Medio';
+                pwdwidget.txtGood = 'Seguro';
+                pwdwidget.MakePWDWidget();
+                
+                if(value !== undefined) {
+                    $('[name="'+name+'"]').val(value);  
+                }
+            }
+        });
+        
+    }
+    
+    createPasswordWidget();
 
-	body.on('submit', '.ajax-submit', function(event)
-	{ 
+	body.on('submit', '.ajax-submit', function(event) { 
+        
 		event.preventDefault();
+        
 		var thisForm = $(this);
 		var panel    = thisForm.parents('.proces-panel');
 		var dataForm = 'ajaxRequest=true&'+thisForm.serialize();
@@ -516,32 +540,31 @@ $(function(){
 			url    : thisForm.attr('action'),
 			data   : dataForm,
 			type   : 'POST',
-			success: function(data)
-			{
+			success: function(data) {
+                
 				panel.find('.panel-content, .panel-options').remove();
 				panel.append(data);
                 createAjaxChoosen();
+                createPasswordWidget();
 
 				var gridView = $('.grid-view');
 
-				if(gridView.length)
-				{
+				if(gridView.length) {
 					gridView.yiiGridView('update');
 				}
 			}
 		});
 	});
+    
 
-	body.on('click', '.ajax-delete, .confirm-action', function(event)
-	{ 
+
+	body.on('click', '.ajax-delete, .confirm-action', function(event) { 
 		event.preventDefault();
 
-		if(confirm("Esta acción no se puede deshacer ¿Está seguro de continuar?"))
-		{
+		if(confirm("Esta acción no se puede deshacer ¿Está seguro de continuar?")) {
 			var this_element = $(this);
 
-			if(this_element.hasClass('ajax-delete'))
-			{
+			if(this_element.hasClass('ajax-delete')) {
 				var thisLink    = $(this);
 				var thisLinkUrl = thisLink.attr('href');
 
@@ -549,19 +572,16 @@ $(function(){
 					url    : thisLinkUrl,
 					data   : {},
 					type   : 'POST',
-					success: function(data)
-					{
+					success: function(data) {
 						closePanel();
 
 						var gridView = $('.grid-view');
 
-						if(gridView.length)
-						{
+						if(gridView.length) {
 							gridView.yiiGridView('update');
 						}
-					},
-					error: function(xhr, ajaxOptions, thrownError)
-					{
+                        
+					}, error: function(xhr, ajaxOptions, thrownError) {
 						alert(xhr.responseText);
 					}
 				});

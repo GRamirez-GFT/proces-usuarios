@@ -17,25 +17,39 @@ class UserModel extends User {
     public function rules() {
         return CMap::mergeArray(parent::rules(),
             array(
-                array(
-                    'email',
-                    'email'
-                ),
-                array(
-                    'verify_password, password',
-                    'required'
-                ),
-                array(
-                    'verify_password',
-                    'ruleComparePassword'
-                ),
+                array('email','email'),
+                array('verify_password, password', 'required'),
+                array('verify_password', 'ruleComparePassword'),
+                array('password', 'checkStrength'),
             ));
     }
 
     public function ruleComparePassword($attribute_name, $params) {
         if ($this->password != $this->verify_password) {
-            $this->addError($attribute_name, Yii::t('base', 'passwords not match'));
+            $this->addError($attribute_name, 'Las contraseñas no coinciden.');
         }
+    }
+    
+    public function checkStrength($attribute_name, $params) {
+        
+        $score = 0;
+        
+        /* This validations should coincide with javascript front validations */
+        if (strlen($this->password) > 6) $score++;
+
+        if (preg_match('/[A-Z]/', $this->password) && preg_match('/[A-Z]/', $this->password)) $score++;
+
+        if (preg_match('/\d+/', $this->password)){ $score++;}
+
+        if (preg_match('/[^a-z\d]+/', $this->password) ) $score++;
+
+        if (strlen($this->password) > 12) $score++;
+        
+        /* If less than medium */
+        if($score < 3) {
+            $this->addError($attribute_name, 'Debe tener nivel de seguridad Medio o mayor.');   
+        }
+	   
     }
 
     public function attributeLabels() {
@@ -45,7 +59,7 @@ class UserModel extends User {
                 'verify_password' => Yii::t('models/User', 'verify_password'),
             ));
     }
-
+    
     public function setAttributes($values) {
         if (! is_array($values)) return;
         foreach ($values as $name => $value) {

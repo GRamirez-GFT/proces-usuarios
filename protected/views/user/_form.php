@@ -5,7 +5,7 @@
 		'htmlOptions' => array(
 			'enctype' => 'multipart/form-data',
 			'autocomplete' => 'off',
-			'class' => isset($ajaxRequest) ? 'ajax-submit' : '',
+			'class' => isset($ajaxRequest) ? 'ajax-submit check-password' : 'check-password',
 		)
 	)); 
 
@@ -50,8 +50,12 @@
 
 		<div class="form-group">
 			<?php echo $form->labelEx($model, 'password'); ?>
-			<?php echo $form->passwordField($model, 'password', array('maxlength' => 72)); ?>
+			<?php echo $form->passwordField($model, 'password', array(
+                'maxlength' => 72,
+                'class' => 'password-widget',
+            )); ?>
 			<?php echo $form->error($model, 'password'); ?>
+			
 		</div>
 
 	</div>
@@ -135,3 +139,24 @@
 </div>
 
 <?php $this->endWidget(); ?>
+
+
+<script type="text/javascript">
+
+$(function() {
+
+    
+    
+});
+
+</script>
+
+
+<style type="text/css">
+
+    .pwdopsdiv {
+        margin-top: 6px;
+        display: inline-block;   
+    }
+    
+</style>

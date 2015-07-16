@@ -121,6 +121,10 @@ input:focus {
 	margin-bottom        : 10px;
 }
 
+.panel-content .errorMessage {
+    width: 100%;   
+}
+
 .has-error input, 
 .has-error select, 
 .has-error textarea,
