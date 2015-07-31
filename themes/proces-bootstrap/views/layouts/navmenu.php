@@ -1,4 +1,6 @@
 <?php
+    $menu = array();
+
     if(in_array(Yii::app()->user->role, array('global'))) {
     $menu[] = array('label' => Yii::t('base', 'Companies'), 
                                 'url' => Yii::app()->createAbsoluteUrl('company'),
