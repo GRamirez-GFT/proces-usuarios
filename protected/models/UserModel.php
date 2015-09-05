@@ -21,6 +21,7 @@ class UserModel extends User {
                 array('verify_password, password', 'required'),
                 array('verify_password', 'ruleComparePassword'),
                 array('password', 'checkStrength'),
+                array('username', 'checkUniqueUsername'),
             ));
     }
 
@@ -50,6 +51,18 @@ class UserModel extends User {
             $this->addError($attribute_name, 'Debe tener nivel de seguridad Medio o mayor.');   
         }
 	   
+    }
+    
+    public function checkUniqueUsername($attribute_name, $params) {
+
+        $userExist = User::model()->find("username='".$this->username."' AND company_id='".Yii::app()->user->company_id."'");
+        
+        if($userExist) {
+            if(($userExist->id != $this->id && !empty($this->id)) || empty($this->id)) {
+                $this->addError($attribute_name, 'El alias ingresado ya se ecnuentra en uso.');  
+            }
+        }
+           
     }
 
     public function attributeLabels() {

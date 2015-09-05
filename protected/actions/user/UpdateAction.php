@@ -27,18 +27,21 @@ class UpdateAction extends CAction {
             {
                 $model->list_products = array();
             }
+            
+            if($model->validate()) {
 
-            if ($model->update()) {
-                $redirectParms = array(
-                        'view',
-                        'id' => $model->id
-                );
+                if ($model->update()) {
+                    $redirectParms = array(
+                            'view',
+                            'id' => $model->id
+                    );
 
-                if($ajaxRequest) {
-                    $redirectParms['ajaxRequest'] = true;
-                } 
-                
-                $this->controller->redirect($redirectParms);
+                    if($ajaxRequest) {
+                        $redirectParms['ajaxRequest'] = true;
+                    } 
+
+                    $this->controller->redirect($redirectParms);
+                }
             }
         }
 

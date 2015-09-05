@@ -25,7 +25,7 @@
 	<div class="panel-content">
 <?php endif; ?>
 
-<?php $this->renderPartial('_form', array('model'=>$model, 'ajaxRequest' => $ajaxRequest)); ?>
+<?php $this->renderPartial('_form', array('model'=>$model, 'ajaxRequest' => isset($ajaxRequest) ? $ajaxRequest : null)); ?>
 
 <?php if(isset($ajaxRequest)): ?>
 	</div> <!-- end panel-content -->
