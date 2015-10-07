@@ -9,8 +9,12 @@ class UpdateAction extends CAction {
         $ajaxRequest = Yii::app()->request->getParam('ajaxRequest');
 
         $model->password = null;
+        $initialProducts = $model->list_products;
+        
         if (Yii::app()->request->getPost(get_class($model))) {
+            
             $postAttributes = array();
+            
             if (in_array(Yii::app()->user->role, array("general"))) {
                 foreach (Yii::app()->request->getPost(get_class($model)) as $attribute => $value) {
                     if(!in_array($attribute, array('name','email','password', 'verify_password'))) continue;
@@ -23,8 +27,7 @@ class UpdateAction extends CAction {
 
             $model->setAttributes($postAttributes);
 
-            if(!isset($postAttributes['list_products']))
-            {
+            if(!isset($postAttributes['list_products']) && !in_array(Yii::app()->user->role, array("general"))) {
                 $model->list_products = array();
             }
             
@@ -41,6 +44,9 @@ class UpdateAction extends CAction {
                     } 
 
                     $this->controller->redirect($redirectParms);
+                } else {
+                    $model->list_products = $initialProducts;
+                    $model->password = null;
                 }
             }
         }

@@ -54,7 +54,7 @@
                 'maxlength' => 72,
                 'class' => 'password-widget',
             )); ?>
-			<?php echo $form->error($model, 'password'); ?>
+			<?php echo $form->error($model, 'password', array('style' => 'width: 100%;')); ?>
 			
 		</div>
 
