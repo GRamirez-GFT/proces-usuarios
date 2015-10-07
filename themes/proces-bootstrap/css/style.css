@@ -1001,7 +1001,10 @@ body.body-login {
 }
 
 .info-bar .navbar-brand {
-	height: 60px;
+	padding: 0;
+    padding-top: 11px;
+    padding-left: 20px;
+    height: auto;
     cursor: pointer;
 }
 
