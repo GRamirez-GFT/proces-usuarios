@@ -8,8 +8,11 @@ class CreateAction extends CAction {
         $ajaxRequest = Yii::app()->request->getParam('ajaxRequest');
 
         if (Yii::app()->request->getPost(get_class($model))) {
+            
             assignFile($file, $model, 'url_logo');
+            
             $model->setAttributes(Yii::app()->request->getPost(get_class($model)));
+            
             if ($file) {
                 saveFile($file, $model, 'url_logo');
             }

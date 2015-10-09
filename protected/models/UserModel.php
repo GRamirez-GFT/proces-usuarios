@@ -60,11 +60,13 @@ class UserModel extends User {
     
     public function checkUniqueUsername($attribute_name, $params) {
 
-        $userExist = User::model()->find("username='".$this->username."' AND company_id='".Yii::app()->user->company_id."'");
-        
-        if($userExist) {
-            if(($userExist->id != $this->id && !empty($this->id)) || empty($this->id)) {
-                $this->addError($attribute_name, 'El alias ingresado ya se ecnuentra en uso.');  
+        if(Yii::app()->user->getState('role') == 'company') {
+            $userExist = User::model()->find("username='".$this->username."' AND company_id='".Yii::app()->user->company_id."'");
+
+            if($userExist) {
+                if(($userExist->id != $this->id && !empty($this->id)) || empty($this->id)) {
+                    $this->addError($attribute_name, 'El alias ingresado ya se ecnuentra en uso.');  
+                }
             }
         }
            
@@ -90,9 +92,13 @@ class UserModel extends User {
         $success = false;
         try {
             $transaction = Yii::app()->db->getCurrentTransaction() ? null : Yii::app()->db->beginTransaction();
+            
             $this->date_create = date('Y-m-d');
             $this->active =  1;
-            if(Yii::app()->user->getState('role') == 'company') $this->company_id = Yii::app()->user->company_id;
+            if(Yii::app()->user->getState('role') == 'company') {
+                $this->company_id = Yii::app()->user->company_id;
+            }
+            
             if ($success = parent::save()) {
                 if (is_array($this->list_products)) {
                     foreach ($this->list_products as $item) {
@@ -113,6 +119,7 @@ class UserModel extends User {
                 $transaction ? $transaction->commit() : null;
             }
         } catch (Exception $e) {
+            echo $e;
             $transaction ? $transaction->rollback() : null;
         }
         return $success;
