@@ -1,10 +1,13 @@
 <?php
     $controlPanelMenu = array();
 
-    if (in_array(Yii::app()->user->getState('role'), array("company"))) {
-        $controlPanelMenu[] = array('label' => Yii::t('base', 'Company profile'), 
-                                    'url' => Yii::app()->createAbsoluteUrl('company/view?id='.Yii::app()->user->getState('company_id')),
-                                    );
+    if(Yii::app()->user->hasState('role')) {
+        
+        if (in_array(Yii::app()->user->getState('role'), array("company"))) {
+            $controlPanelMenu[] = array('label' => Yii::t('base', 'Company profile'), 
+                'url' => Yii::app()->createAbsoluteUrl('company/view?id='.Yii::app()->user->getState('company_id')),
+            );
+        }
     }
 ?>
 

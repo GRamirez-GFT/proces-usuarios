@@ -1,25 +1,28 @@
 <?php
     $menu = array();
 
-    if(in_array(Yii::app()->user->role, array('global'))) {
-    $menu[] = array('label' => Yii::t('base', 'Companies'), 
-                                'url' => Yii::app()->createAbsoluteUrl('company'),
-                                'icon' => 'fa fa-building',
-                                'controller' => 'company'
-                                );
-    }
+    if(Yii::app()->user->hasState('role')) {
+        
+        if(in_array(Yii::app()->user->role, array('global'))) {
+        $menu[] = array('label' => Yii::t('base', 'Companies'), 
+                                    'url' => Yii::app()->createAbsoluteUrl('company'),
+                                    'icon' => 'fa fa-building',
+                                    'controller' => 'company'
+                                    );
+        }
 
-    if(in_array(Yii::app()->user->role, array('company'))) {
-    $menu[] = array('label' => Yii::t('base', 'Users'), 
-                                'url' => Yii::app()->createAbsoluteUrl('user'),
-                                'icon' => 'fa fa-users',
-                                'controller' => 'user'
-                                );
-    $menu[] = array('label' => Yii::t('base', 'Products'), 
-                                'url' => Yii::app()->createAbsoluteUrl('product'),
-                                'icon' => 'fa fa-code',
-                                'controller' => 'product'
-                                );
+        if(in_array(Yii::app()->user->role, array('company'))) {
+        $menu[] = array('label' => Yii::t('base', 'Users'), 
+                                    'url' => Yii::app()->createAbsoluteUrl('user'),
+                                    'icon' => 'fa fa-users',
+                                    'controller' => 'user'
+                                    );
+        $menu[] = array('label' => Yii::t('base', 'Products'), 
+                                    'url' => Yii::app()->createAbsoluteUrl('product'),
+                                    'icon' => 'fa fa-code',
+                                    'controller' => 'product'
+                                    );
+        }
     }
 ?>
 
