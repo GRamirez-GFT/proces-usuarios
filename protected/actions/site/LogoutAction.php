@@ -15,11 +15,11 @@ class LogoutAction extends CAction {
             $url = WS_SERVER.'/logout';
             $headers = array(
                 "Accept: application/json", 
-                "X-REST-USERNAME: " . Yii::app()-user->username, 
-                "X-REST-PASSWORD: " . Yii::app()-user->password, 
+                "X-REST-USERNAME: " . Yii::app()->user->username, 
+                "X-REST-PASSWORD: ", 
                 "X-REST-TOKEN: " . Yii::app()->params->token, 
             );
-            $postData = '{"company": "'.Yii::app()->user->subdomain.'", "session_id": "'.$_COOKIE['PROCESID'].'"}';
+            $postData = '{"company": "'.Yii::app()->user->getState('subdomain').'", "session_id": "'.$_COOKIE['PROCESID'].'"}';
             
             $loginCurl = curl_init();
             curl_setopt($loginCurl, CURLOPT_URL, $url);
@@ -34,8 +34,6 @@ class LogoutAction extends CAction {
                 
             curl_close($loginCurl);
             
-            $client = new SoapClient(WS_SERVER);
-            $client->destroySession($_COOKIE['PROCESID'], $_SERVER["REMOTE_ADDR"], Yii::app()->user->id);
             setcookie('PROCESID', null, time() - 36000, '/');
         }
         Yii::app()->user->logout();

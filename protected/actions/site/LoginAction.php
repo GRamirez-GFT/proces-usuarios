@@ -39,34 +39,36 @@ class LoginAction extends CAction {
             
             if ($loginResponse->success && Yii::app()->user->login(new CUserIdentity($model->username, $model->password))) {
                 
-                $loginResponse->data = json_decode(json_encode($loginResponse->data), true);
+                $loginResponse->user = json_decode(json_encode($loginResponse->user), true);
                 
-                foreach ($loginResponse->data as $key => $value) {
-                    echo $key.'='.$value.'</br>';
+                foreach ($loginResponse->user as $key => $value) {
                     Yii::app()->user->setState($key, $value);
                 }
                 
-                setcookie('PROCESID', $loginResponse->data['session_id'], time() + 36000, '/');
+                setcookie('PROCESID', $loginResponse->user['session_id'], time() + 36000, '/');
                 $this->controller->redirect(Yii::app()->user->returnUrl);
                 
             } else {
-                
-                $loginResponse->errors = json_decode(json_encode($loginResponse->errors), true);
-                
-                if(!empty($loginResponse->errors['product'])) {
-                    $model->addError('username', $loginResponse->errors['product']);
-                }
-                
-                if(!empty($loginResponse->errors['company'])) {
-                    $model->addError('company', $loginResponse->errors['company']);
-                }
-                
-                if(!empty($loginResponse->errors['user'])) {
-                    $model->addError('username', $loginResponse->errors['user']);
-                }
-                
-                if(!empty($loginResponse->errors['password'])) {
-                    $model->addError('password', $loginResponse->errors['password']);
+ 
+                if(property_exists($loginResponse, 'errors')) {
+                    
+                    $loginResponse->errors = json_decode(json_encode($loginResponse->errors), true);
+
+                    if(!empty($loginResponse->errors['product'])) {
+                        $model->addError('username', $loginResponse->errors['product']);
+                    }
+
+                    if(!empty($loginResponse->errors['company'])) {
+                        $model->addError('company', $loginResponse->errors['company']);
+                    }
+
+                    if(!empty($loginResponse->errors['user'])) {
+                        $model->addError('username', $loginResponse->errors['user']);
+                    }
+
+                    if(!empty($loginResponse->errors['password'])) {
+                        $model->addError('password', $loginResponse->errors['password']);
+                    }
                 }
             }
         }

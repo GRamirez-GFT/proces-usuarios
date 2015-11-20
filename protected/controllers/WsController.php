@@ -1,6 +1,5 @@
 <?php
-//Yii::app()->user->login(new CUserIdentity("asd", "123"),0);
-//Yii::app()->user->logout();
+
 class WsController extends CController {
     
     public function accessRules() {
@@ -257,11 +256,85 @@ class WsController extends CController {
 //    }
 //    
 
-    public static function validateAccess($username, $password, $token, $company) {
+//
+//    /**
+//     *
+//     * @param integer $user_id
+//     * @param string $token
+//     * @return boolean @soap
+//     */
+//    public function validateProduct($user_id, $token) {
+//        $request = null;
+//        if ($user_id > 1) {
+//            $request = Yii::app()->db->createCommand()
+//                ->select("user_id")
+//                ->from("product_user")
+//                ->join("product p", "p.id=product_id AND p.token='{$token}'")
+//                ->where("user_id={$user_id}")
+//                ->limit("1")
+//                ->queryScalar();
+//        } else {
+//            if($token == Yii::app()->params->token) {
+//                return true;   
+//            }
+//        }
+//        return $request;
+//    }
+//
+//   /**
+//     *
+//     * @param integer $user_id
+//     * @param string $token
+//     * @return boolean @soap
+//    */
+//    public function registerProductUser($user_id, $token) {
+//        
+//        $product = Product::model()->findByAttributes(array('token'=> $token));
+//        
+//        if(!$product) return false;
+//        
+//        $productUser = ProductUser::model()->findByAttributes(array('user_id'=>$user_id, 'product_id' => $product->id));
+//        
+//        if($productUser) {
+//
+//            $productUser->is_used = '1';
+//        
+//            return $productUser->update() ? true : false;
+//        } else {
+//            return true;
+//        }
+//        
+//    }
+//
+//   /**
+//     *
+//     * @param integer $user_id
+//     * @param string $token
+//     * @return boolean @soap
+//    */
+//    public function unregisterProductUser($user_id, $token) {
+//        
+//        $product = Product::model()->findByAttributes(array('token'=> $token));
+//        
+//        if(!$product) return false;
+//        
+//        $productUser = ProductUser::model()->findByAttributes(array('user_id'=>$user_id, 'product_id' => $product->id));
+//        
+//        if($productUser) {
+//            $productUser->is_used = false;
+//
+//            return $productUser->update() ? true : false;
+//        } else {
+//            return true;
+//        }
+//        
+//    }
+    
+    public static function validateAccess($username, $password, $token, $company, $checkPassword = true) {
                 
         $result = array(
             'success' => false,
-            'data' => array(),
+            'user' => array(),
             'errors' => array(
                 'company' => '',
                 'user' => '',
@@ -338,10 +411,10 @@ class WsController extends CController {
 
             if($validProduct || $token == Yii::app()->params->token) {
 
-                if (CPasswordHelper::verifyPassword($password, $user->password)) {
+                if (CPasswordHelper::verifyPassword($password, $user->password) || !$checkPassword) {
 
                     $result['success'] = true;
-                    $result['data'] = self::getUserData($user);
+                    $result['user'] = self::getUserData($user);
 
                 } else {
                     $result['errors']['password'] = 'El password ingresado es incorrecto';
@@ -379,79 +452,6 @@ class WsController extends CController {
         }
         return $request;
     }
-//
-//    /**
-//     *
-//     * @param integer $user_id
-//     * @param string $token
-//     * @return boolean @soap
-//     */
-//    public function validateProduct($user_id, $token) {
-//        $request = null;
-//        if ($user_id > 1) {
-//            $request = Yii::app()->db->createCommand()
-//                ->select("user_id")
-//                ->from("product_user")
-//                ->join("product p", "p.id=product_id AND p.token='{$token}'")
-//                ->where("user_id={$user_id}")
-//                ->limit("1")
-//                ->queryScalar();
-//        } else {
-//            if($token == Yii::app()->params->token) {
-//                return true;   
-//            }
-//        }
-//        return $request;
-//    }
-//
-//   /**
-//     *
-//     * @param integer $user_id
-//     * @param string $token
-//     * @return boolean @soap
-//    */
-//    public function registerProductUser($user_id, $token) {
-//        
-//        $product = Product::model()->findByAttributes(array('token'=> $token));
-//        
-//        if(!$product) return false;
-//        
-//        $productUser = ProductUser::model()->findByAttributes(array('user_id'=>$user_id, 'product_id' => $product->id));
-//        
-//        if($productUser) {
-//
-//            $productUser->is_used = '1';
-//        
-//            return $productUser->update() ? true : false;
-//        } else {
-//            return true;
-//        }
-//        
-//    }
-//
-//   /**
-//     *
-//     * @param integer $user_id
-//     * @param string $token
-//     * @return boolean @soap
-//    */
-//    public function unregisterProductUser($user_id, $token) {
-//        
-//        $product = Product::model()->findByAttributes(array('token'=> $token));
-//        
-//        if(!$product) return false;
-//        
-//        $productUser = ProductUser::model()->findByAttributes(array('user_id'=>$user_id, 'product_id' => $product->id));
-//        
-//        if($productUser) {
-//            $productUser->is_used = false;
-//
-//            return $productUser->update() ? true : false;
-//        } else {
-//            return true;
-//        }
-//        
-//    }
     
     public function restEvents() {
         
@@ -465,7 +465,7 @@ class WsController extends CController {
             if(!isset($_SERVER['HTTP_X_'.$application_id.'_TOKEN'])) {
                 return false;
             } else {
-                /* Valida si es un token válido */
+                 /*Valida si es un token válido */
                 if(!Product::model()->exists("t.token = :token", array(':token' => $_SERVER['HTTP_X_'.$application_id.'_TOKEN']))) {
                     return false;
                 }
@@ -474,7 +474,7 @@ class WsController extends CController {
             if(isset($_GET['session_id'])) {
 
                 /* Valida si es un id de sesión válido */
-                $userValidation = self::validateAccess($username, $password, $token, $company);
+                $userValidation = self::validateAccess($username, $password, $token, $company, false);
                 
                 if($userValidation['success']) {
                     
@@ -542,11 +542,11 @@ class WsController extends CController {
                     $userSession = new UserSession();
                     $userSession->session = md5(uniqid() . date("YmdHis"));
                     $userSession->ipv4 = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
-                    $userSession->user_id = $user->id;
+                    $userSession->user_id = $response['user']['id'];
 
                     $userSession->save();
 
-                    $response['data']['session_id'] = $userSession->session; 
+                    $response['user']['session_id'] = $userSession->session; 
                 }
                 
                 return CJSON::encode($response);
@@ -589,7 +589,7 @@ class WsController extends CController {
                 $response = self::validateAccess($username, $password, $token, $company);
                 
                 if($response['success']) {
-                    
+                    echo "ADSA";
                 }
                 
                 return CJSON::encode($response);
