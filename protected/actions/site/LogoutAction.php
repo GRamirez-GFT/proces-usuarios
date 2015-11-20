@@ -10,32 +10,39 @@ class LogoutAction extends CAction {
             ));
         }
         
-        if (isset($_COOKIE['PROCESID']) && !Yii::app()->user->isGuest) {
+        $logoutCurlSuccess = true;
+        
+        if (isset($_COOKIE['PROCESID'])) {
             
             $url = WS_SERVER.'/logout';
+            $postData = '{"session_id": "'.$_COOKIE['PROCESID'].'"}';
             $headers = array(
                 "Accept: application/json", 
-                "X-REST-USERNAME: " . Yii::app()->user->username, 
-                "X-REST-PASSWORD: ", 
+                "X-REST-USERNAME: default", 
+                "X-REST-PASSWORD: default", 
                 "X-REST-TOKEN: " . Yii::app()->params->token, 
             );
-            $postData = '{"company": "'.Yii::app()->user->getState('subdomain').'", "session_id": "'.$_COOKIE['PROCESID'].'"}';
             
-            $loginCurl = curl_init();
-            curl_setopt($loginCurl, CURLOPT_URL, $url);
-            curl_setopt($loginCurl, CURLOPT_RETURNTRANSFER, TRUE);
-            curl_setopt($loginCurl, CURLOPT_FOLLOWLOCATION, TRUE);
-            curl_setopt($loginCurl, CURLOPT_POST, TRUE);
-            curl_setopt($loginCurl, CURLOPT_POSTFIELDS, $postData);
-            curl_setopt($loginCurl, CURLOPT_HTTPHEADER, $headers); 
-            $loginResponse = curl_exec($loginCurl);
+            $logoutCurl = curl_init();
+            curl_setopt($logoutCurl, CURLOPT_URL, $url);
+            curl_setopt($logoutCurl, CURLOPT_RETURNTRANSFER, TRUE);
+            curl_setopt($logoutCurl, CURLOPT_FOLLOWLOCATION, TRUE);
+            curl_setopt($logoutCurl, CURLOPT_POST, TRUE);
+            curl_setopt($logoutCurl, CURLOPT_POSTFIELDS, $postData);
+            curl_setopt($logoutCurl, CURLOPT_HTTPHEADER, $headers); 
+            $logoutResponse = curl_exec($logoutCurl);
             
-            $loginResponse = json_decode($loginResponse);
-                
-            curl_close($loginCurl);
+            if($logoutResponse !== false) {
+                $logoutResponse = json_decode($logoutResponse);
+                $logoutSuccess = property_exists($logoutResponse, 'success') ? $logoutResponse->success : false;
+            }
             
-            setcookie('PROCESID', null, time() - 36000, '/');
+            unset($_COOKIE['PROCESID']);
+            setcookie('PROCESID', null, -1, '/');
+            
+            curl_close($logoutCurl);
         }
+        
         Yii::app()->user->logout();
         Yii::app()->controller->redirect(Yii::app()->homeUrl);
     }

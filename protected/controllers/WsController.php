@@ -330,7 +330,54 @@ class WsController extends CController {
 //        
 //    }
     
-    public static function validateAccess($username, $password, $token, $company, $checkPassword = true) {
+    private static function validateProductAccess($user, $token) {
+        
+       $userHasProduct = ProductUser::model()->with(array('product'))->exists("product.token = :token AND t.user_id = :user_id",
+            array(
+            ':token' => $token,
+            ':user_id' => $user->id,
+        ));
+
+        $companyHasProduct = ProductCompany::model()->with(array('product'))->exists("product.token = :token AND t.company_id = :company_id",
+            array(
+            ':token' => $token,
+            ':company_id' => $user->company_id,
+        ));
+
+        if($companyHasProduct && ($userHasProduct || $token == Yii::app()->params->token)) {
+            return true;
+        } else {
+            return false;
+        }
+        
+    }
+    
+    private static function validateSession($sessionId, $token) {
+                
+        $result = array(
+            'success' => false,
+            'user' => null,
+            'error' => null,
+        );
+        
+        if(empty($sessionId)) {
+            $result['error'] = "El ID de sesión no puede estar vacío"; 
+        }
+        
+        $session = UserSession::model()->findByAttributes(array('session' => $sessionId), "time_logout IS NULL");
+        
+        if($session) {
+            $result['success'] = true;
+            $result['user'] = self::getUserData($session->user);
+        } else {
+            $result['error'] = "El ID de sesión es inválido";
+        }
+        
+        return $result;
+        
+    }
+    
+    private static function validateAccess($username, $password, $token, $company, $checkPassword = true) {
                 
         $result = array(
             'success' => false,
@@ -357,10 +404,12 @@ class WsController extends CController {
 
                 if($user = User::model()->findByAttributes(array(
                     'username' => $username, 
-                    'company_id' => $company->id
+                    'company_id' => $company->id,
                 ))) {
 
                     $result['errors']['user'] = null;
+                } else {
+                    
                 }
             } else {
                 $result['errors']['user'] = null;
@@ -387,50 +436,49 @@ class WsController extends CController {
 
         if ($user) {
 
-            $result['errors']['user'] = null;
+            if($user->active) {
+                
+                $result['errors']['user'] = null;
 
-            if($user->id != 1) {
-                $validToken = Product::model()->findByAttributes(array('token' => $token));
+                if($user->id != 1) {
 
-                if($validToken) {
-
-                    if(ProductUser::model()->findByAttributes(array(
-                        'product_id' => $validToken->id,
-                        'user_id' => $user->id,
-                    ))) {
-
+                    if(self::validateProductAccess($user, $token)) {
+                        
                         $validProduct = true;
                         $result['errors']['product'] = null;
+                        
+                    } else {
+                        $result['errors']['product'] = "No cuenta con acceso a este producto";
                     }
-                }
-                
-            } else {
-                $validProduct = true;
-                $result['errors']['product'] = null;   
-            }
-
-            if($validProduct || $token == Yii::app()->params->token) {
-
-                if (CPasswordHelper::verifyPassword($password, $user->password) || !$checkPassword) {
-
-                    $result['success'] = true;
-                    $result['user'] = self::getUserData($user);
 
                 } else {
-                    $result['errors']['password'] = 'El password ingresado es incorrecto';
+                    $validProduct = true;
+                    $result['errors']['product'] = null;   
+                }
+
+                if($validProduct) {
+
+                    if (CPasswordHelper::verifyPassword($password, $user->password) || !$checkPassword) {
+
+                        $result['success'] = true;
+                        $result['user'] = self::getUserData($user);
+
+                    } else {
+                        $result['errors']['password'] = 'El password ingresado es incorrecto';
+                    }
                 }
             } else {
-
-                $result['errors']['product'] = 'El usuario no tiene acceso al producto';
+                $result['errors']['user'] = 'El usuario se encuentra desactivado';   
             }
         } else {
-            $result['errors']['usuario'] = 'El usuario ingresado es inválido';  
+            $result['errors']['user'] = 'El usuario ingresado es inválido';  
         }
         
         return $result;
     }
     
-    public static function getUserData($user, $product = null) {
+    private static function getUserData($user) {
+        
         $request = array();
         $request["id"] = $user->id;
         $request["name"] = $user->name;
@@ -451,6 +499,7 @@ class WsController extends CController {
             $request["role"] = $user->id == 1 ? "global" : "general";
         }
         return $request;
+        
     }
     
     public function restEvents() {
@@ -462,33 +511,17 @@ class WsController extends CController {
         
         $this->onRest('req.auth.user', function($application_id, $username, $password) {
 
-            if(!isset($_SERVER['HTTP_X_'.$application_id.'_TOKEN'])) {
+            $token = isset($_SERVER['HTTP_X_'.$application_id.'_TOKEN']) ? $_SERVER['HTTP_X_'.$application_id.'_TOKEN'] : false;
+            
+            if(!$token) {
                 return false;
             } else {
                  /*Valida si es un token válido */
-                if(!Product::model()->exists("t.token = :token", array(':token' => $_SERVER['HTTP_X_'.$application_id.'_TOKEN']))) {
+                if(Product::model()->exists("t.token = :token", array(':token' => $token))) {
+                    return true;
+                } else {
                     return false;
                 }
-            }
-
-            if(isset($_GET['session_id'])) {
-
-                /* Valida si es un id de sesión válido */
-                $userValidation = self::validateAccess($username, $password, $token, $company, false);
-                
-                if($userValidation['success']) {
-                    
-                }
-                
-                return true;
-
-            } else if(strpos($_SERVER['REQUEST_URI'],'/api/ws/login') !== false) {
-
-                /* Permite ingresar unicamente si se quiere loguear el usuario */
-                return true;
-
-            } else {
-                return false;
             }
                 
         });
@@ -559,15 +592,15 @@ class WsController extends CController {
         
        
         /*
-         * website-url/api/ws/login
+         * website-url/api/ws/logout
          * 
          *  Ejemplo de headers:
-         *  X-REST-USERNAME : admin
-         *  X-REST-PASSWORD : 12345
-         *  X-REST-TOKEN : EHTJ223SFJ34
+         *  X-REST-USERNAME : ""
+         *  X-REST-PASSWORD : ""
+         *  X-REST-TOKEN : CE6202AY6DD28E3B
          *
          *  Ejemplo de parametros POST:
-         *  company: iconomx
+         *  session_id: 6debc49305145b3beeda381ad983fdea
          *
          * El resultado:
          * {
@@ -581,15 +614,23 @@ class WsController extends CController {
             
             try {
                 
-                $username = isset($_SERVER['HTTP_X_REST_USERNAME']) ? $_SERVER['HTTP_X_REST_USERNAME'] : '';
-                $password = isset($_SERVER['HTTP_X_REST_PASSWORD']) ? $_SERVER['HTTP_X_REST_PASSWORD'] : '';
-                $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : '';
-                $company = isset($data['company']) ? $data['company'] : '';
-
-                $response = self::validateAccess($username, $password, $token, $company);
+                $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : false;
+                $sessionId = isset($data['session_id']) ? $data['session_id'] : null;
                 
-                if($response['success']) {
-                    echo "ADSA";
+                $response= array(
+                    'success' => false,
+                );
+    
+                $sessionValidation = self::validateSession($sessionId, $token);
+                
+                if($sessionValidation['success']) {
+
+                    $session = UserSession::model()->findByAttributes(array('session' => $sessionId));
+                    $session->time_logout = date('Y-m-d H:i:s', time());
+
+                    if($session->update()) {
+                        $response['success'] = true;
+                    }
                 }
                 
                 return CJSON::encode($response);

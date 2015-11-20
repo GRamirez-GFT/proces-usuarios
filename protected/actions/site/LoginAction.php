@@ -33,41 +33,48 @@ class LoginAction extends CAction {
             curl_setopt($loginCurl, CURLOPT_HTTPHEADER, $headers); 
             $loginResponse = curl_exec($loginCurl);
             
-            $loginResponse = json_decode($loginResponse);
+            if($loginResponse !== false) {
                 
-            curl_close($loginCurl);
-            
-            if ($loginResponse->success && Yii::app()->user->login(new CUserIdentity($model->username, $model->password))) {
-                
-                $loginResponse->user = json_decode(json_encode($loginResponse->user), true);
-                
-                foreach ($loginResponse->user as $key => $value) {
-                    Yii::app()->user->setState($key, $value);
-                }
-                
-                setcookie('PROCESID', $loginResponse->user['session_id'], time() + 36000, '/');
-                $this->controller->redirect(Yii::app()->user->returnUrl);
-                
-            } else {
- 
-                if(property_exists($loginResponse, 'errors')) {
-                    
-                    $loginResponse->errors = json_decode(json_encode($loginResponse->errors), true);
+                $loginResponse = json_decode($loginResponse);
 
-                    if(!empty($loginResponse->errors['product'])) {
-                        $model->addError('username', $loginResponse->errors['product']);
+                curl_close($loginCurl);
+
+                $loginSuccess = property_exists($loginResponse, 'success') ? $loginResponse->success : false;
+
+                if ($loginSuccess) {
+
+                    Yii::app()->user->login(new CUserIdentity($model->username, $model->password));
+
+                    $loginResponse->user = json_decode(json_encode($loginResponse->user), true);
+
+                    foreach ($loginResponse->user as $key => $value) {
+                        Yii::app()->user->setState($key, $value);
                     }
 
-                    if(!empty($loginResponse->errors['company'])) {
-                        $model->addError('company', $loginResponse->errors['company']);
-                    }
+                    setcookie('PROCESID', $loginResponse->user['session_id'], time() + 36000, '/');
+                    $this->controller->redirect(Yii::app()->user->returnUrl);
 
-                    if(!empty($loginResponse->errors['user'])) {
-                        $model->addError('username', $loginResponse->errors['user']);
-                    }
+                } else {
 
-                    if(!empty($loginResponse->errors['password'])) {
-                        $model->addError('password', $loginResponse->errors['password']);
+                    if(property_exists($loginResponse, 'errors')) {
+
+                        $loginResponse->errors = json_decode(json_encode($loginResponse->errors), true);
+
+                        if(!empty($loginResponse->errors['product'])) {
+                            $model->addError('username', $loginResponse->errors['product']);
+                        }
+
+                        if(!empty($loginResponse->errors['company'])) {
+                            $model->addError('company', $loginResponse->errors['company']);
+                        }
+
+                        if(!empty($loginResponse->errors['user'])) {
+                            $model->addError('username', $loginResponse->errors['user']);
+                        }
+
+                        if(!empty($loginResponse->errors['password'])) {
+                            $model->addError('password', $loginResponse->errors['password']);
+                        }
                     }
                 }
             }
