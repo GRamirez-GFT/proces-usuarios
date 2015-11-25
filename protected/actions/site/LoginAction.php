@@ -37,13 +37,11 @@ class LoginAction extends CAction {
                 
                 $loginResponse = json_decode($loginResponse);
 
-                curl_close($loginCurl);
-
                 $loginSuccess = property_exists($loginResponse, 'success') ? $loginResponse->success : false;
 
                 if ($loginSuccess) {
 
-                    Yii::app()->user->login(new CUserIdentity($model->username, $model->password));
+                    Yii::app()->user->login(new CUserIdentity($model->username, ''));
 
                     $loginResponse->user = json_decode(json_encode($loginResponse->user), true);
 
@@ -78,6 +76,8 @@ class LoginAction extends CAction {
                     }
                 }
             }
+            
+            curl_close($loginCurl);
         }
         $this->controller->render('login', array(
             'model' => $model

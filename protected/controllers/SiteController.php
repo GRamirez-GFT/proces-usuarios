@@ -7,7 +7,7 @@ class SiteController extends MyController {
     public function filters() {
         return array(
             'accessControl',
-            array('application.filters.GlobalAccessControlFilter - login, logout, error'),
+            array('application.filters.GlobalAccessControlFilter - error'),
             'postOnly + delete'
         );
     }

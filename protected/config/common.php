@@ -21,7 +21,7 @@ return CMap::mergeArray(
                 'widgets' => require_once dirname(__FILE__) . '/widgets.php'
             ),
             'user' => array(
-                'authTimeout' => 3600
+                'authTimeout' => 3600000
             ),
             'urlManager' => array(
                 'urlFormat' => 'path',

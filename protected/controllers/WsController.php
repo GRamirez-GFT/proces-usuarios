@@ -29,173 +29,6 @@ class WsController extends CController {
             ),
         );
     }
-//    
-//    /**
-//     *
-//     * @param array $userInfo
-//     * @param string $token
-//     * @return string @soap
-//     */
-//    public function login($userInfo, $token) {
-//        
-//        $request = array(
-//            'success' => false,
-//            'response' => array(),
-//            'errors' => array(
-//                'company' => 'No existe la compañia ingresada',
-//                'user' => 'El usuario ingresado es inválido',
-//                'product' => '',
-//                'password' => '',
-//            ),
-//        );
-//        
-//        $user = false;
-//        
-//        if ($userInfo['company']) {
-//            
-//            $validProduct = false;
-//            
-//            if($company = Company::model()->findByAttributes(array(
-//                'subdomain' => $userInfo['company']
-//            ))) {
-//                
-//                $request['errors']['company'] = null;
-//                
-//                if($user = User::model()->findByAttributes(array(
-//                    'username' => $userInfo['username'], 
-//                    'company_id' => $company->id
-//                ))) {
-//                    
-//                    $request['errors']['user'] = null;
-//                }
-//            } else {
-//                $request['errors']['user'] = null;
-//            }
-//
-//        } else {
-//            
-//            $request['errors']['company'] = null;
-//            
-//            $user = User::model()->findByAttributes(array(
-//                "id" => 1,
-//                'username' => $userInfo['username'], 
-//                'active' => 1
-//            ));
-//            
-//            // Basically on this case means that input username is not admin
-//            if(!$user) {
-//                $request['errors']['company'] = 'Ingrese una compañia';
-//                $request['errors']['user'] = null;
-//            }
-//            
-//        }
-//        
-//        if ($user) {
-//            
-//            $request['errors']['user'] = null;
-//            
-//            if($user->id != 1) {
-//                $validToken = Product::model()->findByAttributes(array('token' => $token));
-//
-//                if($validToken) {
-//
-//                    if(ProductUser::model()->findByAttributes(array(
-//                        'product_id' => $validToken->id,
-//                        'user_id' => $user->id,
-//                    ))) {
-//
-//                        $validProduct = true;
-//                        $request['errors']['product'] = null;
-//
-//                    }
-//
-//                }
-//            } else {
-//                $validProduct = true;
-//                $request['errors']['product'] = null;   
-//            }
-//
-//            if($validProduct || $token == Yii::app()->params->token) {
-//
-//                if (CPasswordHelper::verifyPassword($userInfo['password'], $user->password)) {
-//
-//                    $request['success'] = true;
-//                    $request['response'] = self::getUserData($user);
-//
-//                } else {
-//                    $request['errors']['password'] = 'El password ingresado es incorrecto';
-//                }
-//            } else {
-//
-//                $request['errors']['product'] = 'El usuario no tiene acceso al producto';
-//            }
-//        }
-//        return json_encode($request);
-//    }
-//
-//    /**
-//     *
-//     * @param integer $user_id
-//     * @return string @soap
-//     */
-//    public function startSession($user_id) {
-//        $request = array();
-//        if ($user = User::model()->findByAttributes(
-//            array(
-//                "id" => $user_id,
-//                "active" => 1
-//            ))) {
-//            $request = self::getUserData($user);
-//        }
-//        return json_encode($request);
-//    }
-//
-//    /**
-//     *
-//     * @param string $sesion
-//     * @param string $ipv4
-//     * @param integer $user_id
-//     * @return string @soap
-//     */
-//    public function registerSession($sesion, $ipv4, $user_id) {
-//        $user = new UserSession();
-//        $user->session = md5($sesion . date("YmdHis"));
-//        $user->ipv4 = $ipv4;
-//        $user->user_id = $user_id;
-//        return $user->save() ? $user->session : null;
-//    }
-//
-//    /**
-//     *
-//     * @param string $session
-//     * @param string $ipv4
-//     * @return integer @soap
-//     */
-//    public function validateSession($session, $ipv4) {
-//        return Yii::app()->db->createCommand()
-//            ->select("user_id")
-//            ->from("user_session")
-//            ->where("session='{$session}' AND ipv4='{$ipv4}' AND time_logout IS NULL")
-//            ->limit("1")
-//            ->queryScalar();
-//    }
-//
-//    /**
-//     *
-//     * @param string $session
-//     * @param string $ipv4
-//     * @return boolean @soap
-//     */
-//    public function destroySession($session, $ipv4) {
-//        return Yii::app()->db->createCommand()->update("user_session",
-//            array(
-//                "time_logout" => date("Y-m-d H:i:s")
-//            ), "session=:t0 AND ipv4=:t1",
-//            array(
-//                ":t0" => $session,
-//                ":t1" => $ipv4
-//            ));
-//    }
 //
 //    /**
 //     *
@@ -253,32 +86,6 @@ class WsController extends CController {
 //            ->order("user.username ASC")
 //            ->queryRow();
 //        return json_encode($request);
-//    }
-//    
-
-//
-//    /**
-//     *
-//     * @param integer $user_id
-//     * @param string $token
-//     * @return boolean @soap
-//     */
-//    public function validateProduct($user_id, $token) {
-//        $request = null;
-//        if ($user_id > 1) {
-//            $request = Yii::app()->db->createCommand()
-//                ->select("user_id")
-//                ->from("product_user")
-//                ->join("product p", "p.id=product_id AND p.token='{$token}'")
-//                ->where("user_id={$user_id}")
-//                ->limit("1")
-//                ->queryScalar();
-//        } else {
-//            if($token == Yii::app()->params->token) {
-//                return true;   
-//            }
-//        }
-//        return $request;
 //    }
 //
 //   /**
@@ -367,8 +174,18 @@ class WsController extends CController {
         $session = UserSession::model()->findByAttributes(array('session' => $sessionId), "time_logout IS NULL");
         
         if($session) {
-            $result['success'] = true;
-            $result['user'] = self::getUserData($session->user);
+            
+            $hasProductAccess = self::validateProductAccess($session->user, $token);
+            
+            if(($session->user->id == 1 && $token == Yii::app()->params->token) || $hasProductAccess) {
+                $result['success'] = true;
+                $result['user'] = self::getUserData($session->user);
+            } else {
+                $result['success'] = false;
+                $result['user'] = array();
+                $result['error'] = "No cuenta con acceso a este producto";
+            }
+            
         } else {
             $result['error'] = "El ID de sesión es inválido";
         }
@@ -440,20 +257,16 @@ class WsController extends CController {
                 
                 $result['errors']['user'] = null;
 
-                if($user->id != 1) {
+                $hasProductAccess = self::validateProductAccess($user, $token);
+                
+                if(($user->id == 1 && $token == Yii::app()->params->token) || $hasProductAccess) {
 
-                    if(self::validateProductAccess($user, $token)) {
-                        
-                        $validProduct = true;
-                        $result['errors']['product'] = null;
-                        
-                    } else {
-                        $result['errors']['product'] = "No cuenta con acceso a este producto";
-                    }
+                    $validProduct = true;
+                    $result['errors']['product'] = null;
 
                 } else {
-                    $validProduct = true;
-                    $result['errors']['product'] = null;   
+                    $validProduct = false;
+                    $result['errors']['product'] = "No cuenta con acceso a este producto";
                 }
 
                 if($validProduct) {
@@ -631,6 +444,382 @@ class WsController extends CController {
                     if($session->update()) {
                         $response['success'] = true;
                     }
+                }
+                
+                return CJSON::encode($response);
+                
+            } catch (Exception $e) {
+                throw new CHttpException(420, 'Error: ' . $e->getMessage());
+            }
+             
+        });
+        
+        /*
+         * website-url/api/ws/validateSession
+         * 
+         *  Ejemplo de headers:
+         *  X-REST-USERNAME : ""
+         *  X-REST-PASSWORD : ""
+         *  X-REST-TOKEN : CE6202AY6DD28E3B
+         *
+         *  Ejemplo de parametros POST:
+         *  session_id: 6debc49305145b3beeda381ad983fdea
+         *
+         * El resultado:
+         * {
+         *  "success": true OR false si no pasó alguna validación,
+         *  "user": {
+         *      "id": user id,
+         *      "name": user name,
+         *      "username": user alias,
+         *      "company_id": company id,
+         *      "company": company name,
+         *      "subdomain": company subdomain,
+         *      "url_logo": url string OR null,
+         *      "role": global OR company OR general,
+         *  }
+         *  "errors": descripcion de error,
+         * }
+         *
+         */
+        
+        $this->onRest('req.post.validateSession.render', function($data) {
+            
+            try {
+                
+                $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : false;
+                $sessionId = isset($data['session_id']) ? $data['session_id'] : null;
+                
+                $response= array(
+                    'success' => false,
+                    'user' => null,
+                    'error' => null,
+                );
+    
+                $sessionValidation = self::validateSession($sessionId, $token);
+                
+                if($sessionValidation['success']) {
+                    $response['user'] = $sessionValidation['user'];
+                    $response['success'] = true;
+                } else {
+                    $response['error'] = $sessionValidation['error'];   
+                }
+                
+                return CJSON::encode($response);
+                
+            } catch (Exception $e) {
+                throw new CHttpException(420, 'Error: ' . $e->getMessage());
+            }
+             
+        });
+        
+        /*
+         * website-url/api/ws/getCompanyUsers
+         * 
+         *  Ejemplo de headers:
+         *  X-REST-USERNAME : ""
+         *  X-REST-PASSWORD : ""
+         *  X-REST-TOKEN : CE6202AY6DD28E3B
+         *
+         *  Ejemplo de parametros POST:
+         *  session_id: 6debc49305145b3beeda381ad983fdea
+         *
+         * El resultado:
+         * {
+         *  "success": true OR false si no pasó alguna validación,
+         *  "users": [
+         *      {
+         *      "id": 333,
+         *      "name": Jorge Gonzalez,
+         *      "username": jgonzalez,
+         *      "email": jgonzalez@proces.com.mx,
+         *      "company_id": 111,
+         *      "active": true o false,
+         *      "date_created": 2015-07-01 (Y-m-d),
+         *      },
+         *      {
+         *      "id": 333,
+         *      "name": Jorge Gonzalez,
+         *      "username": jgonzalez,
+         *      "email": jgonzalez@proces.com.mx,
+         *      "company_id": 111,
+         *      "active": true o false,
+         *      "date_created": 2015-07-01 (Y-m-d),
+         *      },
+         *  ],
+         *  "errors": descripcion de error,
+         * }
+         *
+         */
+        
+        $this->onRest('req.post.getCompanyUsers.render', function($data) {
+            
+            try {
+                
+                $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : false;
+                $sessionId = isset($data['session_id']) ? $data['session_id'] : null;
+                
+                $response= array(
+                    'success' => false,
+                    'user' => null,
+                    'error' => null,
+                );
+    
+                $sessionValidation = self::validateSession($sessionId, $token);
+                
+                if($sessionValidation['success']) {
+                    
+                    $users = Yii::app()->db->createCommand()
+                        ->select("user.id, user.name, user.username, user.email, user.company_id, user.active, user.date_create")
+                        ->from("user")
+                        ->leftJoin("company", "`user`.`company_id` = `company`.`id`")
+                        ->where("`user`.`company_id`='".$sessionValidation['user']['company_id']."' AND `user`.`id` <> `company`.`user_id` ")
+                        ->order("user.username ASC")
+                        ->queryAll();
+                    
+                    $response['users'] = $users;
+                    $response['success'] = true;
+                } else {
+                    $response['error'] = $sessionValidation['error'];   
+                }
+                
+                return CJSON::encode($response);
+                
+            } catch (Exception $e) {
+                throw new CHttpException(420, 'Error: ' . $e->getMessage());
+            }
+             
+        });
+        
+        /*
+         * website-url/api/ws/getUser
+         * 
+         *  Ejemplo de headers:
+         *  X-REST-USERNAME : ""
+         *  X-REST-PASSWORD : ""
+         *  X-REST-TOKEN : CE6202AY6DD28E3B
+         *
+         *  Ejemplo de parametros POST:
+         *  session_id: 6debc49305145b3beeda381ad983fdea
+         *  id: 333 (opcional)
+         *  username: jgonzalez (opcional)
+         *
+         *  Debe enviarse por lo menos uno de los parámetros: ID o username
+         *
+         * El resultado:
+         * {
+         *  "success": true OR false si no pasó alguna validación,
+         *  "user": [
+         *      {
+         *      "id": 333,
+         *      "name": Jorge Gonzalez,
+         *      "username": jgonzalez,
+         *      "email": jgonzalez@proces.com.mx,
+         *      "company_id": 111,
+         *      "active": true o false,
+         *      "date_created": 2015-07-01 (Y-m-d),
+         *      },
+         *  ],
+         *  "errors": descripcion de error,
+         * }
+         *
+         */
+        
+        $this->onRest('req.post.getUser.render', function($data) {
+            
+            try {
+                
+                $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : false;
+                $sessionId = isset($data['session_id']) ? $data['session_id'] : null;
+                $username = isset($data['username']) ? $data['username'] : null;
+                $userId = isset($data['id']) ? $data['id'] : null;
+                
+                $response= array(
+                    'success' => false,
+                    'user' => null,
+                    'error' => null,
+                );
+    
+                $sessionValidation = self::validateSession($sessionId, $token);
+                
+                if($sessionValidation['success'] && (!empty($username) || !empty($userId))) {
+                    
+                    if(!empty($userId)) {
+                        $userQuery = "`user`.`id` = '{$userId}'" ;
+                    } else {
+                        $userQuery = "`user`.`username` = '{$username}'";
+                    }
+                    
+                    $user = Yii::app()->db->createCommand()
+                        ->select("user.id, user.name, user.username, user.email, user.company_id, user.active, user.date_create")
+                        ->from("user")
+                        ->leftJoin("company", "`user`.`company_id` = `company`.`id`")
+                        ->where("`user`.`company_id`='".$sessionValidation['user']['company_id']."' AND ".$userQuery)
+                        ->order("user.username ASC")
+                        ->queryRow();
+                    
+                    if($user) {
+                        $response['user'] = $user;
+                        $response['success'] = true;
+                    } else {
+                        $response['error'] = 'No se encontró ningun resultado';
+                    }
+                } else {
+                    
+                    if(empty($userId)) {
+                        $response['error'] = "Debe especificar un ID o alias";
+                    } else if(empty($username)) {
+                        $response['error'] = "Debe especificar un ID o alias";
+                    } else {
+                        $response['error'] = $sessionValidation['error'];   
+                    }
+                }
+                
+                return CJSON::encode($response);
+                
+            } catch (Exception $e) {
+                throw new CHttpException(420, 'Error: ' . $e->getMessage());
+            }
+             
+        });
+        
+        
+        /*
+         * website-url/api/ws/createUser
+         * 
+         *  Ejemplo de headers:
+         *  X-REST-USERNAME : ""
+         *  X-REST-PASSWORD : ""
+         *  X-REST-TOKEN : CE6202AY6DD28E3B
+         *
+         *  Ejemplo de parametros POST:
+         *  session_id: 6debc49305145b3beeda381ad983fdea
+         *  name: Jorge Gonzalez (opcional)
+         *  username: jgonzalez
+         *  password: 12345
+         *  confirm_password: 12345
+         *  email: jgonzalez@proces.com.mx
+         *
+         *  Debe enviarse por lo menos uno de los parámetros: ID o username
+         *
+         * El resultado:
+         * {
+         *  "success": true OR false si no pasó alguna validación,
+         *  "user": [
+         *      {
+         *      "id": 333,
+         *      "name": Jorge Gonzalez,
+         *      "username": jgonzalez,
+         *      "email": jgonzalez@proces.com.mx,
+         *      "company_id": 111,
+         *      "active": true o false,
+         *      "date_created": 2015-07-01 (Y-m-d),
+         *      },
+         *  ],
+         *  "errors": [
+         *      errores generales que ocurren por validaciones de los webservices,
+         *      errores del modelo al crear el usuario,
+         *      errores del modelo al crear la relación que indica que el usuario está usando el producto,
+         *  ],
+         *  "isNewRecord": true o false dependiendo si se creó el usuario o solo se relacionó con el producto,
+         * }
+         *
+         */
+        
+        $this->onRest('req.post.createUser.render', function($data) {
+            
+            try {
+                
+                $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : false;
+                $sessionId = isset($data['session_id']) ? $data['session_id'] : null;
+                $name = isset($data['name']) ? $data['name'] : null;
+                $username = isset($data['username']) ? $data['username'] : null;
+                $password = isset($data['password']) ? $data['password'] : null;
+                $confirmPasssword = isset($data['confirm_password']) ? $data['confirm_password'] : null;
+                $email = isset($data['email']) ? $data['email'] : null;
+                
+                $response = array(
+                    'success' => false,
+                    'user' => null,
+                    'errors' => array(),
+                );
+    
+                $sessionValidation = self::validateSession($sessionId, $token);
+                
+                if($sessionValidation['success']) {
+                    
+                    if(!empty($username)) {
+                        
+                        /* Se inicia sesión para no generar conflicto en las partes de los modelos donde se usan datos de sesión */
+                        Yii::app()->user->login(new CUserIdentity($sessionValidation['user']['username'], ''));
+
+                        Yii::app()->user->setState('role', $sessionValidation['user']['role']);
+                        Yii::app()->user->setState('company_id', $sessionValidation['user']['company_id']);
+                        Yii::app()->user->setState('id', $sessionValidation['user']['id']);
+        
+                        $user = User::model()->findByAttributes(array('username'=>$username));
+                        $product = Product::model()->findByAttributes(array('token'=> $token));
+                        
+                        if($user) {
+                            
+                            $response['isNewRecord'] = false;
+                            
+                            $productUser = ProductUser::model()->findByAttributes(array('user_id'=> $user->id, 'product_id' => $product->id));
+
+                            if($productUser) {
+                                
+                                $productUser->is_used = '1';
+                                $productUser->update();
+                                
+                                $response['success'] = true;
+                                $response['user'] = Yii::app()->db->createCommand()
+                                ->select("user.id, user.name, user.username, user.email, user.company_id, user.active, user.date_create")
+                                ->from("user")
+                                ->where("`user`.`id`='".$user->id."'")
+                                ->queryRow();
+                                
+                            } else {
+                                $response['errors']['Error 1'] = "El usuario no tiene asignado el producto en el que intenta registrarlo";
+                            }
+                            
+                        } else {
+                            
+                            $response['isNewRecord'] = true;
+                            
+                            $model = new UserModel;
+                            $model->username = $username;
+                            $model->email = $email;
+                            $model->name = $name;
+                            $model->password = $password;
+                            $model->verify_password = $confirmPasssword;
+                            $model->list_products = array($product->id);
+                            
+                            if($model->save()) {
+                                
+                                $productUser = ProductUser::model()->findByAttributes(array('user_id'=> $model->id, 'product_id' => $product->id));
+                                $productUser->is_used = '1';
+                                $productUser->update();
+                                
+                                $response['success'] = true;
+                                $response['user'] = Yii::app()->db->createCommand()
+                                ->select("user.id, user.name, user.username, user.email, user.company_id, user.active, user.date_create")
+                                ->from("user")
+                                ->where("`user`.`id`='".$model->id."'")
+                                ->queryRow();
+                                
+                            } else {
+                                foreach($model->getErrors() as $field => $errorsArray) {
+                                    $response['errors'][$field] = $errorsArray[0];
+                                }
+                            }
+                        }
+                        
+                    } else {
+                        $response['error'] = 'Es necesario especificar un alias';
+                    }
+                    
+                } else {
+                    $response['error'] = $sessionValidation['error'];   
                 }
                 
                 return CJSON::encode($response);
