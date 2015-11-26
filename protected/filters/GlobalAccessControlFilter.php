@@ -4,6 +4,8 @@ class GlobalAccessControlFilter extends CFilter {
     
     protected function preFilter($filterChain) {
         
+        $requestedUri = Yii::app()->request->getRequestUri();
+        
         if(isset($_COOKIE['PROCESID'])) {
             
             $url = WS_SERVER.'/validateSession';
@@ -51,7 +53,7 @@ class GlobalAccessControlFilter extends CFilter {
                 }
                 
             } else {
-                if (! preg_match('/\/login$/', Yii::app()->request->getRequestUri()) && !preg_match('/\/logout$/', Yii::app()->request->getRequestUri())) {
+                if (! preg_match('/\/login$/', $requestedUri) && !preg_match('/\/logout$/', $requestedUri)) {
                     Yii::app()->request->redirect(Yii::app()->createAbsoluteUrl('site/logout'));
                 } else {
                     return true;
@@ -61,7 +63,7 @@ class GlobalAccessControlFilter extends CFilter {
             curl_close($sessionCurl);
 
         } else {
-            if (! preg_match('/\/login$/', Yii::app()->request->getRequestUri()) && !preg_match('/\/logout$/', Yii::app()->request->getRequestUri())) {
+            if (! preg_match('/\/login$/', $requestedUri) && !preg_match('/\/logout$/', $requestedUri)) {
                 Yii::app()->request->redirect(Yii::app()->createAbsoluteUrl('site/logout'));
             } else {
                 return true;
