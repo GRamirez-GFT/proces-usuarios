@@ -830,6 +830,113 @@ class WsController extends CController {
              
         });
         
+        /*
+         * website-url/api/ws/updateUser
+         * 
+         *  Ejemplo de headers:
+         *  X-REST-USERNAME : ""
+         *  X-REST-PASSWORD : ""
+         *  X-REST-TOKEN : CE6202AY6DD28E3B
+         *
+         *  Ejemplo de parametros POST:
+         *  session_id: 6debc49305145b3beeda381ad983fdea
+         *  id: 11 (ID de usuario)
+         *  name: Jorge Gonzalez (opcional)
+         *  password: 12345 (opcional)
+         *  confirm_password: 12345 (opcional mientras password esté vacío)
+         *  email: jgonzalez@proces.com.mx (opcional)
+         *
+         * El resultado:
+         * {
+         *  "success": true OR false si no pasó alguna validación,
+         *  "errors": [
+         *      errores generales que ocurren por validaciones de los webservices,
+         *      errores del modelo al crear el usuario,
+         *      errores del modelo al crear la relación que indica que el usuario está usando el producto,
+         *  ],
+         *  "isNewRecord": true o false dependiendo si se creó el usuario o solo se relacionó con el producto,
+         * }
+         *
+         */
+        
+        $this->onRest('req.post.updateUser.render', function($data) {
+            
+            try {
+                
+                $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : false;
+                $sessionId = isset($data['session_id']) ? $data['session_id'] : null;
+                $userId = isset($data['id']) ? $data['id'] : null;
+                $name = isset($data['name']) ? $data['name'] : null;
+                $password = isset($data['password']) ? $data['password'] : null;
+                $confirmPasssword = isset($data['confirm_password']) ? $data['confirm_password'] : null;
+                $email = isset($data['email']) ? $data['email'] : null;
+                
+                $response = array(
+                    'success' => false,
+                    'user' => null,
+                    'errors' => array(),
+                );
+    
+                $sessionValidation = self::validateSession($sessionId, $token);
+                
+                if($sessionValidation['success']) {
+                    
+                    /* Se inicia sesión para no generar conflicto en las partes de los modelos donde se usan datos de sesión */
+                    Yii::app()->user->login(new CUserIdentity($sessionValidation['user']['username'], ''));
+
+                    Yii::app()->user->setState('role', $sessionValidation['user']['role']);
+                    Yii::app()->user->setState('company_id', $sessionValidation['user']['company_id']);
+                    Yii::app()->user->setState('id', $sessionValidation['user']['id']);
+
+                    $user = UserModel::model()->findByPk($userId);
+                    $product = Product::model()->findByAttributes(array('token'=> $token));
+
+                    if($user) {
+
+                        if(!empty($name)) {
+                            $user->name = $name;
+                        }
+                        
+                        $user->password = null;
+                        
+                        if(!empty($password)) {
+                            $user->password = $password;
+                        }
+                        
+                        if(!empty($confirmPasssword)) {
+                            $user->verify_password = $confirmPasssword;
+                        }
+                        
+                        if(!empty($email)) {
+                            $user->email = $email;
+                        }
+                            
+                        if($user->validate(array('name', 'password', 'email', 'verify_password'))) {
+                            $user->update(array('name', 'password', 'email'));
+                            $response['success'] = true;
+                        } else {
+                            foreach($user->getErrors() as $field => $errorsArray) {
+                                $response['errors'][$field] = $errorsArray[0];
+                            }
+                        }
+
+                    } else {
+
+                        $response['errors']['Error 1'] = "El usuario no tiene asignado el producto en el que intenta registrarlo";
+                    }
+                    
+                } else {
+                    $response['error'] = 'El ID de usuario es inválido';   
+                }
+                
+                return CJSON::encode($response);
+                
+            } catch (Exception $e) {
+                throw new CHttpException(420, 'Error: ' . $e->getMessage());
+            }
+             
+        });
+        
     }
 
 
