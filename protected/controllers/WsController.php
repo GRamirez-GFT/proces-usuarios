@@ -854,7 +854,6 @@ class WsController extends CController {
          *      errores del modelo al crear el usuario,
          *      errores del modelo al crear la relación que indica que el usuario está usando el producto,
          *  ],
-         *  "isNewRecord": true o false dependiendo si se creó el usuario o solo se relacionó con el producto,
          * }
          *
          */
@@ -889,7 +888,6 @@ class WsController extends CController {
                     Yii::app()->user->setState('id', $sessionValidation['user']['id']);
 
                     $user = UserModel::model()->findByPk($userId);
-                    $product = Product::model()->findByAttributes(array('token'=> $token));
 
                     if($user) {
 
@@ -912,21 +910,126 @@ class WsController extends CController {
                         }
                             
                         if($user->validate(array('name', 'password', 'email', 'verify_password'))) {
+                            
                             $user->update(array('name', 'password', 'email'));
                             $response['success'] = true;
+                            
                         } else {
+                            
                             foreach($user->getErrors() as $field => $errorsArray) {
                                 $response['errors'][$field] = $errorsArray[0];
                             }
                         }
 
                     } else {
-
-                        $response['errors']['Error 1'] = "El usuario no tiene asignado el producto en el que intenta registrarlo";
+                        $response['errors']['Error 1'] = 'El ID de usuario es inválido';
                     }
                     
                 } else {
-                    $response['error'] = 'El ID de usuario es inválido';   
+                    $response['errors']['Error 1'] = $sessionValidation['error'];   
+                }
+                
+                return CJSON::encode($response);
+                
+            } catch (Exception $e) {
+                throw new CHttpException(420, 'Error: ' . $e->getMessage());
+            }
+             
+        });
+        
+        /*
+         * website-url/api/ws/deleteUser
+         * 
+         *  Ejemplo de headers:
+         *  X-REST-USERNAME : ""
+         *  X-REST-PASSWORD : ""
+         *  X-REST-TOKEN : CE6202AY6DD28E3B
+         *
+         *  Ejemplo de parametros POST:
+         *  session_id: 6debc49305145b3beeda381ad983fdea
+         *  id: 11 (ID de usuario)
+         *
+         * El resultado:
+         * {
+         *  "success": true OR false si no pasó alguna validación,
+         *  "errors": [
+         *      errores generales que ocurren por validaciones de los webservices,
+         *      errores del modelo al crear el usuario,
+         *      errores del modelo al crear la relación que indica que el usuario está usando el producto,
+         *  ],
+         * }
+         *
+         */
+        
+        $this->onRest('req.post.deleteUser.render', function($data) {
+            
+            try {
+                
+                $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : false;
+                $sessionId = isset($data['session_id']) ? $data['session_id'] : null;
+                $userId = isset($data['id']) ? $data['id'] : null;
+                
+                $response = array(
+                    'success' => false,
+                    'user' => null,
+                    'errors' => array(),
+                );
+    
+                $sessionValidation = self::validateSession($sessionId, $token);
+                
+                if($sessionValidation['success']) {
+
+                    $user = User::model()->findByPk($userId);
+                    $product = Product::model()->findByAttributes(array('token'=> $token));
+
+                    if($user) {
+
+                        $userProducts = ProductUser::model()->findAllByAttributes(array('is_used' => '1', 'user_id' => $user->id));
+                            
+                        try {
+                            
+                            $transaction = Yii::app()->db->getCurrentTransaction() ? null : Yii::app()->db->beginTransaction();
+                            
+                            if($userProducts) {
+
+                                if(count($userProducts) > 1) {
+
+                                    ProductUser::model()->deleteAllByAttributes(array('user_id' => $user->id, 'product_id' => $product->id));
+                                    
+                                    $response['success'] = true;
+
+                                } else if($userProducts[0]->product_id == $product->id) {
+
+                                    ProductUser::model()->deleteAllByAttributes(array('user_id' => $user->id));
+                                    UserSession::model()->deleteAllByAttributes(array('user_id' => $user->id));
+                                    User::model()->deleteByPk($user->id);
+                                    
+                                    $response['success'] = true;
+                                }
+
+                            } else {
+                                
+                                ProductUser::model()->deleteAllByAttributes(array('user_id' => $user->id));
+                                UserSession::model()->deleteAllByAttributes(array('user_id' => $user->id));
+                                User::model()->deleteByPk($user->id);
+                                
+                                $response['success'] = true;
+                            }
+                            
+                            $transaction ? $transaction->commit() : null;
+                            
+                        } catch (Exception $e) {
+                            $transaction ? $transaction->rollback() : null;
+                            
+                            $response['error'] = "Lo sentimos, ocurrió un error";
+                        }
+
+                    } else {
+                        $response['error'] = 'El ID de usuario es inválido'; 
+                    }
+                    
+                } else {
+                    $response['error'] = $sessionValidation['error'];   
                 }
                 
                 return CJSON::encode($response);
