@@ -29,113 +29,6 @@ class WsController extends CController {
             ),
         );
     }
-//
-//    /**
-//     *
-//     * @param integer $company_id
-//     * @param string $token
-//     * @return string @soap
-//     */
-//    public function getUserCompany($company_id, $token) {
-//
-//        $product = ProductCompany::model()->with('product')->findByAttributes(
-//            array('company_id'=> $company_id), array('condition' => "product.token = '{$token}'")
-//        );
-//        
-//        if(!$product) return false;
-//        
-//        $request = Yii::app()->db->createCommand()
-//            ->select("user.id, user.name, user.username, user.email, user.company_id, user.active, user.date_create")
-//            ->from("user")
-//            ->join("product_user", "`product_user`.`user_id` = `user`.`id`")
-//            ->leftJoin("company", "`company`.`user_id` = `user`.`id`")
-//            ->leftJoin("product", "`product_user`.`product_id` = `product`.`id`")
-//            ->where("`user`.`company_id`={$company_id} AND `company`.`id` IS NULL  AND `product`.`token` = '".$token."'")
-//            ->order("user.username ASC")
-//            ->queryAll();
-//        return json_encode($request);
-//    }
-//    
-//    /**
-//     *
-//     * @param integer $company_id
-//     * @param string $token
-//     * @param integer $user_id
-//     * @param string $name
-//     * @return string @soap
-//     */
-//    public function getUser($company_id, $token, $user_id = null, $name = null) {
-//
-//        $product = ProductCompany::model()->with('product')->findByAttributes(
-//            array('company_id'=> $company_id), array('condition' => "product.token = '{$token}'")
-//        );
-//        
-//        if(!$product) return false;
-//        
-//        $userQuery = "";
-//        $userQuery = (!is_null($name)) ? "AND (LOWER(`user`.`name`) LIKE LOWER('%{$name}%'))" : $userQuery;
-//        $userQuery = (!is_null($user_id)) ? "AND `user`.`id` = '{$user_id}'" : $userQuery;
-//        
-//        $request = Yii::app()->db->createCommand()
-//            ->select("user.id, user.name, user.username, user.email, user.company_id, user.active, user.date_create")
-//            ->from("user")
-//            ->join("product_user", "`product_user`.`user_id` = `user`.`id`")
-//            ->leftJoin("company", "`company`.`user_id` = `user`.`id`")
-//            ->leftJoin("product", "`product_user`.`product_id` = `product`.`id`")
-//            ->where("`user`.`company_id`={$company_id} ".$userQuery." AND `product`.`token` = '".$token."'")
-//            ->order("user.username ASC")
-//            ->queryRow();
-//        return json_encode($request);
-//    }
-//
-//   /**
-//     *
-//     * @param integer $user_id
-//     * @param string $token
-//     * @return boolean @soap
-//    */
-//    public function registerProductUser($user_id, $token) {
-//        
-//        $product = Product::model()->findByAttributes(array('token'=> $token));
-//        
-//        if(!$product) return false;
-//        
-//        $productUser = ProductUser::model()->findByAttributes(array('user_id'=>$user_id, 'product_id' => $product->id));
-//        
-//        if($productUser) {
-//
-//            $productUser->is_used = '1';
-//        
-//            return $productUser->update() ? true : false;
-//        } else {
-//            return true;
-//        }
-//        
-//    }
-//
-//   /**
-//     *
-//     * @param integer $user_id
-//     * @param string $token
-//     * @return boolean @soap
-//    */
-//    public function unregisterProductUser($user_id, $token) {
-//        
-//        $product = Product::model()->findByAttributes(array('token'=> $token));
-//        
-//        if(!$product) return false;
-//        
-//        $productUser = ProductUser::model()->findByAttributes(array('user_id'=>$user_id, 'product_id' => $product->id));
-//        
-//        if($productUser) {
-//            $productUser->is_used = false;
-//
-//            return $productUser->update() ? true : false;
-//        } else {
-//            return true;
-//        }
-//        
-//    }
     
     private static function validateProductAccess($user, $token) {
         
@@ -779,7 +672,7 @@ class WsController extends CController {
                                 ->queryRow();
                                 
                             } else {
-                                $response['errors']['Error 1'] = "El usuario no tiene asignado el producto en el que intenta registrarlo";
+                                $response['errors']['Error 1'] = "El usuario no tiene asignado el producto donde intenta registrarlo";
                             }
                             
                         } else {

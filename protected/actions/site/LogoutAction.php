@@ -13,7 +13,7 @@ class LogoutAction extends CAction {
         $logoutCurlSuccess = true;
         
         if (isset($_COOKIE['PROCESID'])) {
-            
+
             $url = WS_SERVER.'/logout';
             $postData = '{"session_id": "'.$_COOKIE['PROCESID'].'"}';
             $headers = array(
