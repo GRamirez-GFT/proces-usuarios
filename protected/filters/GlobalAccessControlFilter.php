@@ -49,7 +49,9 @@ class GlobalAccessControlFilter extends CFilter {
                     return true;
                     
                 } else {
-                    Yii::app()->request->redirect(Yii::app()->createAbsoluteUrl('site/logout'));
+                    if (! preg_match('/\/login$/', $requestedUri) && !preg_match('/\/logout$/', $requestedUri)) {
+                        Yii::app()->request->redirect(Yii::app()->createAbsoluteUrl('site/logout'));
+                    }
                 }
                 
             } else {
