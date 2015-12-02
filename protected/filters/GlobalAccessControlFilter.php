@@ -49,32 +49,32 @@ class GlobalAccessControlFilter extends CFilter {
                     return true;
                     
                 } else {
-                    if (! preg_match('/\/login$/', $requestedUri) && !preg_match('/\/logout$/', $requestedUri)) {
-                        Yii::app()->request->redirect(Yii::app()->createAbsoluteUrl('site/logout'));
-                    }
+                    return self::loginRedirect();
                 }
                 
             } else {
-                if (! preg_match('/\/login$/', $requestedUri) && !preg_match('/\/logout$/', $requestedUri)) {
-                    Yii::app()->request->redirect(Yii::app()->createAbsoluteUrl('site/logout'));
-                } else {
-                    return true;
-                }
+                return self::loginRedirect();
             }
             
             curl_close($sessionCurl);
 
         } else {
-            if (! preg_match('/\/login$/', $requestedUri) && !preg_match('/\/logout$/', $requestedUri)) {
-                Yii::app()->request->redirect(Yii::app()->createAbsoluteUrl('site/logout'));
-            } else {
-                return true;
-            }
+            return self::loginRedirect();
         }
     }
  
     protected function postFilter($filterChain) {
         // logic being applied after the action is executed
+    }
+    
+    private static function loginRedirect() {
+        if(! preg_match('/\/login$/', Yii::app()->request->getRequestUri()) && !preg_match('/\/logout$/', Yii::app()->request->getRequestUri()) && !Yii::app()->user->isGuest) {
+            Yii::app()->request->redirect(Yii::app()->createAbsoluteUrl('site/logout?save_cookie=true'));
+        } else if(! preg_match('/\/login$/', Yii::app()->request->getRequestUri()) && !preg_match('/\/logout$/', Yii::app()->request->getRequestUri())) {
+            Yii::app()->request->redirect(Yii::app()->createAbsoluteUrl('site/logout'));
+        } else {
+            return true;
+        }  
     }
 }
 

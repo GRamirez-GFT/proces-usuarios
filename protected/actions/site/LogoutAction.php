@@ -10,9 +10,9 @@ class LogoutAction extends CAction {
             ));
         }
         
-        $logoutCurlSuccess = true;
+        $saveCookie = Yii::app()->request->getParam('save_cookie');
         
-        if (isset($_COOKIE['PROCESID'])) {
+        if (isset($_COOKIE['PROCESID']) && !$saveCookie) {
 
             $url = WS_SERVER.'/logout';
             $postData = '{"session_id": "'.$_COOKIE['PROCESID'].'"}';
