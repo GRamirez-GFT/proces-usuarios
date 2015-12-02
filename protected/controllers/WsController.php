@@ -650,7 +650,7 @@ class WsController extends CController {
                         Yii::app()->user->setState('company_id', $sessionValidation['user']['company_id']);
                         Yii::app()->user->setState('id', $sessionValidation['user']['id']);
         
-                        $user = User::model()->findByAttributes(array('username'=>$username));
+                        $user = User::model()->findByAttributes(array('username'=> $username, 'company_id' => $sessionValidation['user']['company_id']));
                         $product = Product::model()->findByAttributes(array('token'=> $token));
                         
                         if($user) {
