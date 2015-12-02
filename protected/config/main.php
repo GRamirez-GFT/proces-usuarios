@@ -4,7 +4,7 @@ return CMap::mergeArray(require_once dirname(__FILE__) . '/common.php',
         'components' => array(
             'db' => array(
                 'class' => 'CDbConnection',
-                'connectionString' => 'mysql:host=localhost;dbname=pro_users',
+                'connectionString' => 'mysql:host=localhost;dbname=pro_users_dev',
                 'username' => 'proces',
                 'password' => 'Pr0ce55$%',
                 'charset' => 'utf8'
