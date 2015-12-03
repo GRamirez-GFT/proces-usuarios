@@ -145,7 +145,10 @@
 
 $(function() {
 
-    
+    $('#user-form').submit(function(e) {
+        $(this).find(':submit').attr('disabled', 'disabled');
+        $('.ajax-loader').fadeIn('fast');
+    });
     
 });
 

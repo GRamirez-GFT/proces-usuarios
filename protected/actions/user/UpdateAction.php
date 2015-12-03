@@ -27,7 +27,8 @@ class UpdateAction extends CAction {
 
             $model->setAttributes($postAttributes);
 
-            if(!isset($postAttributes['list_products']) && !in_array(Yii::app()->user->role, array("general"))) {
+            if(!isset($postAttributes['list_products']) && !in_array(Yii::app()->user->role, array("general"))
+                && (in_array(Yii::app()->user->role, array("company")) && $model->id != Yii::app()->user->id ) ) {
                 $model->list_products = array();
             }
             
