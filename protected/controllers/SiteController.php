@@ -3,7 +3,15 @@
 class SiteController extends MyController {
     public $layout = '//layouts/content';
     public $defaultAction = 'index';
-
+    
+    public function filters() {
+        return array(
+            'accessControl',
+            array('application.filters.GlobalAccessControlFilter - error'),
+            'postOnly + delete'
+        );
+    }
+    
     public function accessRules() {
         return CMap::mergeArray(
             array(
@@ -17,7 +25,7 @@ class SiteController extends MyController {
                 array(
                     'allow',
                     'actions' => array(
-                        'login'
+                        'login', 'error', 'contact'
                     ),
                     'users' => array(
                         '*'

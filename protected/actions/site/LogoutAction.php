@@ -10,11 +10,39 @@ class LogoutAction extends CAction {
             ));
         }
         
-        if (isset($_COOKIE['PROCESID']) && ! Yii::app()->user->isGuest) {
-            $client = new SoapClient(WS_SERVER);
-            $client->destroySession($_COOKIE['PROCESID'], $_SERVER["REMOTE_ADDR"], Yii::app()->user->id);
-            setcookie('PROCESID', null, time() - 36000, '/');
+        $saveCookie = Yii::app()->request->getParam('save_cookie');
+        
+        if (isset($_COOKIE['PROCESID']) && !$saveCookie) {
+
+            $url = WS_SERVER.'/logout';
+            $postData = '{"session_id": "'.$_COOKIE['PROCESID'].'"}';
+            $headers = array(
+                "Accept: application/json", 
+                "X-REST-USERNAME: default", 
+                "X-REST-PASSWORD: default", 
+                "X-REST-TOKEN: " . Yii::app()->params->token, 
+            );
+            
+            $logoutCurl = curl_init();
+            curl_setopt($logoutCurl, CURLOPT_URL, $url);
+            curl_setopt($logoutCurl, CURLOPT_RETURNTRANSFER, TRUE);
+            curl_setopt($logoutCurl, CURLOPT_FOLLOWLOCATION, TRUE);
+            curl_setopt($logoutCurl, CURLOPT_POST, TRUE);
+            curl_setopt($logoutCurl, CURLOPT_POSTFIELDS, $postData);
+            curl_setopt($logoutCurl, CURLOPT_HTTPHEADER, $headers); 
+            $logoutResponse = curl_exec($logoutCurl);
+            
+            if($logoutResponse !== false) {
+                $logoutResponse = json_decode($logoutResponse);
+                $logoutSuccess = property_exists($logoutResponse, 'success') ? $logoutResponse->success : false;
+            }
+            
+            unset($_COOKIE['PROCESID']);
+            setcookie('PROCESID', null, -1, '/');
+            
+            curl_close($logoutCurl);
         }
+        
         Yii::app()->user->logout();
         Yii::app()->controller->redirect(Yii::app()->homeUrl);
     }

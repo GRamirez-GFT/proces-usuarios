@@ -99,7 +99,7 @@ CREATE TABLE `user` (
 DROP TABLE IF EXISTS `user_session`;
 
 CREATE TABLE `user_session` (
-  `id` int(11) NOT NULL auto_increment,
+  `id` BIGINT NOT NULL auto_increment,
   `session` varchar(32) NOT NULL,
   `ipv4` varchar(15) NOT NULL,
   `time_login` timestamp NOT NULL default CURRENT_TIMESTAMP,

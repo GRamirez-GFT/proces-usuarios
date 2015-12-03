@@ -42,7 +42,6 @@ class User extends MyActiveRecord {
 		'companies' => array(self::HAS_MANY, 'Company', 'user_id'),
 		'products' => array(self::MANY_MANY, 'Product', 'product_user(user_id, product_id)'),
 		'company' => array(self::BELONGS_TO, 'Company', 'company_id'),
-		'userSessions' => array(self::HAS_MANY, 'UserSession', 'user_id'),
 		);
 	}
 	

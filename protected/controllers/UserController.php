@@ -15,7 +15,7 @@ class UserController extends MyController {
         if ($model = UserModel::model()->findByPk($id)) {return $model;}
         throw new CHttpException(404, 'The requested page does not exist.');
     }
-
+    
     public function accessRules() {
         return CMap::mergeArray(
             array(
@@ -36,7 +36,7 @@ class UserController extends MyController {
                         '@'
                     ),
                     'expression' => 'in_array(Yii::app()->user->role, array("company","general"))'
-                )
+                ),
             ), parent::accessRules());
     }
 
@@ -46,7 +46,7 @@ class UserController extends MyController {
             'create' => 'application.actions.user.CreateAction',
             'update' => 'application.actions.user.UpdateAction',
             'delete' => 'application.actions.user.DeleteAction',
-            'admin' => 'application.actions.user.AdminAction'
+            'admin' => 'application.actions.user.AdminAction',
         );
     }
 

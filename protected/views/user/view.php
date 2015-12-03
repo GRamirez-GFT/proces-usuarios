@@ -81,11 +81,14 @@
 
 		<p>
 			<span class="labeling"><?php echo  Yii::t('models/User', 'list_products'); ?>:</span>
-				<ul>
-				<?php foreach ($model->products as $item) : ?>
-	    			<li><?php echo $item->name; ?></li>
-				<?php endforeach; ?>
-				</ul>
+            <ul>
+            <?php foreach ($model->products as $item) : ?>
+                <li>
+                    <?php echo $item->name; ?> 
+                    <?php echo (ProductUser::model()->findByAttributes(array('is_used' => '1', 'product_id' => $item->id))) ? '(En uso)' : '';?>
+                </li>
+            <?php endforeach; ?>
+            </ul>
 		<p>
 
 	</div>
