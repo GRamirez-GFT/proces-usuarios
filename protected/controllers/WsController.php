@@ -661,15 +661,20 @@ class WsController extends CController {
 
                             if($productUser) {
                                 
-                                $productUser->is_used = '1';
-                                $productUser->update();
-                                
-                                $response['success'] = true;
-                                $response['user'] = Yii::app()->db->createCommand()
-                                ->select("user.id, user.name, user.username, user.email, user.company_id, user.active, user.date_create")
-                                ->from("user")
-                                ->where("`user`.`id`='".$user->id."'")
-                                ->queryRow();
+                                if(!$productUser->is_used) {
+                                    
+                                    $productUser->is_used = '1';
+                                    $productUser->update();
+
+                                    $response['success'] = true;
+                                    $response['user'] = Yii::app()->db->createCommand()
+                                    ->select("user.id, user.name, user.username, user.email, user.company_id, user.active, user.date_create")
+                                    ->from("user")
+                                    ->where("`user`.`id`='".$user->id."'")
+                                    ->queryRow();
+                                } else {
+                                    $response['errors']['Error 1'] = "El usuario ingresado ya existe";  
+                                }
                                 
                             } else {
                                 $response['errors']['Error 1'] = "El usuario no tiene asignado el producto donde intenta registrarlo";
