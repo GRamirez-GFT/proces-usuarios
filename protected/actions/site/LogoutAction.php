@@ -15,7 +15,7 @@ class LogoutAction extends CAction {
         if (isset($_COOKIE['PROCESID']) && !$saveCookie) {
 
             $url = WS_SERVER.'/logout';
-            $postData = '{"session_id": "'.$_COOKIE['PROCESID'].'"}';
+            $postData = '{"session_id": "'.$_COOKIE['PROCESID'].'", "ipv4":"'.$_SERVER['REMOTE_ADDR'].'"}';
             $headers = array(
                 "Accept: application/json", 
                 "X-REST-USERNAME: default", 
