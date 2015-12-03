@@ -5,6 +5,7 @@
  * @property string $subdomain
  * @property integer $user_id
  * @property boolean $active
+ * @property boolean $restrict_connection
  * @property string $date_create
  *
  * @property User $user
@@ -26,12 +27,12 @@ class Company extends MyActiveRecord {
 	public function rules() {
 		return array(
 		array('name, subdomain, user_id, active, date_create', 'required'),
-		array('user_id, active', 'numerical', 'integerOnly' => true),
+		array('user_id, active, restrict_connection', 'numerical', 'integerOnly' => true),
 		array('name', 'length', 'max' => 100),
 		array('subdomain', 'length', 'max' => 30),
 		array('url_logo', 'length', 'max' => 200),
 		array('user_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => 'User'),
-		array('id, name, subdomain, user_id, url_logo, active, date_create', 'safe', 'on' => 'search'),
+		array('id, name, subdomain, user_id, url_logo, active, restrict_connection, date_create', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -41,6 +42,7 @@ class Company extends MyActiveRecord {
 		'products' => array(self::HAS_MANY, 'Product', 'company_id'),
 		'products1' => array(self::MANY_MANY, 'Product', 'product_company(company_id, product_id)'),
 		'users' => array(self::HAS_MANY, 'User', 'company_id'),
+		'ips' => array(self::HAS_MANY, 'AllowedIp', 'company_id'),
 		);
 	}
 	
@@ -50,9 +52,11 @@ class Company extends MyActiveRecord {
 		'name' => Yii::t('models/Company', 'name'),
 		'subdomain' => Yii::t('models/Company', 'subdomain'),
 		'user_id' => Yii::t('models/Company', 'user_id'),
-		'active' => Yii::t('models/Company', 'active'),
-		'date_create' => Yii::t('models/Company', 'date_create'),
 		'url_logo' => Yii::t('models/Company', 'url_logo'),
+		'active' => Yii::t('models/Company', 'active'),
+		'restrict_connection' => Yii::t('models/Company', 'restrict_connection'),
+		'date_create' => Yii::t('models/Company', 'date_create'),
+		'restrict_connection' => Yii::t('models/Company', 'restrict_connection'),
 		);
 	}
 
@@ -63,6 +67,7 @@ class Company extends MyActiveRecord {
 		$criteria->compare('subdomain', $this->subdomain, true);
 		$criteria->compare('user_id', $this->user_id);
 		$criteria->compare('active', $this->active);
+		$criteria->compare('restrict_connection', $this->restrict_connection);
 		$criteria->compare('date_create', $this->date_create);
 		$sort = new CSort();
 		$sort->attributes = array('*');

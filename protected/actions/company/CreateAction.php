@@ -3,10 +3,13 @@
 class CreateAction extends CAction {
 
     public function run() {
+        
         $model = new CompanyModel();
         $this->performAjaxValidation($model);
         $ajaxRequest = Yii::app()->request->getParam('ajaxRequest');
 
+        $model->list_ips = array(0 => '');
+        
         if (Yii::app()->request->getPost(get_class($model))) {
             
             assignFile($file, $model, 'url_logo');

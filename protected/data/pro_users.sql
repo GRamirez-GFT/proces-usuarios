@@ -22,6 +22,7 @@ CREATE TABLE `company` (
   `subdomain` varchar(30) NOT NULL,
   `user_id` int(11) NOT NULL,
   `active` tinyint(1) NOT NULL COMMENT '0 = Inactivo\n1 = Activo',
+  `restrict_connection` tinyint(1) UNSIGNED NOT NULL default 0 COMMENT '0 = Libre acceso\n1 = Restringir',
   `date_create` date NOT NULL,
   `url_logo` varchar(200) default NULL,
   PRIMARY KEY  (`id`),
@@ -44,6 +45,18 @@ CREATE TABLE `product` (
   KEY `company_product` (`company_id`),
   CONSTRAINT `company_product` FOREIGN KEY (`company_id`) REFERENCES `company` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+
+/*Table structure for table `allowed_ip` */
+
+DROP TABLE IF EXISTS `allowed_ip`;
+
+CREATE TABLE `allowed_ip` (
+  `ipv4` varchar(15) NOT NULL,
+  `company_id` smallint(5) NOT NULL,
+  PRIMARY KEY  (`ipv4`,`company_id`),
+  KEY `company_allowed_ip` (`company_id`),
+  CONSTRAINT `company_allowed_ip` FOREIGN KEY (`company_id`) REFERENCES `company` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Table structure for table `product_company` */
 

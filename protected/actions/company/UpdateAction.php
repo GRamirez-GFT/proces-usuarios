@@ -11,6 +11,10 @@ class UpdateAction extends CAction {
         $prevUrl = $model->url_logo;
         $prevSubdomain = $model->subdomain;
         $prevListProducts = $model->list_products;
+        
+        if(empty($model->list_ips)) {
+            $model->list_ips = array(0 => '');
+        }
 
         if (Yii::app()->request->getPost(get_class($model))) {
             

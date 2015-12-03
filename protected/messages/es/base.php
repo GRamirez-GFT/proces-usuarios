@@ -10,7 +10,7 @@ return array(
 	'Companies' => 'Empresas',
 	'Products' => 'Productos',
 
-        'Access' => 'Acceder',
+    'Access' => 'Acceder',
 	'Manage' => 'Administración',
 	'Update' => 'Actualizar',
 	'Delete' => 'Eliminar',
@@ -32,6 +32,9 @@ return array(
     'Last' => 'Última',
     'Previous' => 'Anterior',
     'Next' => 'Siguiente',
+    
+    'Add IP' => 'Agregar IP',
+    'Remove IP' => 'Quitar IP',
     
     // Alerts 
     

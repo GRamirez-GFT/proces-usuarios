@@ -52,7 +52,24 @@ class WsController extends CController {
         
     }
     
-    private static function validateSession($sessionId, $token) {
+    private static function validateRestrictedConnection($companyId, $ipv4) {
+        
+        $allowedIp = AllowedIp::model()->findByAttributes(array(
+            'company_id' => $companyId,
+            'ipv4' => $ipv4
+        ));
+                    
+        $isLocalhost = $_SERVER['SERVER_NAME'] == 'localhost' || $_SERVER['SERVER_NAME'] == '127.0.0.1';
+        
+        if($allowedIp) {
+            return true;
+        } else {
+            return false;
+        }
+        
+    }
+    
+    private static function validateSession($sessionId, $token, $ipv4 = null) {
                 
         $result = array(
             'success' => false,
@@ -79,6 +96,18 @@ class WsController extends CController {
                 $result['error'] = "No cuenta con acceso a este producto";
             }
             
+            if($result['success']) {
+                
+                if($result['user']['role'] == 'general') {
+                    
+                    if(!self::validateRestrictedConnection($session->user->company_id, $ipv4)) {
+                        $result['success'] = false;
+                        $result['user'] = array();
+                        $result['error'] = "El acceso desde la red actual está bloqueado";
+                    }
+                }
+            }
+            
         } else {
             $result['error'] = "El ID de sesión es inválido";
         }
@@ -87,7 +116,7 @@ class WsController extends CController {
         
     }
     
-    private static function validateAccess($username, $password, $token, $company, $checkPassword = true) {
+    private static function validateAccess($username, $password, $token, $company, $ipv4 = null) {
                 
         $result = array(
             'success' => false,
@@ -164,10 +193,19 @@ class WsController extends CController {
 
                 if($validProduct) {
 
-                    if (CPasswordHelper::verifyPassword($password, $user->password) || !$checkPassword) {
+                    if (CPasswordHelper::verifyPassword($password, $user->password)) {
 
                         $result['success'] = true;
                         $result['user'] = self::getUserData($user);
+                        
+                        if($result['user']['role'] == 'general') {
+                            
+                            if(!self::validateRestrictedConnection($company->id, $ipv4)) {
+                                $result['success'] = false;
+                                $result['user'] = array();
+                                $result['errors']['user'] = "Acceso restringido en esta red";
+                            }
+                        }
 
                     } else {
                         $result['errors']['password'] = 'El password ingresado es incorrecto';
@@ -275,7 +313,9 @@ class WsController extends CController {
                 $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : '';
                 $company = isset($data['company']) ? $data['company'] : '';
 
-                $response = self::validateAccess($username, $password, $token, $company);
+                $ipv4 = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
+                
+                $response = self::validateAccess($username, $password, $token, $company, $ipv4);
 
                 if($response['success']) {
                     $userSession = new UserSession();
@@ -327,7 +367,9 @@ class WsController extends CController {
                     'success' => false,
                 );
     
-                $sessionValidation = self::validateSession($sessionId, $token);
+                $ipv4 = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
+                
+                $sessionValidation = self::validateSession($sessionId, $token, $ipv4);
                 
                 if($sessionValidation['success']) {
 
@@ -389,7 +431,9 @@ class WsController extends CController {
                     'error' => null,
                 );
     
-                $sessionValidation = self::validateSession($sessionId, $token);
+                $ipv4 = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
+                
+                $sessionValidation = self::validateSession($sessionId, $token, $ipv4);
                 
                 if($sessionValidation['success']) {
                     $response['user'] = $sessionValidation['user'];
@@ -458,7 +502,9 @@ class WsController extends CController {
                     'error' => null,
                 );
     
-                $sessionValidation = self::validateSession($sessionId, $token);
+                $ipv4 = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
+                
+                $sessionValidation = self::validateSession($sessionId, $token, $ipv4);
                 
                 if($sessionValidation['success']) {
                     
@@ -533,7 +579,9 @@ class WsController extends CController {
                     'error' => null,
                 );
     
-                $sessionValidation = self::validateSession($sessionId, $token);
+                $ipv4 = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
+                
+                $sessionValidation = self::validateSession($sessionId, $token, $ipv4);
                 
                 if($sessionValidation['success'] && (!empty($username) || !empty($userId))) {
                     
@@ -637,7 +685,9 @@ class WsController extends CController {
                     'errors' => array(),
                 );
     
-                $sessionValidation = self::validateSession($sessionId, $token);
+                $ipv4 = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
+                
+                $sessionValidation = self::validateSession($sessionId, $token, $ipv4);
                 
                 if($sessionValidation['success']) {
                     
@@ -774,7 +824,9 @@ class WsController extends CController {
                     'errors' => array(),
                 );
     
-                $sessionValidation = self::validateSession($sessionId, $token);
+                $ipv4 = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
+                
+                $sessionValidation = self::validateSession($sessionId, $token, $ipv4);
                 
                 if($sessionValidation['success']) {
                     
@@ -873,7 +925,9 @@ class WsController extends CController {
                     'errors' => array(),
                 );
     
-                $sessionValidation = self::validateSession($sessionId, $token);
+                $ipv4 = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
+                
+                $sessionValidation = self::validateSession($sessionId, $token, $ipv4);
                 
                 if($sessionValidation['success']) {
 

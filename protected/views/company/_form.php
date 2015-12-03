@@ -54,3 +54,123 @@
 	
 </div>
 
+<div class="row">
+
+	<div class="col-md-3">
+
+		<div class="form-group">
+			<?php echo $form->labelEx($model, 'restrict_connection'); ?>
+            <?php echo $form->checkBox($model, 'restrict_connection'); ?>
+			<?php echo $form->error($model, 'restrict_connection'); ?>
+		</div>
+
+	</div>
+	
+	<div class="col-md-3 ips-wrapper" <?php echo ($model->restrict_connection) ? '' : 'style="display: none;';?>>
+
+		<div class="form-group">
+           
+            <?php echo $form->labelEx($model, 'list_ips'); ?>
+
+            <?php foreach($model->list_ips as $key => $ip): ?>
+
+                <div class="row duplicable-fields" style="margin-bottom: 5px;">
+
+                    <div class="col-md-7" style="padding: 0;">
+                        <?php echo CHtml::textField('CompanyModel[list_ips][]', !empty($ip) ? $ip : '', array('maxlength' => 45)); ?>
+                    </div>
+
+                    <div class="col-md-5">
+                    <?php
+                        echo CHtml::link('<span class="fa fa-plus-circle"></span>', '', 
+                            array(
+                            'class' => 'btn btn-proces-red add-row mws-tooltip-w',
+                            'original-title' => Yii::t('base','Add IP'),
+                            'style' => 'margin-top: 0; '
+                        ));
+
+                        echo CHtml::link('<span class="fa fa-times"></span>', '', 
+                            array(
+                            'class' => 'btn btn-proces-white remove-row mws-tooltip-w',
+                            'original-title' => Yii::t('base','Remove IP'),
+                            'style' => 'margin-top: 0; '.(($key > 0) ? '' : 'display: none;')
+                        ));
+                    ?>
+                    </div>
+
+                </div>
+
+            <?php endforeach; ?>
+
+            <?php echo $form->error($model, 'list_ips'); ?>
+
+		</div>
+
+	</div>
+
+</div>
+
+<script type="text/javascript">
+
+    $(function(){
+       
+        
+        $('body').on('click', '.add-row', function(e) {
+
+            e.preventDefault(); 
+            var thisElement = $(this);
+            var thisRow = thisElement.parents('.duplicable-fields');
+
+            if(thisRow.length) {
+
+                var newRow = thisRow.clone();
+                thisRow.after(newRow);
+
+                var newRowInputs = newRow.find('input');
+                newRowInputs.val('');
+
+                var newRowSelects = newRow.find('select');
+                newRowSelects.each(function(index, el) {
+                    var thisSelect = $(this);
+                    thisSelect.prev().remove();
+                    createAjaxChoosen(thisSelect);
+                });
+
+                newRow.find('.errorMessage').remove();
+                newRow.fadeOut(0).fadeIn('fast');
+                newRowInputs.focus();
+
+                if($('.duplicable-fields').length > 1) {
+                    var removeFolioBtn = newRow.find('.remove-row');
+                    removeFolioBtn.fadeIn('fast');
+                }
+            }
+        });
+
+        $('body').on('click', '.remove-row', function(e) {
+
+            e.preventDefault(); 
+            var thisElement = $(this);
+            var thisRow = thisElement.parents('.duplicable-fields');
+
+            thisRow.fadeOut('fast', function() {
+                thisRow.remove();
+                $('.tipsy').remove();
+            });
+        });
+        
+        $('#<?php echo CHtml::activeId($model, 'restrict_connection'); ?>').change(function(e){
+            
+            var thisElement = $(this);
+            
+            if(thisElement.is(":checked")) {
+                $('.ips-wrapper').fadeIn('fast');
+            } else {
+                $('.ips-wrapper').fadeOut('fast');
+            }
+        });
+        
+    });
+    
+</script>
+

@@ -1,7 +1,9 @@
 <?php
 
 class CompanyModel extends Company {
+    
     public $list_products;
+    public $list_ips;
     public $user;
 
     public static function model($className = __CLASS__) {
@@ -19,14 +21,34 @@ class CompanyModel extends Company {
         return CMap::mergeArray(parent::rules(),
             array(
                 array('name, subdomain', 'required', 'on' => 'update'),
+                array('list_ips', 'checkIpFormat'),
                 array('url_logo', 'file', 'types'=>'jpg, png', 'allowEmpty' => true),
             ));
+    }
+    
+    public function checkIpFormat($attribute_name, $params) {
+        
+        if($this->restrict_connection) {
+            
+            if(!empty($this->list_ips) && is_array($this->list_ips)) {
+                
+                foreach($this->list_ips as $key => $ip) {
+
+                    if(filter_var($ip, FILTER_VALIDATE_IP) === false && !empty($ip)) {
+                        $this->addError($attribute_name, 'Una de las IPs ingresadas es inválida');
+                        break;
+                    }
+                }
+            }
+        }
+	   
     }
 
     public function attributeLabels() {
         return CMap::mergeArray(parent::attributeLabels(),
             array(
                 'list_products' => Yii::t('models/Company', 'list_products'),
+                'list_ips' => Yii::t('models/Company', 'list_ips'),
             ));
     }
 
@@ -61,6 +83,18 @@ class CompanyModel extends Company {
                                 $product_comp->product_id = $item;
                                 $product_comp->company_id = $this->id;
                                 if (! ($success = $product_comp->save())) break;
+                            }
+                        }
+                        
+                        if($this->restrict_connection) {
+                            if (is_array($this->list_ips)) {
+                                foreach ($this->list_ips as $ip) {
+                                    if(empty($ip)) continue;
+                                    $allowedIp = new AllowedIp();
+                                    $allowedIp->company_id = $this->id;
+                                    $allowedIp->ipv4 = $ip;
+                                    if (! ($success = $allowedIp->save())) break;
+                                }
                             }
                         }
                     }
@@ -105,7 +139,7 @@ class CompanyModel extends Company {
                     'condition' => "company_id={$this->id}"
                 ));
                 
-                if (is_array($this->list_products) && !empty($this->list_products)) {
+                if (is_array($this->list_products)) {
                     foreach ($this->list_products as $item) {
                         $product_user = new ProductUser();
                         $product_user->user_id = $this->user_id;
@@ -116,6 +150,30 @@ class CompanyModel extends Company {
                         $product_comp->company_id = $this->id;
                         if (! ($success = $product_comp->save())) break;
                     }
+                }
+                
+                if($this->restrict_connection) {
+                    
+                    if (is_array($this->list_ips)) {
+                        
+                        AllowedIp::model()->deleteAllByAttributes(
+                            array(
+                                'company_id' => $this->id
+                            ));
+                        
+                        foreach ($this->list_ips as $ip) {
+                            if(empty($ip)) continue;
+                            $allowedIp = new AllowedIp();
+                            $allowedIp->company_id = $this->id;
+                            $allowedIp->ipv4 = $ip;
+                            if (! ($success = $allowedIp->save())) break;
+                        }
+                    }
+                } else {
+                    AllowedIp::model()->deleteAllByAttributes(
+                        array(
+                            'company_id' => $this->id
+                        ));
                 }
             }
             if ($success) {
@@ -169,8 +227,14 @@ class CompanyModel extends Company {
 
     public function afterFind() {
         parent::afterFind();
+        $this->list_products = array();
+        
         foreach ($this->products1 as $item) {
             $this->list_products[] = $item->id;
+        }
+        $this->list_ips = array();
+        foreach ($this->ips as $ip) {
+            $this->list_ips[] = $ip->ipv4;
         }
         $this->user = UserModel::model()->findByPk($this->user_id);
     }

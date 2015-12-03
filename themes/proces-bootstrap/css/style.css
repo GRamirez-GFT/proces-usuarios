@@ -1511,7 +1511,11 @@ h1 {
 }
 
 
-
+.duplicable-fields .add-row,
+.duplicable-fields .remove-row {
+    margin-top: 23px;
+    margin-right: 5px;
+}
 
 
 /* ##################### FOOTER ##################### */
