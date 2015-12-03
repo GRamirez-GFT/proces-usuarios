@@ -317,8 +317,9 @@ class WsController extends CController {
                 $password = isset($_SERVER['HTTP_X_REST_PASSWORD']) ? $_SERVER['HTTP_X_REST_PASSWORD'] : '';
                 $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : '';
                 $company = isset($data['company']) ? $data['company'] : '';
+                $ipv4 = isset($data['ipv4']) ? $data['ipv4'] : null;
 
-                $ipv4 = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
+                $ipv4 = filter_var($ipv4, FILTER_VALIDATE_IP);
                 
                 $response = self::validateAccess($username, $password, $token, $company, $ipv4);
 
@@ -367,12 +368,13 @@ class WsController extends CController {
                 
                 $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : false;
                 $sessionId = isset($data['session_id']) ? $data['session_id'] : null;
+                $ipv4 = isset($data['ipv4']) ? $data['ipv4'] : null;
                 
                 $response= array(
                     'success' => false,
                 );
     
-                $ipv4 = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
+                $ipv4 = filter_var($ipv4, FILTER_VALIDATE_IP);
                 
                 $sessionValidation = self::validateSession($sessionId, $token, $ipv4);
                 
@@ -429,6 +431,7 @@ class WsController extends CController {
                 
                 $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : false;
                 $sessionId = isset($data['session_id']) ? $data['session_id'] : null;
+                $ipv4 = isset($data['ipv4']) ? $data['ipv4'] : null;
                 
                 $response= array(
                     'success' => false,
@@ -436,7 +439,7 @@ class WsController extends CController {
                     'error' => null,
                 );
     
-                $ipv4 = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
+                $ipv4 = filter_var($ipv4, FILTER_VALIDATE_IP);
                 
                 $sessionValidation = self::validateSession($sessionId, $token, $ipv4);
                 
@@ -500,6 +503,7 @@ class WsController extends CController {
                 
                 $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : false;
                 $sessionId = isset($data['session_id']) ? $data['session_id'] : null;
+                $ipv4 = isset($data['ipv4']) ? $data['ipv4'] : null;
                 
                 $response= array(
                     'success' => false,
@@ -507,7 +511,7 @@ class WsController extends CController {
                     'error' => null,
                 );
     
-                $ipv4 = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
+                $ipv4 = filter_var($ipv4, FILTER_VALIDATE_IP);
                 
                 $sessionValidation = self::validateSession($sessionId, $token, $ipv4);
                 
@@ -577,6 +581,7 @@ class WsController extends CController {
                 $sessionId = isset($data['session_id']) ? $data['session_id'] : null;
                 $username = isset($data['username']) ? $data['username'] : null;
                 $userId = isset($data['id']) ? $data['id'] : null;
+                $ipv4 = isset($data['ipv4']) ? $data['ipv4'] : null;
                 
                 $response= array(
                     'success' => false,
@@ -584,7 +589,7 @@ class WsController extends CController {
                     'error' => null,
                 );
     
-                $ipv4 = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
+                $ipv4 = filter_var($ipv4, FILTER_VALIDATE_IP);
                 
                 $sessionValidation = self::validateSession($sessionId, $token, $ipv4);
                 
@@ -683,6 +688,7 @@ class WsController extends CController {
                 $password = isset($data['password']) ? $data['password'] : null;
                 $confirmPasssword = isset($data['confirm_password']) ? $data['confirm_password'] : null;
                 $email = isset($data['email']) ? $data['email'] : null;
+                $ipv4 = isset($data['ipv4']) ? $data['ipv4'] : null;
                 
                 $response = array(
                     'success' => false,
@@ -690,7 +696,7 @@ class WsController extends CController {
                     'errors' => array(),
                 );
     
-                $ipv4 = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
+                $ipv4 = filter_var($ipv4, FILTER_VALIDATE_IP);
                 
                 $sessionValidation = self::validateSession($sessionId, $token, $ipv4);
                 
@@ -822,6 +828,7 @@ class WsController extends CController {
                 $password = isset($data['password']) ? $data['password'] : null;
                 $confirmPasssword = isset($data['confirm_password']) ? $data['confirm_password'] : null;
                 $email = isset($data['email']) ? $data['email'] : null;
+                $ipv4 = isset($data['ipv4']) ? $data['ipv4'] : null;
                 
                 $response = array(
                     'success' => false,
@@ -829,7 +836,7 @@ class WsController extends CController {
                     'errors' => array(),
                 );
     
-                $ipv4 = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
+                $ipv4 = filter_var($ipv4, FILTER_VALIDATE_IP);
                 
                 $sessionValidation = self::validateSession($sessionId, $token, $ipv4);
                 
@@ -923,6 +930,7 @@ class WsController extends CController {
                 $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : false;
                 $sessionId = isset($data['session_id']) ? $data['session_id'] : null;
                 $userId = isset($data['id']) ? $data['id'] : null;
+                $ipv4 = isset($data['ipv4']) ? $data['ipv4'] : null;
                 
                 $response = array(
                     'success' => false,
@@ -930,7 +938,7 @@ class WsController extends CController {
                     'errors' => array(),
                 );
     
-                $ipv4 = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
+                $ipv4 = filter_var($ipv4, FILTER_VALIDATE_IP);
                 
                 $sessionValidation = self::validateSession($sessionId, $token, $ipv4);
                 
