@@ -326,7 +326,7 @@ class WsController extends CController {
                 if($response['success']) {
                     $userSession = new UserSession();
                     $userSession->session = md5(uniqid() . date("YmdHis"));
-                    $userSession->ipv4 = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
+                    $userSession->ipv4 = !empty($ipv4) ? $ipv4 : '';
                     $userSession->user_id = $response['user']['id'];
 
                     $userSession->save();
