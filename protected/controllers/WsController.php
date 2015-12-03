@@ -52,19 +52,24 @@ class WsController extends CController {
         
     }
     
-    private static function validateRestrictedConnection($companyId, $ipv4) {
+    private static function validateRestrictedConnection($company, $ipv4) {
         
-        $allowedIp = AllowedIp::model()->findByAttributes(array(
-            'company_id' => $companyId,
-            'ipv4' => $ipv4
-        ));
-                    
-        $isLocalhost = $_SERVER['SERVER_NAME'] == 'localhost' || $_SERVER['SERVER_NAME'] == '127.0.0.1';
-        
-        if($allowedIp) {
-            return true;
+        if($company->restrict_connection) {
+            
+            $allowedIp = AllowedIp::model()->findByAttributes(array(
+                'company_id' => $company->id,
+                'ipv4' => $ipv4
+            ));
+
+            $isLocalhost = $_SERVER['SERVER_NAME'] == 'localhost' || $_SERVER['SERVER_NAME'] == '127.0.0.1';
+
+            if($allowedIp) {
+                return true;
+            } else {
+                return false;
+            }
         } else {
-            return false;
+            return true;
         }
         
     }
@@ -100,7 +105,7 @@ class WsController extends CController {
                 
                 if($result['user']['role'] == 'general') {
                     
-                    if(!self::validateRestrictedConnection($session->user->company_id, $ipv4)) {
+                    if(!self::validateRestrictedConnection($session->user->company, $ipv4)) {
                         $result['success'] = false;
                         $result['user'] = array();
                         $result['error'] = "El acceso desde la red actual está bloqueado";
@@ -200,7 +205,7 @@ class WsController extends CController {
                         
                         if($result['user']['role'] == 'general') {
                             
-                            if(!self::validateRestrictedConnection($company->id, $ipv4)) {
+                            if(!self::validateRestrictedConnection($company, $ipv4)) {
                                 $result['success'] = false;
                                 $result['user'] = array();
                                 $result['errors']['user'] = "Acceso restringido en esta red";
