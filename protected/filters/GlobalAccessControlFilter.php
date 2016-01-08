@@ -46,7 +46,7 @@ class GlobalAccessControlFilter extends CFilter {
                     
                     return true;
                     
-                } else { print_r($sessionResponse);
+                } else {
                     return self::loginRedirect();
                 }
                 
