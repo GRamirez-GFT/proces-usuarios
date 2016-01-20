@@ -504,6 +504,7 @@ class WsController extends CController {
                 $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : false;
                 $sessionId = isset($data['session_id']) ? $data['session_id'] : null;
                 $ipv4 = isset($data['ipv4']) ? $data['ipv4'] : null;
+                $companyId = isset($data['company_id']) ? $data['company_id'] : null;
                 
                 $response= array(
                     'success' => false,
@@ -511,25 +512,42 @@ class WsController extends CController {
                     'error' => null,
                 );
     
-                $ipv4 = filter_var($ipv4, FILTER_VALIDATE_IP);
-                
-                $sessionValidation = self::validateSession($sessionId, $token, $ipv4);
-                
-                if($sessionValidation['success']) {
+                if($token == Yii::app()->params->token && !empty($companyId) && empty($sessionId) && empty($ipv4)) {
                     
                     $users = Yii::app()->db->createCommand()
                         ->select("user.id, user.name, user.username, user.email, user.company_id, user.active, user.date_create")
                         ->from("user")
                         ->leftJoin("company", "`user`.`company_id` = `company`.`id`")
-                        ->where("`user`.`company_id`='".$sessionValidation['user']['company_id']."' AND `user`.`id` <> `company`.`user_id` ")
+                        ->where("`user`.`company_id`='".$companyId."' AND `user`.`id` <> `company`.`user_id` ")
                         ->order("user.username ASC")
                         ->queryAll();
-                    
+
                     $response['users'] = $users;
                     $response['success'] = true;
+                    
                 } else {
-                    $response['error'] = $sessionValidation['error'];   
+                    
+                    $ipv4 = filter_var($ipv4, FILTER_VALIDATE_IP);
+
+                    $sessionValidation = self::validateSession($sessionId, $token, $ipv4);
+
+                    if($sessionValidation['success']) {
+
+                        $users = Yii::app()->db->createCommand()
+                            ->select("user.id, user.name, user.username, user.email, user.company_id, user.active, user.date_create")
+                            ->from("user")
+                            ->leftJoin("company", "`user`.`company_id` = `company`.`id`")
+                            ->where("`user`.`company_id`='".$sessionValidation['user']['company_id']."' AND `user`.`id` <> `company`.`user_id` ")
+                            ->order("user.username ASC")
+                            ->queryAll();
+
+                        $response['users'] = $users;
+                        $response['success'] = true;
+                    } else {
+                        $response['error'] = $sessionValidation['error'];   
+                    }
                 }
+                
                 
                 return CJSON::encode($response);
                 
