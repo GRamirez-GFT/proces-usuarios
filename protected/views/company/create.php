@@ -15,7 +15,28 @@
 	'htmlOptions' => array(
 		'enctype' => 'multipart/form-data',
 		'autocomplete' => 'off',
-	)
+	),
+    'clientOptions' => array(
+        'validateOnSubmit' => true,
+        'beforeValidate' => 'js:function(form) {
+        
+            form.find(":submit").attr("disabled", "disabled");
+            $(".ajax-loader").fadeIn("fast");
+
+            return true;
+        }',
+        'afterValidate' => 'js:function(form, data, hasError) {
+            
+            if(hasError) {
+                form.find(":submit").removeAttr("disabled");
+                $(".ajax-loader").fadeOut("fast");
+            } else {
+                form.find(":submit").removeAttr("disabled");
+            }
+            
+            return true;
+        }',
+    )
 )); ?>
 
 <?php $this->widget('CTabView',array(

@@ -1,5 +1,9 @@
 <?php
 switch ($_SERVER['SERVER_NAME']) {
+    
+    /* En caso que el nombre del servidor local sea diferente también se debe modificar en
+    *  el archivo "protected/controllers/WsController.php" en la función validateRestrictedConnection()
+    */
     case 'localhost':
     case '127.0.0.1':
         defined('YII_DEBUG') or define('YII_DEBUG', true);

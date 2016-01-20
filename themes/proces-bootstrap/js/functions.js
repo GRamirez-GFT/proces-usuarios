@@ -530,9 +530,12 @@ $(function(){
 		event.preventDefault();
         
 		var thisForm = $(this);
+        var submitButton = thisForm.find(':submit');
 		var panel    = thisForm.parents('.proces-panel');
 		var dataForm = 'ajaxRequest=true&'+thisForm.serialize();
 
+        submitButton.attr('disabled', 'disabled');
+        
 		$.ajax({
 			url    : thisForm.attr('action'),
 			data   : dataForm,

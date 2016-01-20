@@ -7,7 +7,7 @@ class GlobalAccessControlFilter extends CFilter {
         if(isset($_COOKIE['PROCESID'])) {
             
             $url = WS_SERVER.'/validateSession';
-            $postData = '{"session_id": "'.$_COOKIE['PROCESID'].'"}';
+            $postData = '{"session_id": "'.$_COOKIE['PROCESID'].'", "ipv4":"'.$_SERVER['REMOTE_ADDR'].'"}';
             $headers = array(
                 "Accept: application/json", 
                 "X-REST-USERNAME: default", 

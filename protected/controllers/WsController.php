@@ -52,7 +52,29 @@ class WsController extends CController {
         
     }
     
-    private static function validateSession($sessionId, $token) {
+    private static function validateRestrictedConnection($company, $ipv4) {
+        
+        if($company->restrict_connection) {
+            
+            $allowedIp = AllowedIp::model()->findByAttributes(array(
+                'company_id' => $company->id,
+                'ipv4' => $ipv4
+            ));
+
+            $isLocalhost = $_SERVER['SERVER_NAME'] == 'localhost' || $_SERVER['SERVER_NAME'] == '127.0.0.1';
+
+            if($allowedIp) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return true;
+        }
+        
+    }
+    
+    private static function validateSession($sessionId, $token, $ipv4 = null) {
                 
         $result = array(
             'success' => false,
@@ -79,6 +101,18 @@ class WsController extends CController {
                 $result['error'] = "No cuenta con acceso a este producto";
             }
             
+            if($result['success']) {
+                
+                if($result['user']['role'] == 'general') {
+                    
+                    if(!self::validateRestrictedConnection($session->user->company, $ipv4)) {
+                        $result['success'] = false;
+                        $result['user'] = array();
+                        $result['error'] = "El acceso desde la red actual está bloqueado";
+                    }
+                }
+            }
+            
         } else {
             $result['error'] = "El ID de sesión es inválido";
         }
@@ -87,7 +121,7 @@ class WsController extends CController {
         
     }
     
-    private static function validateAccess($username, $password, $token, $company, $checkPassword = true) {
+    private static function validateAccess($username, $password, $token, $company, $ipv4 = null) {
                 
         $result = array(
             'success' => false,
@@ -164,10 +198,19 @@ class WsController extends CController {
 
                 if($validProduct) {
 
-                    if (CPasswordHelper::verifyPassword($password, $user->password) || !$checkPassword) {
+                    if (CPasswordHelper::verifyPassword($password, $user->password)) {
 
                         $result['success'] = true;
                         $result['user'] = self::getUserData($user);
+                        
+                        if($result['user']['role'] == 'general') {
+                            
+                            if(!self::validateRestrictedConnection($company, $ipv4)) {
+                                $result['success'] = false;
+                                $result['user'] = array();
+                                $result['errors']['user'] = "Acceso restringido en esta red";
+                            }
+                        }
 
                     } else {
                         $result['errors']['password'] = 'El password ingresado es incorrecto';
@@ -274,13 +317,16 @@ class WsController extends CController {
                 $password = isset($_SERVER['HTTP_X_REST_PASSWORD']) ? $_SERVER['HTTP_X_REST_PASSWORD'] : '';
                 $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : '';
                 $company = isset($data['company']) ? $data['company'] : '';
+                $ipv4 = isset($data['ipv4']) ? $data['ipv4'] : null;
 
-                $response = self::validateAccess($username, $password, $token, $company);
+                $ipv4 = filter_var($ipv4, FILTER_VALIDATE_IP);
+                
+                $response = self::validateAccess($username, $password, $token, $company, $ipv4);
 
                 if($response['success']) {
                     $userSession = new UserSession();
                     $userSession->session = md5(uniqid() . date("YmdHis"));
-                    $userSession->ipv4 = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
+                    $userSession->ipv4 = !empty($ipv4) ? $ipv4 : '';
                     $userSession->user_id = $response['user']['id'];
 
                     $userSession->save();
@@ -322,12 +368,15 @@ class WsController extends CController {
                 
                 $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : false;
                 $sessionId = isset($data['session_id']) ? $data['session_id'] : null;
+                $ipv4 = isset($data['ipv4']) ? $data['ipv4'] : null;
                 
                 $response= array(
                     'success' => false,
                 );
     
-                $sessionValidation = self::validateSession($sessionId, $token);
+                $ipv4 = filter_var($ipv4, FILTER_VALIDATE_IP);
+                
+                $sessionValidation = self::validateSession($sessionId, $token, $ipv4);
                 
                 if($sessionValidation['success']) {
 
@@ -382,6 +431,7 @@ class WsController extends CController {
                 
                 $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : false;
                 $sessionId = isset($data['session_id']) ? $data['session_id'] : null;
+                $ipv4 = isset($data['ipv4']) ? $data['ipv4'] : null;
                 
                 $response= array(
                     'success' => false,
@@ -389,7 +439,9 @@ class WsController extends CController {
                     'error' => null,
                 );
     
-                $sessionValidation = self::validateSession($sessionId, $token);
+                $ipv4 = filter_var($ipv4, FILTER_VALIDATE_IP);
+                
+                $sessionValidation = self::validateSession($sessionId, $token, $ipv4);
                 
                 if($sessionValidation['success']) {
                     $response['user'] = $sessionValidation['user'];
@@ -451,6 +503,8 @@ class WsController extends CController {
                 
                 $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : false;
                 $sessionId = isset($data['session_id']) ? $data['session_id'] : null;
+                $ipv4 = isset($data['ipv4']) ? $data['ipv4'] : null;
+                $companyId = isset($data['company_id']) ? $data['company_id'] : null;
                 
                 $response= array(
                     'success' => false,
@@ -458,23 +512,42 @@ class WsController extends CController {
                     'error' => null,
                 );
     
-                $sessionValidation = self::validateSession($sessionId, $token);
-                
-                if($sessionValidation['success']) {
+                if($token == Yii::app()->params->token && !empty($companyId) && empty($sessionId) && empty($ipv4)) {
                     
                     $users = Yii::app()->db->createCommand()
                         ->select("user.id, user.name, user.username, user.email, user.company_id, user.active, user.date_create")
                         ->from("user")
                         ->leftJoin("company", "`user`.`company_id` = `company`.`id`")
-                        ->where("`user`.`company_id`='".$sessionValidation['user']['company_id']."' AND `user`.`id` <> `company`.`user_id` ")
+                        ->where("`user`.`company_id`='".$companyId."' AND `user`.`id` <> `company`.`user_id` ")
                         ->order("user.username ASC")
                         ->queryAll();
-                    
+
                     $response['users'] = $users;
                     $response['success'] = true;
+                    
                 } else {
-                    $response['error'] = $sessionValidation['error'];   
+                    
+                    $ipv4 = filter_var($ipv4, FILTER_VALIDATE_IP);
+
+                    $sessionValidation = self::validateSession($sessionId, $token, $ipv4);
+
+                    if($sessionValidation['success']) {
+
+                        $users = Yii::app()->db->createCommand()
+                            ->select("user.id, user.name, user.username, user.email, user.company_id, user.active, user.date_create")
+                            ->from("user")
+                            ->leftJoin("company", "`user`.`company_id` = `company`.`id`")
+                            ->where("`user`.`company_id`='".$sessionValidation['user']['company_id']."' AND `user`.`id` <> `company`.`user_id` ")
+                            ->order("user.username ASC")
+                            ->queryAll();
+
+                        $response['users'] = $users;
+                        $response['success'] = true;
+                    } else {
+                        $response['error'] = $sessionValidation['error'];   
+                    }
                 }
+                
                 
                 return CJSON::encode($response);
                 
@@ -526,6 +599,7 @@ class WsController extends CController {
                 $sessionId = isset($data['session_id']) ? $data['session_id'] : null;
                 $username = isset($data['username']) ? $data['username'] : null;
                 $userId = isset($data['id']) ? $data['id'] : null;
+                $ipv4 = isset($data['ipv4']) ? $data['ipv4'] : null;
                 
                 $response= array(
                     'success' => false,
@@ -533,7 +607,9 @@ class WsController extends CController {
                     'error' => null,
                 );
     
-                $sessionValidation = self::validateSession($sessionId, $token);
+                $ipv4 = filter_var($ipv4, FILTER_VALIDATE_IP);
+                
+                $sessionValidation = self::validateSession($sessionId, $token, $ipv4);
                 
                 if($sessionValidation['success'] && (!empty($username) || !empty($userId))) {
                     
@@ -630,6 +706,7 @@ class WsController extends CController {
                 $password = isset($data['password']) ? $data['password'] : null;
                 $confirmPasssword = isset($data['confirm_password']) ? $data['confirm_password'] : null;
                 $email = isset($data['email']) ? $data['email'] : null;
+                $ipv4 = isset($data['ipv4']) ? $data['ipv4'] : null;
                 
                 $response = array(
                     'success' => false,
@@ -637,7 +714,9 @@ class WsController extends CController {
                     'errors' => array(),
                 );
     
-                $sessionValidation = self::validateSession($sessionId, $token);
+                $ipv4 = filter_var($ipv4, FILTER_VALIDATE_IP);
+                
+                $sessionValidation = self::validateSession($sessionId, $token, $ipv4);
                 
                 if($sessionValidation['success']) {
                     
@@ -661,15 +740,20 @@ class WsController extends CController {
 
                             if($productUser) {
                                 
-                                $productUser->is_used = '1';
-                                $productUser->update();
-                                
-                                $response['success'] = true;
-                                $response['user'] = Yii::app()->db->createCommand()
-                                ->select("user.id, user.name, user.username, user.email, user.company_id, user.active, user.date_create")
-                                ->from("user")
-                                ->where("`user`.`id`='".$user->id."'")
-                                ->queryRow();
+                                if(!$productUser->is_used) {
+                                    
+                                    $productUser->is_used = '1';
+                                    $productUser->update();
+
+                                    $response['success'] = true;
+                                    $response['user'] = Yii::app()->db->createCommand()
+                                    ->select("user.id, user.name, user.username, user.email, user.company_id, user.active, user.date_create")
+                                    ->from("user")
+                                    ->where("`user`.`id`='".$user->id."'")
+                                    ->queryRow();
+                                } else {
+                                    $response['errors']['Error 1'] = "El usuario ingresado ya existe";  
+                                }
                                 
                             } else {
                                 $response['errors']['Error 1'] = "El usuario no tiene asignado el producto donde intenta registrarlo";
@@ -762,6 +846,7 @@ class WsController extends CController {
                 $password = isset($data['password']) ? $data['password'] : null;
                 $confirmPasssword = isset($data['confirm_password']) ? $data['confirm_password'] : null;
                 $email = isset($data['email']) ? $data['email'] : null;
+                $ipv4 = isset($data['ipv4']) ? $data['ipv4'] : null;
                 
                 $response = array(
                     'success' => false,
@@ -769,7 +854,9 @@ class WsController extends CController {
                     'errors' => array(),
                 );
     
-                $sessionValidation = self::validateSession($sessionId, $token);
+                $ipv4 = filter_var($ipv4, FILTER_VALIDATE_IP);
+                
+                $sessionValidation = self::validateSession($sessionId, $token, $ipv4);
                 
                 if($sessionValidation['success']) {
                     
@@ -861,6 +948,7 @@ class WsController extends CController {
                 $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : false;
                 $sessionId = isset($data['session_id']) ? $data['session_id'] : null;
                 $userId = isset($data['id']) ? $data['id'] : null;
+                $ipv4 = isset($data['ipv4']) ? $data['ipv4'] : null;
                 
                 $response = array(
                     'success' => false,
@@ -868,7 +956,9 @@ class WsController extends CController {
                     'errors' => array(),
                 );
     
-                $sessionValidation = self::validateSession($sessionId, $token);
+                $ipv4 = filter_var($ipv4, FILTER_VALIDATE_IP);
+                
+                $sessionValidation = self::validateSession($sessionId, $token, $ipv4);
                 
                 if($sessionValidation['success']) {
 

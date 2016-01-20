@@ -22,12 +22,21 @@
 <p>
 	<span class="labeling"><?php echo  Yii::t('models/Company', 'list_products'); ?>:</span>
 	<ul>
-	<?php foreach ($model->list_products as $productId) :?>
+	<?php foreach ($model->products1 as $product) :?>
 		<li>
-		<?php 
-			$thisProduct = Product::model()->findByPk($productId);
-			echo $thisProduct->name; 
-		?>
+		<?php echo $product->name; ?>
+		</li>
+	<?php endforeach; ?>
+	</ul>
+</p>
+
+
+<p>
+	<span class="labeling"><?php echo  Yii::t('models/Company', 'list_ips'); ?>:</span>
+	<ul>
+	<?php foreach ($model->list_ips as $ip) :?>
+		<li>
+		<?php echo $ip;?>
 		</li>
 	<?php endforeach; ?>
 	</ul>

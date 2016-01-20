@@ -165,7 +165,6 @@ class UserModel extends User {
                             $productUserDeleted = ProductUser::model()->deleteAllByAttributes(
                                 array(
                                     'user_id' => $this->id,
-                                    'user_id' => $this->id,
                                     'product_id' => $product->id,
                                     'is_used' => 0
                                 ));

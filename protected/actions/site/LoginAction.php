@@ -22,7 +22,7 @@ class LoginAction extends CAction {
                 "X-REST-PASSWORD: " . $model->password, 
                 "X-REST-TOKEN: " . Yii::app()->params->token, 
             );
-            $postData = '{"company": "'.$model->company.'"}';
+            $postData = '{"company": "'.$model->company.'", "ipv4":"'.$_SERVER['REMOTE_ADDR'].'"}';
             
             $loginCurl = curl_init();
             curl_setopt($loginCurl, CURLOPT_URL, $url);

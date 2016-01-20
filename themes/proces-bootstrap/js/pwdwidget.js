@@ -272,10 +272,10 @@ function generatePWD()
 	{
 		password += String.fromCharCode("0".charCodeAt(0) + getRand(10));
 	}
-	for(i=0;i<4;i++)
-	{
-		password += strSymbols.charAt(getRand(strSymbols.length));
-	}
+//	for(i=0;i<4;i++)
+//	{
+//		password += strSymbols.charAt(getRand(strSymbols.length));
+//	}
 
 	password = shuffleString(password);
 	password = shuffleString(password);

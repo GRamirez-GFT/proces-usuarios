@@ -51,7 +51,7 @@
 		<div class="form-group">
 			<?php echo $form->labelEx($model, 'password'); ?>
 			<?php echo $form->passwordField($model, 'password', array(
-                'maxlength' => 72,
+                'maxlength' => 16,
                 'class' => 'password-widget',
             )); ?>
 			<?php echo $form->error($model, 'password', array('style' => 'width: 100%;')); ?>
@@ -145,7 +145,10 @@
 
 $(function() {
 
-    
+    $('#user-form').submit(function(e) {
+        $(this).find(':submit').attr('disabled', 'disabled');
+        $('.ajax-loader').fadeIn('fast');
+    });
     
 });
 
