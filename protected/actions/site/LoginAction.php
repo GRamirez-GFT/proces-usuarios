@@ -50,7 +50,7 @@ class LoginAction extends CAction {
                     }
 
                     setcookie('PROCESID', $loginResponse->user['session_id'], time() + 36000, '/');
-                    $this->controller->redirect(Yii::app()->user->returnUrl);
+                    $this->controller->redirect(Yii::app()->baseUrl);
 
                 } else {
 

@@ -7,7 +7,7 @@ $footer[] = array('label' => Yii::t('base', 'Contact'), 'url' => Yii::app()->hom
 <div class="footer container-fluid center-block">
 
     <div class="pull-left col-sm-5">
-        &copy; <?php echo date('Y'); ?> por Icono. Todos los derechos reservados.
+        &copy; <?php echo date('Y'); ?> por Proces. Todos los derechos reservados.
     </div>
     
     <div class="pull-right col-sm-7">
