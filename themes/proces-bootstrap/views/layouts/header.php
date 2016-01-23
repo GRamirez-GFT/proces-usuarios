@@ -5,7 +5,7 @@
 <meta name="author" content="">
 <title><?php echo Yii::app()->controller->pageTitle;?></title>
 <?php
-Yii::app()->clientScript->registerLinkTag('shortcut icon', null, $this->assets . '/img/favicon.ico')
+Yii::app()->clientScript->registerLinkTag('shortcut icon', null, $this->assets . '/img/favicon.png')
     ->registerCssFile($this->assets . '/css/jquery-ui.min.css')
     ->registerCssFile($this->assets . '/css/visualsearch.css')
     ->registerCssFile($this->assets . '/css/bootstrap.min.css')

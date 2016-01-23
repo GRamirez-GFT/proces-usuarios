@@ -5,7 +5,7 @@
 <body class="body-login">
     <?php echo $content; ?>
 	<div class="footer-login">
-       &copy; <?php echo date('Y'); ?> by Icono. Todos los derechos reservados.
+       &copy; <?php echo date('Y'); ?> by Proces. Todos los derechos reservados.
 	</div>
 </body>
 <?php else:?>
