@@ -66,7 +66,7 @@
 
 	</div>
 	
-	<div class="col-md-3 ips-wrapper" <?php echo ($model->restrict_connection) ? '' : 'style="display: none;';?>>
+	<div class="col-md-3 ips-wrapper" <?php echo ($model->restrict_connection) ? '' : 'style="display: none;"';?>>
 
 		<div class="form-group">
            
