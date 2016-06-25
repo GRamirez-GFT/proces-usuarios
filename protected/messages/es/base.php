@@ -16,7 +16,9 @@ return array(
 	'Delete' => 'Eliminar',
 	'Create' => 'Crear',
 	'Save' => 'Guardar',
-	'Cancel' => 'Cancelar',
+    'Cancel' => 'Cancelar',
+    'Activate' => 'Activar',
+	'Deactivate' => 'Desactivar',
 	'Create new' => 'Crear nuevo',
 	'Details' => 'Detalles',
 	'User details' => 'Detalles de usuario',
@@ -40,7 +42,6 @@ return array(
     
     'Are you sure you want to delete this user?' => '¿Está seguro de borrar este usuario?',
     'Are you sure you want to delete this company?' => '¿Está seguro de borrar esta empresa?',
-    
-    
+    'The company has reached the maximum of active licenses.' => 'La empresa ha aclanzado el máximo de licencias activas.',
 	);
 ?>

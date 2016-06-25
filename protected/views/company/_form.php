@@ -54,6 +54,22 @@
 	
 </div>
 
+<?php if(in_array(Yii::app()->user->role, array('global'))): ?>
+<div class="row">
+
+	<div class="col-md-3">
+
+		<div class="form-group">
+		    <?php echo $form->labelEx($model, 'licenses'); ?>
+			<?php echo $form->textField($model, 'licenses'); ?>
+			<?php echo $form->error($model, 'licenses'); ?>
+		</div>
+		
+	</div>
+	
+</div>
+<?php endif; ?>
+
 <div class="row">
 
 	<div class="col-md-3">

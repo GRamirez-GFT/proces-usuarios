@@ -15,6 +15,11 @@
 </p>
 
 <p>
+	<span class="labeling"><?php echo  Yii::t('models/Company', 'licenses'); ?>:</span>
+	<?php echo $model->licenses; ?>
+</p>
+
+<p>
 	<span class="labeling"><?php echo  Yii::t('models/Company', 'user_id'); ?>:</span>
 	<?php echo $model->user->name ? $model->user->name : $model->user->username; ?>
 </p>

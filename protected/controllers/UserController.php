@@ -30,7 +30,7 @@ class UserController extends MyController {
                 array(
                     'allow',
                     'actions' => array(
-                        'view', 'update'
+                        'view', 'update', 'activate'
                     ),
                     'users' => array(
                         '@'
@@ -43,6 +43,7 @@ class UserController extends MyController {
     public function actions() {
         return array(
             'view' => 'application.actions.user.ViewAction',
+            'activate' => 'application.actions.user.ActivateAction',
             'create' => 'application.actions.user.CreateAction',
             'update' => 'application.actions.user.UpdateAction',
             'delete' => 'application.actions.user.DeleteAction',

@@ -119,22 +119,17 @@ class UserModel extends User {
                 $transaction ? $transaction->commit() : null;
             }
         } catch (Exception $e) {
-            echo $e;
             $transaction ? $transaction->rollback() : null;
         }
         return $success;
     }
 
-    public function update() {
+    public function update($attributes = null) {
         $success = false;
         try {
             $transaction = Yii::app()->db->getCurrentTransaction() ? null : Yii::app()->db->beginTransaction();
-            $attributes = array();
-            foreach ($this->getAttributes() as $name => $value) {
-                if ($value && $name != 'id') {
-                    $attributes[] = $name;
-                }
-            }
+
+            $attributes = self::validateAttributes($attributes);
 
             if ($success = parent::update($attributes)) {
                 if(is_array($this->list_products)) {
@@ -218,6 +213,29 @@ class UserModel extends User {
         }
         return $success;
 
+    }
+
+    private function validateAttributes($attributes) {
+
+        $validatedAttributes = array();
+
+        if(is_null($attributes)) {
+            foreach ($this->getAttributes() as $name => $value) {
+                if ($value != ""  && $name != 'id') {
+                    $validatedAttributes[] = $name;
+                }
+            }
+        } else {
+             foreach ($this->getAttributes() as $name => $value) {
+                if (($value == ""  || $name == 'id') && array_key_exists($name, $attributes)) {
+                    unset($attributes[$name]);
+                }
+            }
+
+            $validatedAttributes = $attributes;
+        }
+
+        return $validatedAttributes;
     }
 
     public function afterFind() {
