@@ -10,4 +10,5 @@ return array(
     'url_logo' => 'Logo',
     'list_products' => 'Productos',
     'list_ips' => 'IPs permitidas',
+    'licenses' => '# de licencias',
 );

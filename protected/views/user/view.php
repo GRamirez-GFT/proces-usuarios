@@ -65,6 +65,11 @@
 		<p>
 
 		<p>
+			<span class="labeling"><?php echo  Yii::t('models/User', 'active'); ?>:</span>
+			<?php echo ($model->active) ? 'Si' : 'No'; ?>
+		<p>
+
+		<p>
 			<span class="labeling"><?php echo  Yii::t('models/User', 'company_id'); ?>:</span>
 			<?php echo $model->company_id ? $model->company->name : null; ?>
 		<p>
@@ -90,6 +95,16 @@
             <?php endforeach; ?>
             </ul>
 		<p>
+
+		<?php
+		if($model->id != $model->company->user_id) {
+			echo CHtml::link('<span class="fa fa-'.($model->active ? 'stop' : 'play').'"></span> '. Yii::t('base', $model->active ? 'Deactivate' : 'Activate'), 
+				Yii::app()->createAbsoluteUrl('user/activate/?id='.$model->id), 
+				array(
+				'class' => 'btn btn-block mws-tooltip-s confirm-action btn-proces-'.($model->active ? 'red' : 'white'),
+			));
+		}
+		?>
 
 	</div>
 

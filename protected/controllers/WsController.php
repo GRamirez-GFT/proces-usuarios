@@ -761,32 +761,42 @@ class WsController extends CController {
                             
                         } else {
                             
-                            $response['isNewRecord'] = true;
-                            
-                            $model = new UserModel;
-                            $model->username = $username;
-                            $model->email = $email;
-                            $model->name = $name;
-                            $model->password = $password;
-                            $model->verify_password = $confirmPasssword;
-                            $model->list_products = array($product->id);
-                            
-                            if($model->save()) {
-                                
-                                $productUser = ProductUser::model()->findByAttributes(array('user_id'=> $model->id, 'product_id' => $product->id));
-                                $productUser->is_used = '1';
-                                $productUser->update();
-                                
-                                $response['success'] = true;
-                                $response['user'] = Yii::app()->db->createCommand()
-                                ->select("user.id, user.name, user.username, user.email, user.company_id, user.active, user.date_create")
-                                ->from("user")
-                                ->where("`user`.`id`='".$model->id."'")
-                                ->queryRow();
-                                
+                            $company = Company::model()->findByPk($sessionValidation['user']['company_id']);
+                            $activeUsers = User::model()->findAllByAttributes(array(
+                                'active' => '1', 
+                                'company_id' => $company->id
+                            ), "id != {$company->user_id}");
+
+                            if(count($activeUsers) >= $company->licenses) {
+                                $response['errors']['Error 1'] = Yii::t('base', 'The company has reached the maximum of active licenses.');
                             } else {
-                                foreach($model->getErrors() as $field => $errorsArray) {
-                                    $response['errors'][$field] = $errorsArray[0];
+                                $response['isNewRecord'] = true;
+                                
+                                $model = new UserModel;
+                                $model->username = $username;
+                                $model->email = $email;
+                                $model->name = $name;
+                                $model->password = $password;
+                                $model->verify_password = $confirmPasssword;
+                                $model->list_products = array($product->id);
+                                
+                                if($model->save()) {
+                                    
+                                    $productUser = ProductUser::model()->findByAttributes(array('user_id'=> $model->id, 'product_id' => $product->id));
+                                    $productUser->is_used = '1';
+                                    $productUser->update();
+                                    
+                                    $response['success'] = true;
+                                    $response['user'] = Yii::app()->db->createCommand()
+                                    ->select("user.id, user.name, user.username, user.email, user.company_id, user.active, user.date_create")
+                                    ->from("user")
+                                    ->where("`user`.`id`='".$model->id."'")
+                                    ->queryRow();
+                                    
+                                } else {
+                                    foreach($model->getErrors() as $field => $errorsArray) {
+                                        $response['errors'][$field] = $errorsArray[0];
+                                    }
                                 }
                             }
                         }
@@ -899,6 +909,102 @@ class WsController extends CController {
                             foreach($user->getErrors() as $field => $errorsArray) {
                                 $response['errors'][$field] = $errorsArray[0];
                             }
+                        }
+
+                    } else {
+                        $response['errors']['Error 1'] = 'El ID de usuario es inválido';
+                    }
+                    
+                } else {
+                    $response['errors']['Error 1'] = $sessionValidation['error'];   
+                }
+                
+                return CJSON::encode($response);
+                
+            } catch (Exception $e) {
+                throw new CHttpException(420, 'Error: ' . $e->getMessage());
+            }
+             
+        });
+
+        
+        /*
+         * website-url/api/ws/activateUser
+         * 
+         *  Ejemplo de headers:
+         *  X-REST-USERNAME : ""
+         *  X-REST-PASSWORD : ""
+         *  X-REST-TOKEN : CE6202AY6DD28E3B
+         *
+         *  Ejemplo de parametros POST:
+         *  session_id: 6debc49305145b3beeda381ad983fdea
+         *  id: 11 (ID de usuario)
+         *
+         * El resultado:
+         * {
+         *  "success": true OR false si no pasó alguna validación,
+         *  "errors": [
+         *      errores generales que ocurren por validaciones de los webservices,
+         *      errores del modelo al activar/desactivar el usuario,
+         *  ],
+         * }
+         *
+         */
+        
+        $this->onRest('req.post.activateUser.render', function($data) {
+            
+            try {
+                
+                $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : false;
+                $sessionId = isset($data['session_id']) ? $data['session_id'] : null;
+                $userId = isset($data['id']) ? $data['id'] : null;
+                $ipv4 = isset($data['ipv4']) ? $data['ipv4'] : null;
+                
+                $response = array(
+                    'success' => false,
+                    'user' => null,
+                    'errors' => array(),
+                );
+    
+                $ipv4 = filter_var($ipv4, FILTER_VALIDATE_IP);
+                
+                $sessionValidation = self::validateSession($sessionId, $token, $ipv4);
+                
+                if($sessionValidation['success']) {
+                    
+                    /* Se inicia sesión para no generar conflicto en las partes de los modelos donde se usan datos de sesión */
+                    Yii::app()->user->login(new CUserIdentity($sessionValidation['user']['username'], ''));
+
+                    Yii::app()->user->setState('role', $sessionValidation['user']['role']);
+                    Yii::app()->user->setState('company_id', $sessionValidation['user']['company_id']);
+                    Yii::app()->user->setState('id', $sessionValidation['user']['id']);
+
+                    $user = UserModel::model()->findByPk($userId);
+
+                    if($user) {
+
+                        $validUpdate = true;
+
+                        if($user->active) {
+                            $user->active = 0;
+                        } else {
+
+                            $activeUsers = User::model()->findAllByAttributes(array(
+                                'active' => '1', 
+                                'company_id' => $user->company_id
+                            ), "id != {$user->company->user_id}");
+
+                            if(count($activeUsers) >= $user->company->licenses) {
+                                $validUpdate = false;
+                                $response['errors']['Error 1'] = Yii::t('base', 'The company has reached the maximum of active licenses.');
+                            }
+
+                            $user->active = 1;
+                        }
+                            
+                        if($validUpdate) {
+                            $user->update(array('active'));
+                            $response['success'] = true;
                         }
 
                     } else {

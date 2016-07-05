@@ -14,13 +14,25 @@
 <div class="col-sm-2 pull-right">
 
 <?php
-    $linkContent  = '<span class="fa fa-plus-circle" style="margin-right: 8px;"></span>';
-    $linkContent .= Yii::t('base', 'Create new');
 
-    echo CHtml::link($linkContent, Yii::app()->createAbsoluteUrl('user/create'), array(
-        'class' => 'btn btn-proces-red btn-block  panel-trigger',
-        'style' => 'width: auto;'
-    ));
+    /*
+    * Validate licenses
+    */
+    $company = Company::model()->findByPk(Yii::app()->user->company_id);
+    $activeUsers = User::model()->findAllByAttributes(array(
+        'active' => '1', 
+        'company_id' => Yii::app()->user->company_id
+    ), "id != {$company->user_id}");
+
+    if(count($activeUsers) < $company->licenses) {
+        $linkContent  = '<span class="fa fa-plus-circle" style="margin-right: 8px;"></span>';
+        $linkContent .= Yii::t('base', 'Create new');
+
+        echo CHtml::link($linkContent, Yii::app()->createAbsoluteUrl('user/create'), array(
+            'class' => 'btn btn-proces-red btn-block  panel-trigger',
+            'style' => 'width: auto;'
+        ));
+    }
 ?>
 
 </div>
@@ -41,6 +53,10 @@
 			'name',
 			'username',
             'email',
+            array(
+                'name' => 'active',
+                'value' => '$data->active ? "Si" : "No"'
+            ),
             array(
                 'class' => 'CButtonColumn',
                 'template' => '{view}',

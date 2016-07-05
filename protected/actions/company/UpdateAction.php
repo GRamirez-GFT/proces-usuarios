@@ -11,6 +11,7 @@ class UpdateAction extends CAction {
         $prevUrl = $model->url_logo;
         $prevSubdomain = $model->subdomain;
         $prevListProducts = $model->list_products;
+        $prevLicenses = $model->licenses;
         
         if(empty($model->list_ips)) {
             $model->list_ips = array(0 => '');
@@ -28,6 +29,7 @@ class UpdateAction extends CAction {
             }
 
             if(in_array(Yii::app()->user->role, array("company"))){
+                $model->setAttribute('licenses',$prevLicenses);
                 $model->setAttribute('subdomain',$prevSubdomain);
                 $model->setAttribute('list_products',$prevListProducts);
             }
