@@ -12,6 +12,7 @@ class UpdateAction extends CAction {
         $prevSubdomain = $model->subdomain;
         $prevListProducts = $model->list_products;
         $prevLicenses = $model->licenses;
+        $changedLogo = true;
         
         if(empty($model->list_ips)) {
             $model->list_ips = array(0 => '');
@@ -20,11 +21,10 @@ class UpdateAction extends CAction {
         if (Yii::app()->request->getPost(get_class($model))) {
             
             $model->list_products = array();
-            assignFile($file, $model, 'url_logo');
             $model->setAttributes(Yii::app()->request->getPost(get_class($model)));
-            if ($file) {
-                saveFile($file, $model, 'url_logo', $prevUrl);
-            } else {
+
+            if(!saveFile($model, 'url_logo', null, array('jpg', 'png', 'gif', 'jpeg'))) {
+                $changedLogo = false;
                 $model->url_logo = $prevUrl;
             }
 
@@ -33,14 +33,23 @@ class UpdateAction extends CAction {
                 $model->setAttribute('subdomain',$prevSubdomain);
                 $model->setAttribute('list_products',$prevListProducts);
             }
-
+            
             if ($model->update()) {
+
+                if($changedLogo) {
+                    removeFile($prevUrl);
+                }
+
                 $redirectParms = array(
                         'view',
                         'id' => $model->id
                 );
                 
                 $this->controller->redirect($redirectParms);
+            } else {
+                if($changedLogo) {
+                    removeFile($model->url_logo);
+                }
             }
         }
 
