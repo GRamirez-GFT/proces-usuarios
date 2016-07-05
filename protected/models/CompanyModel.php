@@ -22,7 +22,6 @@ class CompanyModel extends Company {
             array(
                 array('name, subdomain', 'required', 'on' => 'update'),
                 array('list_ips', 'checkIpFormat'),
-                array('url_logo', 'file', 'types'=>'jpg, png', 'allowEmpty' => true),
             ));
     }
     

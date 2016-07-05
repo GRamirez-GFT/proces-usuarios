@@ -12,13 +12,9 @@ class CreateAction extends CAction {
         
         if (Yii::app()->request->getPost(get_class($model))) {
             
-            assignFile($file, $model, 'url_logo');
-            
             $model->setAttributes(Yii::app()->request->getPost(get_class($model)));
             
-            if ($file) {
-                saveFile($file, $model, 'url_logo');
-            }
+            saveFile($model, 'url_logo', null, array('jpg', 'png', 'gif', 'jpeg'));
             
             if ($model->save()) {
                 $redirectParms = array(
