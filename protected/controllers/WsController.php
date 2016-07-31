@@ -901,7 +901,12 @@ class WsController extends CController {
                             
                         if($user->validate(array('name', 'password', 'email', 'verify_password'))) {
                             
-                            $user->update(array('name', 'password', 'email'));
+                            if(is_null($user->password)) {
+                                $user->update(array('name', 'email'));
+                            } else {
+                                $user->update(array('name', 'password', 'email'));
+                            }
+
                             $response['success'] = true;
                             
                         } else {
