@@ -11,4 +11,5 @@ return array(
     'list_products' => 'Productos',
     'list_ips' => 'IPs permitidas',
     'licenses' => '# de licencias',
+    'storage' => 'GB de almacenamiento',
 );

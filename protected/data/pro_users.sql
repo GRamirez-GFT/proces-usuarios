@@ -26,11 +26,12 @@ CREATE TABLE `company` (
   `date_create` date NOT NULL,
   `url_logo` varchar(200) default NULL,
   `licenses` tinyint(1) NOT NULL,
+  `storage` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Representing GB',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `subdomain` (`subdomain`),
   KEY `user_company` (`user_id`),
   CONSTRAINT `user_company` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Table structure for table `product` */
 
@@ -45,7 +46,7 @@ CREATE TABLE `product` (
   PRIMARY KEY  (`id`),
   KEY `company_product` (`company_id`),
   CONSTRAINT `company_product` FOREIGN KEY (`company_id`) REFERENCES `company` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Table structure for table `allowed_ip` */
 
@@ -105,7 +106,7 @@ CREATE TABLE `user` (
   PRIMARY KEY  (`id`),
   KEY `company_user` (`company_id`),
   CONSTRAINT `company_user` FOREIGN KEY (`company_id`) REFERENCES `company` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 /*Table structure for table `user_session` */
@@ -122,7 +123,23 @@ CREATE TABLE `user_session` (
   PRIMARY KEY  (`id`),
   KEY `user_user_session` (`user_id`),
   CONSTRAINT `user_user_session` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=127 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*Table structure for table `used_storage` */
+
+DROP TABLE IF EXISTS `used_storage`;
+
+CREATE TABLE `used_storage` (
+  `quantity` DECIMAL(19,2) NOT NULL DEFAULT '0.00' COMMENT 'Representing MB',
+  `product_id` smallint(11) NOT NULL,
+  `company_id` smallint(11) NOT NULL,
+  PRIMARY KEY  (`product_id`, `company_id`),
+  INDEX `used_storage_product_id_idx` (`product_id`),
+  INDEX `used_storage_company_id_idx` (`company_id`),
+  CONSTRAINT `used_storage_product_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`),
+  CONSTRAINT `used_storage_company_id` FOREIGN KEY (`company_id`) REFERENCES `company` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

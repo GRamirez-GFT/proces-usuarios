@@ -8,6 +8,7 @@
  * @property boolean $restrict_connection
  * @property string $date_create
  * @property integer $licenses
+ * @property integer $storage
  *
  * @property User $user
  * @property Product[] $products
@@ -27,7 +28,7 @@ class Company extends MyActiveRecord {
 
 	public function rules() {
 		return array(
-		array('name, subdomain, user_id, active, date_create, licenses', 'required'),
+		array('name, subdomain, user_id, active, date_create, licenses, storage', 'required'),
 		array('user_id, active, restrict_connection, licenses', 'numerical', 'integerOnly' => true),
 		array('name', 'length', 'max' => 100),
 		array('subdomain', 'length', 'max' => 30),
@@ -59,6 +60,7 @@ class Company extends MyActiveRecord {
 		'date_create' => Yii::t('models/Company', 'date_create'),
 		'restrict_connection' => Yii::t('models/Company', 'restrict_connection'),
 		'licenses' => Yii::t('models/Company', 'licenses'),
+		'storage' => Yii::t('models/Company', 'storage'),
 		);
 	}
 
