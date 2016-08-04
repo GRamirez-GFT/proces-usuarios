@@ -66,6 +66,16 @@
 		</div>
 		
 	</div>
+
+    <div class="col-md-3">
+
+        <div class="form-group">
+            <?php echo $form->labelEx($model, 'storage'); ?>
+            <?php echo $form->textField($model, 'storage'); ?>
+            <?php echo $form->error($model, 'storage'); ?>
+        </div>
+        
+    </div>
 	
 </div>
 <?php endif; ?>

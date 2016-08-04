@@ -43,6 +43,14 @@ class CompanyModel extends Company {
 	   
     }
 
+    public function relations() {
+        return CMap::mergeArray(parent::relations(), array(
+            'usedStorage'=>array(self::STAT, 'UsedStorage', 'company_id', 
+                'select' => 'SUM(t.quantity)', 
+            ),
+        ));
+    }
+
     public function attributeLabels() {
         return CMap::mergeArray(parent::attributeLabels(),
             array(

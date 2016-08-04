@@ -457,6 +457,74 @@ class WsController extends CController {
             }
              
         });
+
+        /*
+         * website-url/api/ws/getCompanies
+         * 
+         *  Ejemplo de headers:
+         *  X-REST-USERNAME : ""
+         *  X-REST-PASSWORD : ""
+         *  X-REST-TOKEN : CE6202AY6DD28E3B
+         *
+         *  Ejemplo de parametros POST:
+         *
+         * El resultado:
+         * {
+         *  "success": true OR false si no pasó alguna validación,
+         *  "companies": [
+         *      {
+         *      "id": 333,
+         *      "name": Proces,
+         *      "subdomain": procesmx,
+         *      "user_id": 111,
+         *      "active": true or false,
+         *      "restrict_connection": true or false,
+         *      "date_created": 2015-07-01 (Y-m-d),
+         *      "url_logo": documents/año/mes/dia/2342f23d3.jpg,
+         *      "licenses": 5, (quantity)
+         *      "storage": 1, (GB)
+         *      },
+         *      {
+         *  ],
+         *  "errors": descripcion de error,
+         * }
+         *
+         */
+        
+        $this->onRest('req.post.getCompanies.render', function($data) {
+            
+            try {
+                
+                $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : false;
+                
+                $response= array(
+                    'success' => false,
+                    'user' => null,
+                    'error' => null,
+                );
+    
+                if($token == Yii::app()->params->token) {
+                    
+                    $companies = Yii::app()->db->createCommand()
+                        ->select("id, name, subdomain, user_id, active, restrict_connection, date_create, url_logo, licenses, storage")
+                        ->from("company")
+                        ->queryAll();
+
+                    $response['companies'] = $companies;
+                    $response['success'] = true;
+                    
+                } else {
+                    $response['error'] = 'El token ingresado es inválido.';
+                }             
+                
+                return CJSON::encode($response);
+                
+            } catch (Exception $e) {
+                throw new CHttpException(420, 'Error: ' . $e->getMessage());
+            }
+             
+        });
+
         
         /*
          * website-url/api/ws/getCompanyUsers
@@ -901,7 +969,12 @@ class WsController extends CController {
                             
                         if($user->validate(array('name', 'password', 'email', 'verify_password'))) {
                             
-                            $user->update(array('name', 'password', 'email'));
+                            if(is_null($user->password)) {
+                                $user->update(array('name', 'email'));
+                            } else {
+                                $user->update(array('name', 'password', 'email'));
+                            }
+
                             $response['success'] = true;
                             
                         } else {
@@ -1038,11 +1111,7 @@ class WsController extends CController {
          * El resultado:
          * {
          *  "success": true OR false si no pasó alguna validación,
-         *  "errors": [
-         *      errores generales que ocurren por validaciones de los webservices,
-         *      errores del modelo al crear el usuario,
-         *      errores del modelo al crear la relación que indica que el usuario está usando el producto,
-         *  ],
+         *  "errors": descripción del error
          * }
          *
          */
@@ -1119,6 +1188,224 @@ class WsController extends CController {
                     
                 } else {
                     $response['error'] = $sessionValidation['error'];   
+                }
+                
+                return CJSON::encode($response);
+                
+            } catch (Exception $e) {
+                throw new CHttpException(420, 'Error: ' . $e->getMessage());
+            }
+             
+        });
+
+        /*
+         * website-url/api/ws/registerStorage
+         * 
+         *  Ejemplo de headers:
+         *  X-REST-USERNAME : ""
+         *  X-REST-PASSWORD : ""
+         *  X-REST-TOKEN : CE6202AY6DD28E3B
+         *
+         *  Ejemplo de parametros POST:
+         *  company_id: 111 (ID de la compañia a la cuál se le registra almacenamiento)
+         *  value: (MB del archivo)
+         *  action: 'add' OR 'discount' OR 'replace'
+         *  product_token: CE6202AY6DD28E3B (token del producto al cual se le está registrando almacenamiento)
+         *
+         * El resultado:
+         * {
+         *  "success": true OR false si no pasó alguna validación,
+         *  "storage": {
+         *     "total": 1024, (Representing MB)
+         *     "company_used": 500, (Representing MB)
+         *     "product_used": 500, (Representing MB)
+         *     },
+         *  "errors": [
+         *      Error de compañia inválida
+         *      Error de producto inválido
+         *      Errores al registrar almacenamiento 
+         *  ]
+         * }
+         *
+         */
+        
+        $this->onRest('req.post.registerStorage.render', function($data) {
+            
+            try {
+                
+                $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : false;
+                $productToken = isset($data['product_token']) ? $data['product_token'] : null;
+                $value = isset($data['value']) ? $data['value'] : null;
+                $action = isset($data['action']) ? $data['action'] : null;
+                $companyId = isset($data['company_id']) ? $data['company_id'] : null;
+                
+                $response= array(
+                    'success' => false,
+                    'storage' => null,
+                    'errors' => array(),
+                );
+
+                $validActions = array('add', 'discount', 'replace');
+
+                if($token == Yii::app()->params->token 
+                    && !empty($companyId) 
+                    && in_array($action, $validActions) 
+                    && !empty($productToken)
+                    && is_numeric($value)) {
+                    
+                    $product = Product::model()->findByAttributes(array('token' => $productToken));
+                    $company = Company::model()->findByPk($companyId);
+
+                    if($product && $company) {
+
+                        $registeredStorage = UsedStorage::model()->findByAttributes(array(
+                            'product_id' => $product->id,
+                            'company_id' => $company->id,
+                        ));
+
+                        if($registeredStorage) {
+                            switch ($action) {
+                                case 'add':
+                                    $newStorage = $registeredStorage->quantity + $value;
+                                    break;
+                                case 'discount':
+                                    $newStorage = $registeredStorage->quantity - $value;
+                                    break;
+                                case 'replace':
+                                    $newStorage = $value;
+                                    break;
+                                default:
+                                    $newStorage = $registeredStorage->quantity;
+                                    break;
+                            }
+
+                            $registeredStorage->quantity = $newStorage;
+                            $registeredStorage->update(array('quantity'));
+
+                            $response['storage']['product_used'] = $registeredStorage->quantity;
+                        } else {
+                            $usedStorage = new UsedStorage;
+                            $usedStorage->company_id = $company->id;
+                            $usedStorage->product_id = $product->id;
+                            $usedStorage->quantity = $value;
+                            $usedStorage->save();
+                            
+                            $response['storage']['product_used'] = $usedStorage->quantity;
+                        }
+
+                        $companyModel = CompanyModel::model()->findByPk($companyId);
+
+                        $response['storage']['company_used'] = $companyModel->usedStorage;
+                        $response['storage']['total'] = $companyModel->storage * (1000*1000);
+                        $response['success'] = true;
+
+                    } else {
+                        if(!$product) {
+                            $response['errors']['Error de producto'] = 'El producto especificado no existe.';
+                        }
+
+                        if(!$company) {
+                            $response['errors']['Error de compañia'] = 'La compañia especificado no existe.';
+                        }
+                    }
+                    
+                } else {
+
+                    if($token != Yii::app()->params->token) {
+                        $response['errors']['Error token'] = 'Token inválido.';
+                    }
+
+                    $response['errors']['Error 1'] = 'Debe ingresar información válida.';
+                }
+                
+                return CJSON::encode($response);
+                
+            } catch (Exception $e) {
+                throw new CHttpException(420, 'Error: ' . $e->getMessage());
+            }
+             
+        });
+
+        /*
+         * website-url/api/ws/getStorage
+         * 
+         *  Ejemplo de headers:
+         *  X-REST-USERNAME : ""
+         *  X-REST-PASSWORD : ""
+         *  X-REST-TOKEN : CE6202AY6DD28E3B
+         *
+         *  Ejemplo de parametros POST:
+         *  company_id: 111 (ID de la compañia a la cuál se le registra almacenamiento)
+         *  product_token: CE6202AY6DD28E3B (token del producto al cual se está solicitando info)
+         *
+         * El resultado:
+         * {
+         *  "success": true OR false si no pasó alguna validación,
+         *  "storage": {
+         *     "total": 1024, (Representing MB)
+         *     "company_used": 500, (Representing MB)
+         *     "product_used": 500, (Representing MB)
+         *     },
+         *  "errors": [
+         *      Error de compañia inválida
+         *      Error de producto inválido
+         *  ]
+         * }
+         *
+         */
+        
+        $this->onRest('req.post.getStorage.render', function($data) {
+            
+            try {
+                
+                $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : false;
+                $productToken = isset($data['product_token']) ? $data['product_token'] : null;
+                $companyId = isset($data['company_id']) ? $data['company_id'] : null;
+                
+                $response= array(
+                    'success' => false,
+                    'storage' => null,
+                    'errors' => array(),
+                );
+
+                $validActions = array('add', 'discount', 'replace');
+
+                if($token == Yii::app()->params->token && !empty($companyId) && !empty($productToken)) {
+                    
+                    $product = Product::model()->findByAttributes(array('token' => $productToken));
+                    $company = Company::model()->findByPk($companyId);
+
+                    if($product && $company) {
+
+                        $registeredStorage = UsedStorage::model()->findByAttributes(array(
+                            'product_id' => $product->id,
+                            'company_id' => $company->id,
+                        ));
+
+                        $companyModel = CompanyModel::model()->findByPk($companyId);
+
+                        $response['storage']['product_used'] = $registeredStorage ? $registeredStorage->quantity : 0;
+                        $response['storage']['company_used'] = $companyModel->usedStorage;
+                        $response['storage']['total'] = $companyModel->storage * (1000*1000);
+                        $response['success'] = true;
+
+                    } else {
+                        if(!$product) {
+                            $response['errors']['Error de producto'] = 'El producto especificado no existe.';
+                        }
+
+                        if(!$company) {
+                            $response['errors']['Error de compañia'] = 'La compañia especificado no existe.';
+                        }
+                    }
+                    
+                } else {
+
+                    if($token != Yii::app()->params->token) {
+                        $response['errors']['Error token'] = 'Token inválido.';
+                    }
+
+                    $response['errors']['Error 1'] = 'Debe ingresar información válida.';
                 }
                 
                 return CJSON::encode($response);
