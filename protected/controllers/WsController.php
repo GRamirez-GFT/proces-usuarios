@@ -1296,7 +1296,7 @@ class WsController extends CController {
                         $companyModel = CompanyModel::model()->findByPk($companyId);
 
                         $response['storage']['company_used'] = $companyModel->usedStorage;
-                        $response['storage']['total'] = $companyModel->storage * 1000;
+                        $response['storage']['total'] = $companyModel->storage * (1000*1000);
                         $response['success'] = true;
 
                     } else {
@@ -1386,7 +1386,7 @@ class WsController extends CController {
 
                         $response['storage']['product_used'] = $registeredStorage ? $registeredStorage->quantity : 0;
                         $response['storage']['company_used'] = $companyModel->usedStorage;
-                        $response['storage']['total'] = $companyModel->storage * 1000;
+                        $response['storage']['total'] = $companyModel->storage * (1000*1000);
                         $response['success'] = true;
 
                     } else {
