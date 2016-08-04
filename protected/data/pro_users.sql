@@ -130,7 +130,7 @@ CREATE TABLE `user_session` (
 DROP TABLE IF EXISTS `used_storage`;
 
 CREATE TABLE `used_storage` (
-  `quantity` DECIMAL(19,2) NOT NULL DEFAULT '0.00' COMMENT 'Representing MB',
+  `quantity` DECIMAL(19,2) NOT NULL DEFAULT '0.00' COMMENT 'Representing KB',
   `product_id` smallint(11) NOT NULL,
   `company_id` smallint(11) NOT NULL,
   PRIMARY KEY  (`product_id`, `company_id`),
