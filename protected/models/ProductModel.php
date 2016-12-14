@@ -26,7 +26,7 @@ class ProductModel extends Product {
         }
     }
 
-    public function save() {
+    public function save($runValidation = true, $attributes = null) {
         $success = false;
         try {
             $transaction = Yii::app()->db->getCurrentTransaction() ? null : Yii::app()->db->beginTransaction();

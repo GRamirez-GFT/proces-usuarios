@@ -54,9 +54,6 @@ function removeFile($path) {
     $folderDir = str_replace(basename($fullDir), '', $fullDir);
     
     if (file_exists($fullDir)) unlink($fullDir);
-
-    
-    if (file_exists($fullDir)) unlink($fullDir);
     
     if (is_dir($folderDir)) {
         rmdir($folderDir);
