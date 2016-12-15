@@ -59,7 +59,7 @@ class CompanyModel extends Company {
             ));
     }
 
-    public function setAttributes($values) {
+    public function setAttributes($values, $safeOnly = true) {
         if (! is_array($values)) return;
         foreach ($values as $name => $value) {
             if ($name == 'id') continue;
@@ -68,7 +68,7 @@ class CompanyModel extends Company {
         $this->user->setAttributes(Yii::app()->request->getParam(get_class($this->user)));
     }
 
-    public function save() {
+    public function save($runValidation = true, $attributes = null) {
         $success = false;
         try {
             $transaction = Yii::app()->db->getCurrentTransaction() ? null : Yii::app()->db->beginTransaction();
@@ -116,7 +116,7 @@ class CompanyModel extends Company {
         return $success;
     }
 
-    public function update() {
+    public function update($attributes = null) {
         $success = false;
         try {
             $transaction = Yii::app()->db->getCurrentTransaction() ? null : Yii::app()->db->beginTransaction();

@@ -80,7 +80,7 @@ class UserModel extends User {
             ));
     }
     
-    public function setAttributes($values) {
+    public function setAttributes($values, $safeOnly = true) {
         if (! is_array($values)) return;
         foreach ($values as $name => $value) {
             if ($name == 'id') continue;
@@ -88,7 +88,7 @@ class UserModel extends User {
         }
     }
 
-    public function save() {
+    public function save($runValidation = true, $attributes = null) {
         $success = false;
         try {
             $transaction = Yii::app()->db->getCurrentTransaction() ? null : Yii::app()->db->beginTransaction();

@@ -44,7 +44,10 @@ class WsController extends CController {
             ':company_id' => $user->company_id,
         ));
 
-        if($companyHasProduct && ($userHasProduct || $token == Yii::app()->params->token)) {
+        $operativeUserValidations = ($companyHasProduct && ($userHasProduct || $token == Yii::app()->params->token));
+        $adminValidations = (self::validProductToken($token) && $user->id == 1);
+
+        if($operativeUserValidations || $adminValidations) {
             return true;
         } else {
             return false;
@@ -72,6 +75,14 @@ class WsController extends CController {
             return true;
         }
         
+    }
+
+    private static function validProductToken($token) {
+
+        $product = Product::model()->findByAttributes(array('token' => $token));
+
+        return $product;
+
     }
     
     private static function validateSession($sessionId, $token, $ipv4 = null) {
