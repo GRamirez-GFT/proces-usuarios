@@ -140,12 +140,6 @@ class CompanyModel extends Company {
                 parent::update();
                 $this->user->update();
                 
-                User::model()->updateAll(array(
-                    'active' => $this->active
-                ), array(
-                    'condition' => "company_id={$this->id}"
-                ));
-                
                 if (is_array($this->list_products)) {
                     foreach ($this->list_products as $item) {
                         $product_user = new ProductUser();
