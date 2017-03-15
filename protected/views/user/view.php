@@ -97,7 +97,7 @@
 		<p>
 
 		<?php
-		if($model->id != $model->company->user_id) {
+		if($model->id != $model->company->user_id && Yii::app()->user->role != "general") {
 			echo CHtml::link('<span class="fa fa-'.($model->active ? 'stop' : 'play').'"></span> '. Yii::t('base', $model->active ? 'Deactivate' : 'Activate'), 
 				Yii::app()->createAbsoluteUrl('user/activate/?id='.$model->id), 
 				array(

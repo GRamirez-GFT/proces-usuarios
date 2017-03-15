@@ -121,6 +121,12 @@ class WsController extends CController {
                         $result['user'] = array();
                         $result['error'] = "El acceso desde la red actual está bloqueado";
                     }
+
+                    if(!$session->user->active) {
+                        $result['success'] = false;
+                        $result['user'] = array();
+                        $result['error'] = "El usuario se encuentra desactivado.";                	
+                    }
                 }
             }
             

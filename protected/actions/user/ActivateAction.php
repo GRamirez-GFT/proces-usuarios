@@ -6,7 +6,8 @@ class ActivateAction extends CAction {
 
         $model = $this->controller->loadModel(Yii::app()->request->getParam('id', $id));
         
-        if($model->id != $model->company->user_id) {
+        if($model->id != $model->company->user_id && Yii::app()->user->role != "general") {
+        	
         	if($model->active) {
         		$model->active = 0;
         	} else {
