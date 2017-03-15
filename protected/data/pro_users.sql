@@ -25,7 +25,7 @@ CREATE TABLE `company` (
   `restrict_connection` tinyint(1) UNSIGNED NOT NULL default 0 COMMENT '0 = Libre acceso\n1 = Restringir',
   `date_create` date NOT NULL,
   `url_logo` varchar(200) default NULL,
-  `licenses` tinyint(1) NOT NULL,
+  `licenses` smallint(3) UNSIGNED NOT NULL,
   `storage` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Representing GB',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `subdomain` (`subdomain`),
