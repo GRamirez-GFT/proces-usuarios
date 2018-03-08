@@ -31,6 +31,7 @@ class WsController extends CController {
     }
     
     private static function validateProductAccess($user, $token) {
+
         
        $userHasProduct = ProductUser::model()->with(array('product'))->exists("product.token = :token AND t.user_id = :user_id",
             array(
@@ -52,7 +53,7 @@ class WsController extends CController {
         } else {
             return false;
         }
-        
+
     }
     
     private static function validateRestrictedConnection($company, $ipv4) {
@@ -108,7 +109,7 @@ class WsController extends CController {
                 $result['user'] = self::getUserData($session->user);
             } else {
                 $result['success'] = false;
-                $result['user'] = array();
+                $result['user'] = null;
                 $result['error'] = "No cuenta con acceso a este producto";
             }
             
@@ -142,7 +143,7 @@ class WsController extends CController {
                 
         $result = array(
             'success' => false,
-            'user' => array(),
+            'user' => null,
             'errors' => array(
                 'company' => '',
                 'user' => '',
@@ -224,7 +225,7 @@ class WsController extends CController {
                             
                             if(!self::validateRestrictedConnection($company, $ipv4)) {
                                 $result['success'] = false;
-                                $result['user'] = array();
+                                $result['user'] = null;
                                 $result['errors']['user'] = "Acceso restringido en esta red";
                             }
                         }
@@ -250,20 +251,23 @@ class WsController extends CController {
         $request["name"] = $user->name;
         $request["username"] = $user->username;
         
-        if ($request["company_id"] = $user->company_id) {
+        if($user->company_id) {
             
             $urlLogo = (!empty($user->company->url_logo)) ? "http://" . $_SERVER['HTTP_HOST'] . Yii::app()->baseUrl.DIRECTORY_SEPARATOR.$user->company->url_logo : null;
             
             $request["company"] = $user->company->name;
+            $request["company_id"] == $user->company_id;
             $request["subdomain"] = $user->company->subdomain;
             $request["url_logo"] = $urlLogo;
             $request["role"] = $user->id == $user->company->user_id ? "company" : "general";
+            
         } else {
             $request["company"] = null;
             $request["subdomain"] = null;
             $request["url_logo"] = null;
             $request["role"] = $user->id == 1 ? "global" : "general";
         }
+
         return $request;
         
     }
