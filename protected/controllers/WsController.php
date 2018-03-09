@@ -251,15 +251,15 @@ class WsController extends CController {
         $request["name"] = $user->name;
         $request["username"] = $user->username;
         
-        if($user->company_id) {
+        if(!empty($user->company_id)) {
             
             $urlLogo = (!empty($user->company->url_logo)) ? "http://" . $_SERVER['HTTP_HOST'] . Yii::app()->baseUrl.DIRECTORY_SEPARATOR.$user->company->url_logo : null;
             
             $request["company"] = $user->company->name;
-            $request["company_id"] == $user->company_id;
             $request["subdomain"] = $user->company->subdomain;
             $request["url_logo"] = $urlLogo;
             $request["role"] = $user->id == $user->company->user_id ? "company" : "general";
+            $request["company_id"] = $user->company_id;
             
         } else {
             $request["company"] = null;
