@@ -262,4 +262,12 @@ class UserModel extends User {
             ));
     }
 
+	public function generateOneStepSessionToken($forceUpdate = false) {
+
+		if(empty($this->one_step_session_token) || $forceUpdate) {
+			$this->one_step_session_token = uniqid() . substr(md5(Yii::app()->user->getStateKeyPrefix()), 0, 8);
+		}
+
+	}
+	
 }

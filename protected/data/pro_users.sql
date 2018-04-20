@@ -100,6 +100,7 @@ CREATE TABLE `user` (
   `username` varchar(32) NOT NULL,
   `password` varchar(72) NOT NULL,
   `email` varchar(100) default NULL,
+  `one_step_session_token` VARCHAR(300) NULL DEFAULT NULL,
   `company_id` smallint(5) default NULL,
   `active` tinyint(1) NOT NULL COMMENT '0 = Inactivo\n1 = Activo',
   `date_create` date NOT NULL,

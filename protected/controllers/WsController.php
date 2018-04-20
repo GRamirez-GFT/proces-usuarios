@@ -119,13 +119,13 @@ class WsController extends CController {
                     
                     if(!self::validateRestrictedConnection($session->user->company, $ipv4)) {
                         $result['success'] = false;
-                        $result['user'] = array();
+                        $result['user'] = null;
                         $result['error'] = "El acceso desde la red actual está bloqueado";
                     }
 
                     if(!$session->user->active) {
                         $result['success'] = false;
-                        $result['user'] = array();
+                        $result['user'] = null;
                         $result['error'] = "El usuario se encuentra desactivado.";                	
                     }
                 }
@@ -232,6 +232,68 @@ class WsController extends CController {
 
                     } else {
                         $result['errors']['password'] = 'El password ingresado es incorrecto';
+                    }
+                }
+            } else {
+                $result['errors']['user'] = 'El usuario se encuentra desactivado';   
+            }
+        } else {
+            $result['errors']['user'] = 'El usuario ingresado es inválido';  
+        }
+        
+        return $result;
+    }
+
+    private static function validateOneStepAccess($sessionToken, $token, $ipv4 = null) {
+                
+        $result = array(
+            'success' => false,
+            'user' => null,
+            'errors' => array(
+                'company' => null,
+                'user' => null,
+                'product' => null,
+                'password' => null,
+            ),
+        );
+
+
+        $user = User::model()->findByAttributes(array(
+            'one_step_session_token' => $sessionToken, 
+        ), array(
+        	'condition' => 't.company_id IS NOT NULL'
+       	));
+
+        if ($user) {
+
+            if($user->active) {
+                
+                $result['errors']['user'] = null;
+
+                $hasProductAccess = self::validateProductAccess($user, $token);
+                
+                if($hasProductAccess) {
+
+                    $validProduct = true;
+                    $result['errors']['product'] = null;
+
+                } else {
+                    $validProduct = false;
+                    $result['errors']['product'] = "No cuenta con acceso a este producto";
+                }
+
+                if($validProduct) {
+
+                    $result['success'] = true;
+                    $result['user'] = self::getUserData($user);
+                    
+                    if($result['user']['role'] == 'general') {
+                        
+                        if(!self::validateRestrictedConnection($user->company, $ipv4)) {
+                            $result['success'] = false;
+                            $result['user'] = null;
+                            $result['errors']['user'] = "Acceso restringido en esta red";
+                        }
                     }
                 }
             } else {
@@ -466,6 +528,141 @@ class WsController extends CController {
                 
                 if($sessionValidation['success']) {
                     $response['user'] = $sessionValidation['user'];
+                    $response['success'] = true;
+                } else {
+                    $response['error'] = $sessionValidation['error'];   
+                }
+                
+                return CJSON::encode($response);
+                
+            } catch (Exception $e) {
+                throw new CHttpException(420, 'Error: ' . $e->getMessage());
+            }
+             
+        });
+
+        /*
+         * website-url/api/ws/oneStepLogin
+         * 
+         *  Ejemplo de headers:
+         *  X-REST-USERNAME : ""
+         *  X-REST-PASSWORD : ""
+         *  X-REST-TOKEN : CE6202AY6DD28E3B
+         *
+         *  Ejemplo de parametros POST:
+         *  token: 6debc49305145b3beeda381ad983fdea
+         *  ipv4: 22.33.0.123
+         *
+         * El resultado:
+         *  "response": {
+         *      "id": user id,
+         *      "name": user name,
+         *      "username": user alias,
+         *      "company_id": company id,
+         *      "company": company name,
+         *      "subdomain": company subdomain,
+         *      "url_logo": url string OR null,
+         *      "role": global OR company OR general,
+         *  },
+         *  "errors": {
+         *      "company": null OR error description,
+         *      "user": null OR error description,
+         *      "product": null OR error description,
+         *      "password": null OR error description,
+         *  }
+         *
+         */
+        
+        $this->onRest('req.post.oneStepLogin.render', function($data) {
+            
+            try {
+                
+                $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : false;
+                $sessionId = isset($data['session_id']) ? $data['session_id'] : null;
+                $ipv4 = isset($data['ipv4']) ? $data['ipv4'] : null;
+                $sessionToken = isset($data['token']) ? $data['token'] : null;
+                
+                $response= array(
+                    'success' => false,
+                    'error' => null,
+                );
+
+                $ipv4 = filter_var($ipv4, FILTER_VALIDATE_IP);
+
+                $response = self::validateOneStepAccess($sessionToken, $token, $ipv4);
+
+                if($response['success']) {
+                    $userSession = new UserSession();
+                    $userSession->session = md5(uniqid() . date("YmdHis"));
+                    $userSession->ipv4 = !empty($ipv4) ? $ipv4 : '';
+                    $userSession->user_id = $response['user']['id'];
+
+                    $userSession->save();
+
+                    $user = UserModel::model()->findByPk($response['user']['id']);
+
+                    if($user) {
+	                	$user->generateOneStepSessionToken(true);
+	                	$user->update(array('one_step_session_token'));
+                    }
+
+                    $response['user']['session_id'] = $userSession->session; 
+                }
+                
+                return CJSON::encode($response);
+                
+            } catch (Exception $e) {
+                throw new CHttpException(420, 'Error: ' . $e->getMessage());
+            }
+             
+        });
+
+        /*
+         * website-url/api/ws/getOneStepSessionToken
+         * 
+         *  Ejemplo de headers:
+         *  X-REST-USERNAME : ""
+         *  X-REST-PASSWORD : ""
+         *  X-REST-TOKEN : CE6202AY6DD28E3B
+         *
+         *  Ejemplo de parametros POST:
+         *  session_id: 6debc49305145b3beeda381ad983fdea
+         *  ipv4: 22.33.0.123
+         *
+         * El resultado:
+         * {
+         *  "success": true OR false si no pasó alguna validación,
+         *  "token": 6debc49305145b3bee,
+         *  "errors": descripcion de error,
+         * }
+         *
+         */
+        
+        $this->onRest('req.post.getOneStepSessionToken.render', function($data) {
+            
+            try {
+                
+                $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : false;
+                $sessionId = isset($data['session_id']) ? $data['session_id'] : null;
+                $ipv4 = isset($data['ipv4']) ? $data['ipv4'] : null;
+                
+                $response= array(
+                    'success' => false,
+                    'user' => null,
+                    'error' => null,
+                );
+    
+                $ipv4 = filter_var($ipv4, FILTER_VALIDATE_IP);
+                
+                $sessionValidation = self::validateSession($sessionId, $token, $ipv4);
+                
+                if($sessionValidation['success']) {
+
+                    $user = UserModel::model()->findByPk($sessionValidation['user']['id']);
+                    $user->generateOneStepSessionToken();
+                    $user->update(array('one_step_session_token'));
+
+                    $response['token'] = $user->one_step_session_token;
                     $response['success'] = true;
                 } else {
                     $response['error'] = $sessionValidation['error'];   

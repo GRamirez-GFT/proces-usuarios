@@ -24,7 +24,7 @@ function saveFile(&$model, $attribute, $name = null, $admittedExtensions = array
     if (! $file) return false;
     if (! in_array($file->extensionName, $admittedExtensions)) return false;
     
-    $uniqueId = getUniqueId($file);
+    $uniqueId = getUniqueId();
     $uniqueFolder = date('Y/m/d/') . $uniqueId;
     
     $relative_path = DOCUMENT_URL . $uniqueFolder;
@@ -43,7 +43,7 @@ function saveFile(&$model, $attribute, $name = null, $admittedExtensions = array
     }
 }
 
-function getUniqueId($file) {
+function getUniqueId() {
     return uniqid() . substr(md5(Yii::app()->user->getStateKeyPrefix()), 0, 8);
 }
 
