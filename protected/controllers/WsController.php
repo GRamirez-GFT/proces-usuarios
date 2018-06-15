@@ -1181,7 +1181,7 @@ class WsController extends CController {
                             $user->verify_password = $confirmPasssword;
                         }
                         
-                        if(!empty($email)) {
+                        if(!is_null($email)) {
                             $user->email = $email;
                         }
                             
