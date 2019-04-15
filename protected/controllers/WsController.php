@@ -1142,6 +1142,7 @@ class WsController extends CController {
                 $password = isset($data['password']) ? $data['password'] : null;
                 $confirmPasssword = isset($data['confirm_password']) ? $data['confirm_password'] : null;
                 $email = isset($data['email']) ? $data['email'] : null;
+                $username = isset($data['username']) ? $data['username'] : null;
                 $ipv4 = isset($data['ipv4']) ? $data['ipv4'] : null;
                 
                 $response = array(
@@ -1184,14 +1185,23 @@ class WsController extends CController {
                         if(!is_null($email)) {
                             $user->email = $email;
                         }
+
+                        $validationFields = array('name', 'password', 'email', 'verify_password');
+                        $updateFields = array('name', 'email');
+
+                        if($sessionValidation['user']['role'] == 'company' && !empty($username)) {
+                            $user->username = $username;
+                            array_push($validationFields, 'username');
+                            array_push($updateFields, 'username');
+                        }
                             
-                        if($user->validate(array('name', 'password', 'email', 'verify_password'))) {
+                        if($user->validate($validationFields)) {
                             
-                            if(is_null($user->password)) {
-                                $user->update(array('name', 'email'));
-                            } else {
-                                $user->update(array('name', 'password', 'email'));
+                            if(!is_null($user->password)) {
+                                array_push($updateFields, 'password');
                             }
+
+                            $user->update($updateFields);
 
                             $response['success'] = true;
                             
