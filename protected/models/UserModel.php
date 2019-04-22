@@ -65,7 +65,7 @@ class UserModel extends User {
 
             if($userExist) {
                 if(($userExist->id != $this->id && !empty($this->id)) || empty($this->id)) {
-                    $this->addError($attribute_name, 'El alias ingresado ya se ecnuentra en uso.');  
+                    $this->addError($attribute_name, 'El alias ingresado ya se encuentra en uso.');  
                 }
             }
         }
