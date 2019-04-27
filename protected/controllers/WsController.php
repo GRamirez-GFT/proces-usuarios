@@ -794,14 +794,15 @@ class WsController extends CController {
                 
                 $response= array(
                     'success' => false,
-                    'user' => null,
+                    'users' => null,
                     'error' => null,
                 );
     
                 if($token == Yii::app()->params->token && !empty($companyId) && empty($sessionId) && empty($ipv4)) {
                     
                     $users = Yii::app()->db->createCommand()
-                        ->select("user.id, user.name, user.username, user.email, user.company_id, user.active, user.date_create")
+                        ->select("user.id, user.name, user.username, user.email, user.company_id, 
+                                        user.active, user.date_create, company.licenses as company_licenses")
                         ->from("user")
                         ->leftJoin("company", "`user`.`company_id` = `company`.`id`")
                         ->where("`user`.`company_id`='".$companyId."' AND `user`.`id` <> `company`.`user_id` ")
