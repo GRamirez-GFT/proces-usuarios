@@ -1652,6 +1652,94 @@ class WsController extends CController {
             }
              
         });
+
+        /**
+         * Reenvia correo de verificación a usuario.
+         * 
+         * website-url/api/ws/resendVerificationEmail
+         * 
+         *  Ejemplo de headers:
+         *  X-REST-TOKEN : CE6202AY6DD28E3B
+         *
+         *  Ejemplo de parametros POST:
+         *  session_id: 6debc49305145b3beeda381ad983fdea
+         *  id: 11 (ID de usuario)
+         *  ipv4: 22.33.0.123
+         *
+         * El resultado:
+         * {
+         *  "success": true OR false si no pasó alguna validación,
+         *  "errors": [
+         *      errores generales que ocurren por validaciones de los webservices
+         *  ],
+         * }
+         *
+         */
+        
+        $this->onRest('req.post.resendVerificationEmail.render', function($data) {
+
+            try {
+                
+                $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : false;
+                $sessionId = isset($data['session_id']) ? $data['session_id'] : null;
+                $userId = isset($data['id']) ? $data['id'] : null;
+                $ipv4 = isset($data['ipv4']) ? $data['ipv4'] : null;
+                
+                $response = array(
+                    'success' => false,
+                    'user' => null,
+                    'errors' => array(),
+                );
+    
+                $ipv4 = filter_var($ipv4, FILTER_VALIDATE_IP);
+                
+                $sessionValidation = self::validateSession($sessionId, $token, $ipv4);
+                
+                if ($sessionValidation['success']) {
+                    
+                    /* Se inicia sesión para no generar conflicto en las partes de los modelos donde se usan datos de sesión */
+                    Yii::app()->user->login(new CUserIdentity($sessionValidation['user']['username'], ''));
+
+                    Yii::app()->user->setState('role', $sessionValidation['user']['role']);
+                    Yii::app()->user->setState('company_id', $sessionValidation['user']['company_id']);
+                    Yii::app()->user->setState('id', $sessionValidation['user']['id']);
+
+                    $user = UserModel::model()->findByPk($userId);
+
+                    if ($user) {
+
+                        $product = Product::model()->findByAttributes(array('token' => $token));
+
+                        $to = array($user->email => $user->username);
+
+                        $urlParams = array(
+                            'token' => cryptAction($user->email_confirm_token),
+                            'system' => cryptAction($product->keyword)
+                        );
+
+                        $content = array(
+                            'user' => $user,
+                            'url' => Yii::app()->createAbsoluteUrl('user/verifyEmail', $urlParams)
+                        );
+
+                        sendEmail('emailVerification', $to, $content, '[PROCES] Reenvío de verificación de correo');
+
+                        $response['success'] = true;
+
+                    } else {
+                        $response['errors']['Error 1'] = 'El ID de usuario es inválido';
+                    }
+                    
+                } else {
+                    $response['errors']['Error 1'] = $sessionValidation['error']; 
+                }
+                
+                return CJSON::encode($response);
+                
+            } catch (Exception $e) {
+                throw new CHttpException(420, 'Error: ' . $e->getMessage());
+            }    
+        });
         
     }
 
