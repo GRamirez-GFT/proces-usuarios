@@ -37,6 +37,13 @@ class UserController extends MyController {
                     ),
                     'expression' => 'in_array(Yii::app()->user->role, array("company","general"))'
                 ),
+                array(
+                    'allow',
+                    'actions' => array('verifyEmail'),
+                    'users' => array(
+                        '*'
+                    ),
+                ),
             ), parent::accessRules());
     }
 
@@ -48,6 +55,7 @@ class UserController extends MyController {
             'update' => 'application.actions.user.UpdateAction',
             'delete' => 'application.actions.user.DeleteAction',
             'admin' => 'application.actions.user.AdminAction',
+            'verifyEmail' => 'application.actions.user.VerifyEmailAction',
         );
     }
 

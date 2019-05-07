@@ -59,3 +59,58 @@ function removeFile($path) {
         rmdir($folderDir);
     }
 }
+
+function generateRandomString() {
+    // Generate a random string.
+    $string = openssl_random_pseudo_bytes(16);
+    
+    // Convert the binary data into hexadecimal representation.
+    $string = bin2hex($string);
+
+    return $string;
+}
+
+/**
+ * Encrypt and decrypt
+ * 
+ * @param string $string string to be encrypted/decrypted
+ * @param string $action 'e' for encrypt, 'd' for decrypt
+ */
+function cryptAction( $string, $action = 'e' ) {
+
+    $secret_key = '87b319608986beed872ac71c55e089a3';
+    $secret_iv = '35ec15f835cfc2102a2a36becb13c1d7';
+ 
+    $output = false;
+    $encrypt_method = "AES-256-CBC";
+    $key = hash( 'sha256', $secret_key );
+    $iv = substr( hash( 'sha256', $secret_iv ), 0, 16 );
+ 
+    if ( $action == 'e' ) {
+        $output = base64_encode( openssl_encrypt( $string, $encrypt_method, $key, 0, $iv ) );
+    }
+    else if ( $action == 'd' ){
+        $output = openssl_decrypt( base64_decode( $string ), $encrypt_method, $key, 0, $iv );
+    }
+ 
+    return $output;
+}
+
+/**
+ * Send email
+ * 
+ * @param string $view View to render
+ * @param array $to Receiver: array(email => name)
+ * @param array $content Data for the view
+ * @param string $subject Subject
+ */
+function sendEmail($view = '', $to = array(), $content = array(), $subject = '') {
+    Yii::app()->controller->widget('ext.mail.Mail', array(
+        'view' => $view,
+        'params' => array(
+            'to' => $to,
+            'content' => $content,
+            'subject' => $subject
+        )
+    ));
+}

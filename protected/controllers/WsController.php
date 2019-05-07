@@ -1,4 +1,5 @@
 <?php
+require_once dirname(__FILE__) . '/../components/helpers.php';
 
 class WsController extends CController {
     
@@ -322,6 +323,7 @@ class WsController extends CController {
             $request["url_logo"] = $urlLogo;
             $request["role"] = $user->id == $user->company->user_id ? "company" : "general";
             $request["company_id"] = $user->company_id;
+            $request["email_confirmed"] = $user->email_confirmed;
             
         } else {
             $request["company"] = null;
@@ -802,7 +804,8 @@ class WsController extends CController {
                     
                     $users = Yii::app()->db->createCommand()
                         ->select("user.id, user.name, user.username, user.email, user.company_id, 
-                                        user.active, user.date_create, company.licenses as company_licenses")
+                                        user.active, user.date_create, company.licenses as company_licenses,
+                                        user.email_confirmed")
                         ->from("user")
                         ->leftJoin("company", "`user`.`company_id` = `company`.`id`")
                         ->where("`user`.`company_id`='".$companyId."' AND `user`.`id` <> `company`.`user_id` ")
@@ -907,7 +910,8 @@ class WsController extends CController {
                     }
                     
                     $user = Yii::app()->db->createCommand()
-                        ->select("user.id, user.name, user.username, user.email, user.company_id, user.active, user.date_create")
+                        ->select("user.id, user.name, user.username, user.email, user.company_id, 
+                                    user.active, user.date_create, user.email_confirmed")
                         ->from("user")
                         ->leftJoin("company", "`user`.`company_id` = `company`.`id`")
                         ->where("`user`.`company_id`='".$sessionValidation['user']['company_id']."' AND ".$userQuery)
@@ -1015,6 +1019,7 @@ class WsController extends CController {
                         Yii::app()->user->setState('role', $sessionValidation['user']['role']);
                         Yii::app()->user->setState('company_id', $sessionValidation['user']['company_id']);
                         Yii::app()->user->setState('id', $sessionValidation['user']['id']);
+                        Yii::app()->session['product_token'] = $token;
         
                         $user = User::model()->findByAttributes(array('username'=> $username, 'company_id' => $sessionValidation['user']['company_id']));
                         $product = Product::model()->findByAttributes(array('token'=> $token));
@@ -1066,6 +1071,7 @@ class WsController extends CController {
                                 $model->password = $password;
                                 $model->verify_password = $confirmPasssword;
                                 $model->list_products = array($product->id);
+                                $model->email_confirm_token = generateRandomString();
                                 
                                 if($model->save()) {
                                     
@@ -1164,6 +1170,7 @@ class WsController extends CController {
                     Yii::app()->user->setState('role', $sessionValidation['user']['role']);
                     Yii::app()->user->setState('company_id', $sessionValidation['user']['company_id']);
                     Yii::app()->user->setState('id', $sessionValidation['user']['id']);
+                    Yii::app()->session['product_token'] = $token;
 
                     $user = UserModel::model()->findByPk($userId);
 
@@ -1184,11 +1191,12 @@ class WsController extends CController {
                         }
                         
                         if(!is_null($email)) {
+                            $user->old_email = $user->email;
                             $user->email = $email;
                         }
 
                         $validationFields = array('name', 'password', 'email', 'verify_password');
-                        $updateFields = array('name', 'email');
+                        $updateFields = array('name', 'email', 'email_confirmed', 'email_confirm_token');
 
                         if($sessionValidation['user']['role'] == 'company' && !empty($username)) {
                             $user->username = $username;
