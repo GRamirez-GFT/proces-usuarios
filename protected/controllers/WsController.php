@@ -1712,6 +1712,13 @@ class WsController extends CController {
 
                         $to = array($user->email => $user->username);
 
+                        /* Es vacío cuando es un usuario registrado del sistema
+                           Hay que generar token para que pueda confirmar su correo */
+                        if (empty($user->email_confirm_token)) {
+                            $user->email_confirm_token = generateRandomString();
+                            $user->update(array('email_confirm_token'));
+                        }
+
                         $urlParams = array(
                             'token' => cryptAction($user->email_confirm_token),
                             'system' => cryptAction($product->keyword)
