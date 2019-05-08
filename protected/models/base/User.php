@@ -5,6 +5,7 @@
  * @property string $username
  * @property string $password
  * @property string $email
+ * @property string $one_step_session_token
  * @property integer $company_id
  * @property boolean $active
  * @property string $date_create
@@ -30,6 +31,7 @@ class User extends MyActiveRecord {
 		array('name, username, active, date_create', 'required'),
 		array('active', 'numerical', 'integerOnly' => true),
 		array('name, email', 'length', 'max' => 100),
+		array('one_step_session_token', 'length', 'max' => 300),
 		array('username', 'length', 'max' => 32),
 		array('password', 'length', 'max' => 72),
 		array('company_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => 'Company'),

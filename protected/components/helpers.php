@@ -1,7 +1,7 @@
 <?php
 defined('DOCUMENT_PATH') or define('DOCUMENT_PATH', preg_replace('/protected/', 'documents', Yii::app()->basePath));
 defined('DOCUMENT_URL') or define('DOCUMENT_URL', 'documents/');
-defined('WS_SERVER') or define('WS_SERVER', "http://" . $_SERVER['HTTP_HOST'] . Yii::app()->baseUrl . "/api/ws");
+defined('WS_SERVER') or define('WS_SERVER', "https://" . $_SERVER['HTTP_HOST'] . Yii::app()->baseUrl . "/api/ws");
 ini_set("soap.wsdl_cache_enabled", "0");
 
 function saveFile(&$model, $attribute, $name = null, $admittedExtensions = array()) {
@@ -24,7 +24,7 @@ function saveFile(&$model, $attribute, $name = null, $admittedExtensions = array
     if (! $file) return false;
     if (! in_array($file->extensionName, $admittedExtensions)) return false;
     
-    $uniqueId = getUniqueId($file);
+    $uniqueId = getUniqueId();
     $uniqueFolder = date('Y/m/d/') . $uniqueId;
     
     $relative_path = DOCUMENT_URL . $uniqueFolder;
@@ -43,7 +43,7 @@ function saveFile(&$model, $attribute, $name = null, $admittedExtensions = array
     }
 }
 
-function getUniqueId($file) {
+function getUniqueId() {
     return uniqid() . substr(md5(Yii::app()->user->getStateKeyPrefix()), 0, 8);
 }
 
