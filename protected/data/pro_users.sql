@@ -39,7 +39,7 @@ DROP TABLE IF EXISTS `product`;
 
 CREATE TABLE `product` (
   `id` smallint(5) NOT NULL auto_increment,
-  'keyword` varchar(25) NOT NULL COMMENT 'Identificador clave de producto',
+  `keyword` varchar(25) NOT NULL COMMENT 'Identificador clave de producto',
   `name` varchar(100) NOT NULL,
   `url_product` varchar(255) default NULL,
   `company_id` smallint(5) default NULL,
