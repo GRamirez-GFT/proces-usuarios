@@ -71,32 +71,6 @@ function generateRandomString() {
 }
 
 /**
- * Encrypt and decrypt
- * 
- * @param string $string string to be encrypted/decrypted
- * @param string $action 'e' for encrypt, 'd' for decrypt
- */
-function cryptAction( $string, $action = 'e' ) {
-
-    $secret_key = '87b319608986beed872ac71c55e089a3';
-    $secret_iv = '35ec15f835cfc2102a2a36becb13c1d7';
- 
-    $output = false;
-    $encrypt_method = "AES-256-CBC";
-    $key = hash( 'sha256', $secret_key );
-    $iv = substr( hash( 'sha256', $secret_iv ), 0, 16 );
- 
-    if ( $action == 'e' ) {
-        $output = base64_encode( openssl_encrypt( $string, $encrypt_method, $key, 0, $iv ) );
-    }
-    else if ( $action == 'd' ){
-        $output = openssl_decrypt( base64_decode( $string ), $encrypt_method, $key, 0, $iv );
-    }
- 
-    return $output;
-}
-
-/**
  * Send email
  * 
  * @param string $view View to render

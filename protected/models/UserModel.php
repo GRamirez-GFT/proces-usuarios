@@ -266,12 +266,12 @@ class UserModel extends User {
         $to = array($this->email => $this->username);
 
         $urlParams = array(
-            'token' => cryptAction($this->email_confirm_token)
+            'token' => base64_encode(Yii::app()->securityManager->encrypt($this->email_confirm_token))
         );
 
         if (!empty(Yii::app()->session['product_token'])) {
             $product = Product::model()->findByAttributes(array('token' => Yii::app()->session['product_token']));
-            $urlParams['system'] = cryptAction($product->keyword);
+            $urlParams['system'] = base64_encode(Yii::app()->securityManager->encrypt($product->keyword));
         }
 
         $content = array(

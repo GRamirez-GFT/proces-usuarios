@@ -1720,8 +1720,8 @@ class WsController extends CController {
                         }
 
                         $urlParams = array(
-                            'token' => cryptAction($user->email_confirm_token),
-                            'system' => cryptAction($product->keyword)
+                            'token' => base64_encode(Yii::app()->securityManager->encrypt($user->email_confirm_token)),
+                            'system' => base64_encode(Yii::app()->securityManager->encrypt($product->keyword)),
                         );
 
                         $content = array(

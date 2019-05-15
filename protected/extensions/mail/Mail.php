@@ -12,13 +12,13 @@ class Mail extends CWidget {
 
     public function init() {
         $this->mail = new PHPMailer();
-        $this->mail->Host = 'email-smtp.us-west-2.amazonaws.com';
-        $this->mail->Username = 'AKIAIMHEVQZQKTPSYCHA';
-        $this->mail->Password = 'AhA4zZuFa5ozynT05RzjqHXi7r7VJ6LZ4/0ED894bmi/';
-        $this->mail->Mailer = 'smtp';
-        $this->mail->Port = 587;
-        $this->mail->SMTPAuth = true;
-        $this->mail->SMTPSecure = 'tls';
+        $this->mail->Host = Yii::app()->params['mailer']['Host'];
+        $this->mail->Username = Yii::app()->params['mailer']['Username'];
+        $this->mail->Password = Yii::app()->params['mailer']['Password'];
+        $this->mail->Mailer = Yii::app()->params['mailer']['Mailer'];
+        $this->mail->Port = Yii::app()->params['mailer']['Port'];
+        $this->mail->SMTPAuth = Yii::app()->params['mailer']['SMTPAuth'];
+        $this->mail->SMTPSecure = Yii::app()->params['mailer']['SMTPSecure'];
         $this->mail->CharSet = 'utf-8';
         $this->mail->ContentType = 'text/html';
         

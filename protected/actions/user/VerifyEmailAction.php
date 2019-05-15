@@ -8,7 +8,7 @@ class VerifyEmailAction extends CAction {
 		$system = Yii::app()->request->getParam('system', null);
 
 		$user = User::model()->findByAttributes(array(
-			'email_confirm_token' => cryptAction($token, 'd')
+			'email_confirm_token' => Yii::app()->securityManager->decrypt(base64_decode($token))
 		), "email_confirm_token IS NOT NULL");
 
 		if(!$user) {
@@ -35,7 +35,7 @@ class VerifyEmailAction extends CAction {
 		if($success) {
 
 			$product = Product::model()->findByAttributes(array(
-				'keyword' => cryptAction($system, 'd')
+				'keyword' => Yii::app()->securityManager->decrypt(base64_decode($system))
 			));
 
 			$redirect = Yii::app()->getBaseUrl(true);
