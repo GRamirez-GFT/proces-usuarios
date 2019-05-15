@@ -9,6 +9,8 @@
  * @property integer $company_id
  * @property boolean $active
  * @property string $date_create
+ * @property integer $email_confirmed
+ * @property string $email_confirm_token
  *
  * @property Company[] $companies
  * @property Product[] $products
@@ -29,8 +31,8 @@ class User extends MyActiveRecord {
 	public function rules() {
 		return array(
 		array('name, username, active, date_create', 'required'),
-		array('active', 'numerical', 'integerOnly' => true),
-		array('name, email', 'length', 'max' => 100),
+		array('active, email_confirmed', 'numerical', 'integerOnly' => true),
+		array('name, email, email_confirm_token', 'length', 'max' => 100),
 		array('one_step_session_token', 'length', 'max' => 300),
 		array('username', 'length', 'max' => 32),
 		array('password', 'length', 'max' => 72),
@@ -57,6 +59,8 @@ class User extends MyActiveRecord {
 		'company_id' => Yii::t('models/User', 'company_id'),
 		'active' => Yii::t('models/User', 'active'),
 		'date_create' => Yii::t('models/User', 'date_create'),
+		'email_confirmed' => Yii::t('models/User', 'email_confirmed'),
+		'email_confirm_token' => Yii::t('models/User', 'email_confirm_token'),
 		);
 	}
 
@@ -70,6 +74,8 @@ class User extends MyActiveRecord {
 		$criteria->compare('company_id', $this->company_id);
 		$criteria->compare('active', $this->active);
 		$criteria->compare('date_create', $this->date_create);
+		$criteria->compare('email_confirmed',$this->email_confirmed);
+		$criteria->compare('email_confirm_token',$this->email_confirm_token,true);
 		$sort = new CSort();
 		$sort->attributes = array('*');
 		$sort->multiSort = true;

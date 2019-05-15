@@ -1,8 +1,13 @@
 <?php
 
 class UserModel extends User {
+
+    const EMAIL_NOT_CONFIRMED = 0;
+    const EMAIL_CONFIRMED = 1;
+
     public $list_products;
     public $verify_password;
+    public $old_email;
 
     public static function model($className = __CLASS__) {
         return parent::model($className);
@@ -242,6 +247,42 @@ class UserModel extends User {
         parent::afterFind();
         foreach ($this->products as $item) {
             $this->list_products[] = $item->id;
+        }
+    }
+
+    public function beforeSave() {
+
+        if (!$this->isNewRecord && !empty($this->old_email) && $this->email != $this->old_email) {
+            $this->email_confirmed = self::EMAIL_NOT_CONFIRMED;
+            $this->email_confirm_token = generateRandomString();
+        }
+    
+        return parent::beforeSave();
+    }
+
+    protected function afterSave() {
+        parent::afterSave();
+
+        $to = array($this->email => $this->username);
+
+        $urlParams = array(
+            'token' => base64_encode(Yii::app()->securityManager->encrypt($this->email_confirm_token))
+        );
+
+        if (!empty(Yii::app()->session['product_token'])) {
+            $product = Product::model()->findByAttributes(array('token' => Yii::app()->session['product_token']));
+            $urlParams['system'] = base64_encode(Yii::app()->securityManager->encrypt($product->keyword));
+        }
+
+        $content = array(
+            'user' => $this,
+            'url' => Yii::app()->createAbsoluteUrl('user/verifyEmail', $urlParams)
+        );
+
+        if ($this->isNewRecord) {
+            sendEmail('emailVerification', $to, $content, '[PROCES] Verificar correo');
+        } else if (!empty($this->old_email) && $this->old_email != $this->email) {
+            sendEmail('emailVerification', $to, $content, '[PROCES] Verificar nuevo correo');
         }
     }
     

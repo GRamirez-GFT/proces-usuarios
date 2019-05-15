@@ -23,7 +23,7 @@ class GlobalAccessControlFilter extends CFilter {
             curl_setopt($sessionCurl, CURLOPT_POSTFIELDS, $postData);
             curl_setopt($sessionCurl, CURLOPT_HTTPHEADER, $headers); 
             $sessionResponse = curl_exec($sessionCurl);
-            
+
             if($sessionResponse !== false) {
                 
                 $sessionResponse = json_decode($sessionResponse);
@@ -66,17 +66,53 @@ class GlobalAccessControlFilter extends CFilter {
     }
     
     private static function loginRedirect() {
-        
+
+    	/* At this point it could be here cause cookie was deleted from other product but local session is still active OR cause current action is public independent from
+    	*  user session. So we need to heck rules to see if action is public and let continue, otherwise user validation came at this point due to
+    	*  local session active and cookie deleted so it needs to be refreshed.
+    	*/
         $requestedUri = Yii::app()->request->getRequestUri();
         
         if(! preg_match('/\/login$/', $requestedUri) && !preg_match('/\/logout$/', $requestedUri) && !preg_match('/\/logout\?save_cookie\=true$/', $requestedUri) && !Yii::app()->user->isGuest) {
-            Yii::app()->request->redirect(Yii::app()->createAbsoluteUrl('site/logout?save_cookie=true'));
+
+        	if(self::isPublicAllowedAction()) {
+        		return true;
+        	} else {
+            	Yii::app()->request->redirect(Yii::app()->createAbsoluteUrl('site/logout?save_cookie=true'));
+        	}
         } else if(! preg_match('/\/login$/', $requestedUri) && !preg_match('/\/logout$/', $requestedUri) && !preg_match('/\/logout\?save_cookie\=true$/', $requestedUri)) {
-            Yii::app()->request->redirect(Yii::app()->createAbsoluteUrl('site/logout'));
+
+        	if(self::isPublicAllowedAction()) {
+        		return true;
+        	} else {
+            	Yii::app()->request->redirect(Yii::app()->createAbsoluteUrl('site/logout'));
+        	}
         } else {
             return true;
         }
         
+    }
+
+    private function isPublicAllowedAction() {
+
+    	if(Yii::app()->controller->action) {
+
+	    	$accessRules = Yii::app()->controller->accessRules();
+
+	    	foreach($accessRules as $ruleName => $ruleConfig) {
+
+	    		$isAllow = $ruleConfig[0] == 'allow';
+	    		$isPublicAllowing = isset($ruleConfig['users']) && in_array('*', $ruleConfig['users']);
+	    		$appliesToCurrentAction = isset($ruleConfig['actions']) && in_array(Yii::app()->controller->action->id, $ruleConfig['actions']);
+
+	    		if($isAllow && $isPublicAllowing && $appliesToCurrentAction)  {
+	    			return true;
+	    		}
+	    	}
+    	}
+
+    	return false;
+
     }
 }
 
