@@ -1,7 +1,7 @@
 <?php
 defined('DOCUMENT_PATH') or define('DOCUMENT_PATH', preg_replace('/protected/', 'documents', Yii::app()->basePath));
 defined('DOCUMENT_URL') or define('DOCUMENT_URL', 'documents/');
-defined('WS_SERVER') or define('WS_SERVER', "https://" . $_SERVER['HTTP_HOST'] . Yii::app()->baseUrl . "/api/ws");
+defined('WS_SERVER') or define('WS_SERVER', "http".(isHttpSecure() ? 's' : '')."://" . $_SERVER['HTTP_HOST'] . Yii::app()->baseUrl . "/api/ws");
 ini_set("soap.wsdl_cache_enabled", "0");
 
 function saveFile(&$model, $attribute, $name = null, $admittedExtensions = array()) {
@@ -87,4 +87,8 @@ function sendEmail($view = '', $to = array(), $content = array(), $subject = '')
             'subject' => $subject
         )
     ));
+}
+
+function isHttpSecure() {
+  return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443;
 }
