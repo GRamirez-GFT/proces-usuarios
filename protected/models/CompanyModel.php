@@ -14,7 +14,7 @@ class CompanyModel extends Company {
         if ($this->isNewRecord && $this->getScenario() != 'search') {
             $this->user = new UserModel();
             $this->active = 1;
-            $this->email_confirmed = 1;
+            $this->user->email_confirmed = UserModel::EMAIL_CONFIRMED;
         }
     }
 

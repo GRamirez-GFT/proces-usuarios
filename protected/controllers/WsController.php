@@ -797,6 +797,7 @@ class WsController extends CController {
                 $response= array(
                     'success' => false,
                     'users' => null,
+                    'company_licenses' => null,
                     'error' => null,
                 );
     
@@ -804,7 +805,7 @@ class WsController extends CController {
                     
                     $users = Yii::app()->db->createCommand()
                         ->select("user.id, user.name, user.username, user.email, user.company_id, 
-                                        user.active, user.date_create, company.licenses as company_licenses,
+                                        user.active, user.date_create,
                                         user.email_confirmed")
                         ->from("user")
                         ->leftJoin("company", "`user`.`company_id` = `company`.`id`")
@@ -812,7 +813,10 @@ class WsController extends CController {
                         ->order("user.username ASC")
                         ->queryAll();
 
+                    $companyModel = CompanyModel::model()->findByPk($companyId);
+
                     $response['users'] = $users;
+                    $response['company_licenses'] = $companyModel->licenses;
                     $response['success'] = true;
                     
                 } else {
@@ -1071,7 +1075,6 @@ class WsController extends CController {
                                 $model->password = $password;
                                 $model->verify_password = $confirmPasssword;
                                 $model->list_products = array($product->id);
-                                $model->email_confirm_token = generateRandomString();
                                 
                                 if($model->save()) {
                                     
