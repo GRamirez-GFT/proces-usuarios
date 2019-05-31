@@ -679,6 +679,73 @@ class WsController extends CController {
         });
 
         /*
+         * website-url/api/ws/getCompany
+         * 
+         *  Ejemplo de headers:
+         *  X-REST-USERNAME : ""
+         *  X-REST-PASSWORD : ""
+         *  X-REST-TOKEN : CE6202AY6DD28E3B
+         *
+         *  Ejemplo de parametros GET:
+         *    website-url/api/ws/getCompany/{id}
+         *    website-url/api/ws/getCompany/333
+         * 
+         * El resultado:
+         * {
+         *  "success": true OR false si no pasó alguna validación,
+         *  "company": {
+         *      "id": 333,
+         *      "name": Proces,
+         *      "subdomain": procesmx,
+         *      "user_id": 111,
+         *      "active": true or false,
+         *      "restrict_connection": true or false,
+         *      "date_created": 2015-07-01 (Y-m-d),
+         *      "url_logo": documents/año/mes/dia/2342f23d3.jpg,
+         *      "licenses": 5, (quantity)
+         *      "storage": 1, (GB)
+         *  },
+         *  "errors": descripcion de error,
+         * }
+         *
+         */
+        
+        $this->onRest('req.get.getCompany.render', function($id) {
+            
+            try {
+                
+                $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : false;
+                
+                $response= array(
+                    'success' => false,
+                    'company' => null,
+                    'error' => null,
+                );
+    
+                if($token == Yii::app()->params->token) {
+                    
+                    $company = Yii::app()->db->createCommand()
+                        ->select("id, name, subdomain, user_id, active, restrict_connection, date_create, url_logo, licenses, storage")
+                        ->from("company")
+                        ->where("id=:id", array(':id' => $id))
+                        ->queryRow();
+
+                    $response['company'] = $company;
+                    $response['success'] = true;
+                    
+                } else {
+                    $response['error'] = 'El token ingresado es inválido.';
+                }             
+                
+                return CJSON::encode($response);
+                
+            } catch (Exception $e) {
+                throw new CHttpException(420, 'Error: ' . $e->getMessage());
+            }
+             
+        });
+
+        /*
          * website-url/api/ws/getCompanies
          * 
          *  Ejemplo de headers:
@@ -797,7 +864,6 @@ class WsController extends CController {
                 $response= array(
                     'success' => false,
                     'users' => null,
-                    'company_licenses' => null,
                     'error' => null,
                 );
     
@@ -813,10 +879,7 @@ class WsController extends CController {
                         ->order("user.username ASC")
                         ->queryAll();
 
-                    $companyModel = CompanyModel::model()->findByPk($companyId);
-
                     $response['users'] = $users;
-                    $response['company_licenses'] = $companyModel->licenses;
                     $response['success'] = true;
                     
                 } else {
