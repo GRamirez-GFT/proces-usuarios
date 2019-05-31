@@ -255,6 +255,8 @@ class UserModel extends User {
         if (!$this->isNewRecord && !empty($this->old_email) && $this->email != $this->old_email) {
             $this->email_confirmed = self::EMAIL_NOT_CONFIRMED;
             $this->email_confirm_token = generateRandomString();
+        } else if ($this->isNewRecord) {
+            $this->email_confirm_token = generateRandomString();
         }
     
         return parent::beforeSave();
