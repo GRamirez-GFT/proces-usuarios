@@ -39,6 +39,7 @@ DROP TABLE IF EXISTS `product`;
 
 CREATE TABLE `product` (
   `id` smallint(5) NOT NULL auto_increment,
+  `keyword` varchar(25) NOT NULL COMMENT 'Identificador clave de producto',
   `name` varchar(100) NOT NULL,
   `url_product` varchar(255) default NULL,
   `company_id` smallint(5) default NULL,
@@ -104,6 +105,8 @@ CREATE TABLE `user` (
   `company_id` smallint(5) default NULL,
   `active` tinyint(1) NOT NULL COMMENT '0 = Inactivo\n1 = Activo',
   `date_create` date NOT NULL,
+  `email_confirmed` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Correo confirmado',
+  `email_confirm_token` VARCHAR(100) UNIQUE NULL COMMENT 'Token de confirmación de correo',
   PRIMARY KEY  (`id`),
   KEY `company_user` (`company_id`),
   CONSTRAINT `company_user` FOREIGN KEY (`company_id`) REFERENCES `company` (`id`)

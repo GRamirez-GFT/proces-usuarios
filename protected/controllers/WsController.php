@@ -1,4 +1,5 @@
 <?php
+require_once dirname(__FILE__) . '/../components/helpers.php';
 
 class WsController extends CController {
     
@@ -322,6 +323,7 @@ class WsController extends CController {
             $request["url_logo"] = $urlLogo;
             $request["role"] = $user->id == $user->company->user_id ? "company" : "general";
             $request["company_id"] = $user->company_id;
+            $request["email_confirmed"] = $user->email_confirmed;
             
         } else {
             $request["company"] = null;
@@ -677,6 +679,73 @@ class WsController extends CController {
         });
 
         /*
+         * website-url/api/ws/getCompany
+         * 
+         *  Ejemplo de headers:
+         *  X-REST-USERNAME : ""
+         *  X-REST-PASSWORD : ""
+         *  X-REST-TOKEN : CE6202AY6DD28E3B
+         *
+         *  Ejemplo de parametros GET:
+         *    website-url/api/ws/getCompany/{id}
+         *    website-url/api/ws/getCompany/333
+         * 
+         * El resultado:
+         * {
+         *  "success": true OR false si no pasó alguna validación,
+         *  "company": {
+         *      "id": 333,
+         *      "name": Proces,
+         *      "subdomain": procesmx,
+         *      "user_id": 111,
+         *      "active": true or false,
+         *      "restrict_connection": true or false,
+         *      "date_created": 2015-07-01 (Y-m-d),
+         *      "url_logo": documents/año/mes/dia/2342f23d3.jpg,
+         *      "licenses": 5, (quantity)
+         *      "storage": 1, (GB)
+         *  },
+         *  "errors": descripcion de error,
+         * }
+         *
+         */
+        
+        $this->onRest('req.get.getCompany.render', function($id) {
+            
+            try {
+                
+                $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : false;
+                
+                $response= array(
+                    'success' => false,
+                    'company' => null,
+                    'error' => null,
+                );
+    
+                if($token == Yii::app()->params->token) {
+                    
+                    $company = Yii::app()->db->createCommand()
+                        ->select("id, name, subdomain, user_id, active, restrict_connection, date_create, url_logo, licenses, storage")
+                        ->from("company")
+                        ->where("id=:id", array(':id' => $id))
+                        ->queryRow();
+
+                    $response['company'] = $company;
+                    $response['success'] = true;
+                    
+                } else {
+                    $response['error'] = 'El token ingresado es inválido.';
+                }             
+                
+                return CJSON::encode($response);
+                
+            } catch (Exception $e) {
+                throw new CHttpException(420, 'Error: ' . $e->getMessage());
+            }
+             
+        });
+
+        /*
          * website-url/api/ws/getCompanies
          * 
          *  Ejemplo de headers:
@@ -802,7 +871,8 @@ class WsController extends CController {
                     
                     $users = Yii::app()->db->createCommand()
                         ->select("user.id, user.name, user.username, user.email, user.company_id, 
-                                        user.active, user.date_create, company.licenses as company_licenses")
+                                        user.active, user.date_create,
+                                        user.email_confirmed")
                         ->from("user")
                         ->leftJoin("company", "`user`.`company_id` = `company`.`id`")
                         ->where("`user`.`company_id`='".$companyId."' AND `user`.`id` <> `company`.`user_id` ")
@@ -907,7 +977,8 @@ class WsController extends CController {
                     }
                     
                     $user = Yii::app()->db->createCommand()
-                        ->select("user.id, user.name, user.username, user.email, user.company_id, user.active, user.date_create")
+                        ->select("user.id, user.name, user.username, user.email, user.company_id, 
+                                    user.active, user.date_create, user.email_confirmed")
                         ->from("user")
                         ->leftJoin("company", "`user`.`company_id` = `company`.`id`")
                         ->where("`user`.`company_id`='".$sessionValidation['user']['company_id']."' AND ".$userQuery)
@@ -1015,6 +1086,7 @@ class WsController extends CController {
                         Yii::app()->user->setState('role', $sessionValidation['user']['role']);
                         Yii::app()->user->setState('company_id', $sessionValidation['user']['company_id']);
                         Yii::app()->user->setState('id', $sessionValidation['user']['id']);
+                        Yii::app()->session['product_token'] = $token;
         
                         $user = User::model()->findByAttributes(array('username'=> $username, 'company_id' => $sessionValidation['user']['company_id']));
                         $product = Product::model()->findByAttributes(array('token'=> $token));
@@ -1164,6 +1236,7 @@ class WsController extends CController {
                     Yii::app()->user->setState('role', $sessionValidation['user']['role']);
                     Yii::app()->user->setState('company_id', $sessionValidation['user']['company_id']);
                     Yii::app()->user->setState('id', $sessionValidation['user']['id']);
+                    Yii::app()->session['product_token'] = $token;
 
                     $user = UserModel::model()->findByPk($userId);
 
@@ -1184,11 +1257,12 @@ class WsController extends CController {
                         }
                         
                         if(!is_null($email)) {
+                            $user->old_email = $user->email;
                             $user->email = $email;
                         }
 
                         $validationFields = array('name', 'password', 'email', 'verify_password');
-                        $updateFields = array('name', 'email');
+                        $updateFields = array('name', 'email', 'email_confirmed', 'email_confirm_token');
 
                         if($sessionValidation['user']['role'] == 'company' && !empty($username)) {
                             $user->username = $username;
@@ -1643,6 +1717,101 @@ class WsController extends CController {
                 throw new CHttpException(420, 'Error: ' . $e->getMessage());
             }
              
+        });
+
+        /**
+         * Reenvia correo de verificación a usuario.
+         * 
+         * website-url/api/ws/resendVerificationEmail
+         * 
+         *  Ejemplo de headers:
+         *  X-REST-TOKEN : CE6202AY6DD28E3B
+         *
+         *  Ejemplo de parametros POST:
+         *  session_id: 6debc49305145b3beeda381ad983fdea
+         *  id: 11 (ID de usuario)
+         *  ipv4: 22.33.0.123
+         *
+         * El resultado:
+         * {
+         *  "success": true OR false si no pasó alguna validación,
+         *  "errors": [
+         *      errores generales que ocurren por validaciones de los webservices
+         *  ],
+         * }
+         *
+         */
+        
+        $this->onRest('req.post.resendVerificationEmail.render', function($data) {
+
+            try {
+                
+                $token = isset($_SERVER['HTTP_X_REST_TOKEN']) ? $_SERVER['HTTP_X_REST_TOKEN'] : false;
+                $sessionId = isset($data['session_id']) ? $data['session_id'] : null;
+                $userId = isset($data['id']) ? $data['id'] : null;
+                $ipv4 = isset($data['ipv4']) ? $data['ipv4'] : null;
+                
+                $response = array(
+                    'success' => false,
+                    'user' => null,
+                    'errors' => array(),
+                );
+    
+                $ipv4 = filter_var($ipv4, FILTER_VALIDATE_IP);
+                
+                $sessionValidation = self::validateSession($sessionId, $token, $ipv4);
+                
+                if ($sessionValidation['success']) {
+                    
+                    /* Se inicia sesión para no generar conflicto en las partes de los modelos donde se usan datos de sesión */
+                    Yii::app()->user->login(new CUserIdentity($sessionValidation['user']['username'], ''));
+
+                    Yii::app()->user->setState('role', $sessionValidation['user']['role']);
+                    Yii::app()->user->setState('company_id', $sessionValidation['user']['company_id']);
+                    Yii::app()->user->setState('id', $sessionValidation['user']['id']);
+
+                    $user = UserModel::model()->findByPk($userId);
+
+                    if ($user) {
+
+                        $product = Product::model()->findByAttributes(array('token' => $token));
+
+                        $to = array($user->email => $user->username);
+
+                        /* Es vacío cuando es un usuario registrado del sistema
+                           Hay que generar token para que pueda confirmar su correo */
+                        if (empty($user->email_confirm_token)) {
+                            $user->email_confirm_token = generateRandomString();
+                            $user->update(array('email_confirm_token'));
+                        }
+
+                        $urlParams = array(
+                            'token' => base64_encode(Yii::app()->securityManager->encrypt($user->email_confirm_token)),
+                            'system' => base64_encode(Yii::app()->securityManager->encrypt($product->keyword)),
+                        );
+
+                        $content = array(
+                            'user' => $user,
+                            'url' => Yii::app()->createAbsoluteUrl('user/verifyEmail', $urlParams)
+                        );
+
+                        sendEmail('emailVerification', $to, $content, '[PROCES] Reenvío de verificación de correo');
+
+                        $response['success'] = true;
+
+                    } else {
+                        $response['errors']['Error 1'] = 'El ID de usuario es inválido';
+                    }
+                    
+                } else {
+                    $response['errors']['Error 1'] = $sessionValidation['error']; 
+                }
+                
+                return CJSON::encode($response);
+                
+            } catch (Exception $e) {
+                throw new CHttpException(420, 'Error: ' . $e->getMessage());
+            }    
         });
         
     }

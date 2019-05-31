@@ -1,7 +1,7 @@
 <?php
 defined('DOCUMENT_PATH') or define('DOCUMENT_PATH', preg_replace('/protected/', 'documents', Yii::app()->basePath));
 defined('DOCUMENT_URL') or define('DOCUMENT_URL', 'documents/');
-defined('WS_SERVER') or define('WS_SERVER', "https://" . $_SERVER['HTTP_HOST'] . Yii::app()->baseUrl . "/api/ws");
+defined('WS_SERVER') or define('WS_SERVER', "http".(isHttpSecure() ? 's' : '')."://" . $_SERVER['HTTP_HOST'] . Yii::app()->baseUrl . "/api/ws");
 ini_set("soap.wsdl_cache_enabled", "0");
 
 function saveFile(&$model, $attribute, $name = null, $admittedExtensions = array()) {
@@ -58,4 +58,37 @@ function removeFile($path) {
     if (is_dir($folderDir)) {
         rmdir($folderDir);
     }
+}
+
+function generateRandomString() {
+    // Generate a random string.
+    $string = openssl_random_pseudo_bytes(16);
+    
+    // Convert the binary data into hexadecimal representation.
+    $string = bin2hex($string);
+
+    return $string;
+}
+
+/**
+ * Send email
+ * 
+ * @param string $view View to render
+ * @param array $to Receiver: array(email => name)
+ * @param array $content Data for the view
+ * @param string $subject Subject
+ */
+function sendEmail($view = '', $to = array(), $content = array(), $subject = '') {
+    Yii::app()->controller->widget('ext.mail.Mail', array(
+        'view' => $view,
+        'params' => array(
+            'to' => $to,
+            'content' => $content,
+            'subject' => $subject
+        )
+    ));
+}
+
+function isHttpSecure() {
+  return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443;
 }
