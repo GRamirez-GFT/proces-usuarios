@@ -38,6 +38,9 @@ return CMap::mergeArray(
             'errorHandler' => array(
                 'errorAction' => 'site/error'
             ),
+            'securityManager' => array(
+                'encryptionKey' => '87b319608986beed872ac71c55e089a3'
+            ),
             'log' => array(
                 'class' => 'CLogRouter',
                 'routes' => array(

@@ -25,6 +25,7 @@ class UpdateAction extends CAction {
                 $postAttributes = Yii::app()->request->getPost(get_class($model));
             }
 
+            $model->old_email = $model->email;
             $model->setAttributes($postAttributes);
 
             if(!isset($postAttributes['list_products']) && !in_array(Yii::app()->user->role, array("general"))

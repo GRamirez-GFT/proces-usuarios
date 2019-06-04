@@ -80,6 +80,11 @@
 		<p>
 
 		<p>
+			<span class="labeling"><?php echo  Yii::t('models/User', 'email_confirmed'); ?>:</span>
+			<?php echo $model->email_confirmed ? 'Si' : 'No'; ?>
+		<p>
+
+		<p>
 			<span class="labeling"><?php echo  Yii::t('models/User', 'date_create'); ?>:</span>
 			<?php echo $model->date_create; ?>
 		<p>
