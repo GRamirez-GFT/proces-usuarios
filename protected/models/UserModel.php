@@ -265,26 +265,31 @@ class UserModel extends User {
     protected function afterSave() {
         parent::afterSave();
 
-        $to = array($this->email => $this->username);
+        $emailChanged = !empty($this->old_email) && $this->old_email != $this->email;
 
-        $urlParams = array(
-            'token' => base64_encode(Yii::app()->securityManager->encrypt($this->email_confirm_token))
-        );
+        if($this->isNewRecord || $emailChanged) {
 
-        if (!empty(Yii::app()->session['product_token'])) {
-            $product = Product::model()->findByAttributes(array('token' => Yii::app()->session['product_token']));
-            $urlParams['system'] = base64_encode(Yii::app()->securityManager->encrypt($product->keyword));
-        }
+	        $to = array($this->email => $this->username);
 
-        $content = array(
-            'user' => $this,
-            'url' => Yii::app()->createAbsoluteUrl('user/verifyEmail', $urlParams)
-        );
+	        $urlParams = array(
+	            'token' => base64_encode(Yii::app()->securityManager->encrypt($this->email_confirm_token))
+	        );
 
-        if ($this->isNewRecord) {
-            sendEmail('emailVerification', $to, $content, '[PROCES] Verificar correo');
-        } else if (!empty($this->old_email) && $this->old_email != $this->email) {
-            sendEmail('emailVerification', $to, $content, '[PROCES] Verificar nuevo correo');
+	        if (!empty(Yii::app()->session['product_token'])) {
+	            $product = Product::model()->findByAttributes(array('token' => Yii::app()->session['product_token']));
+	            $urlParams['system'] = base64_encode(Yii::app()->securityManager->encrypt($product->keyword));
+	        }
+
+	        $content = array(
+	            'user' => $this,
+	            'url' => Yii::app()->createAbsoluteUrl('user/verifyEmail', $urlParams)
+	        );
+
+	        if($this->isNewRecord) {
+	            sendEmail('emailVerification', $to, $content, '[PROCES] Verificar correo');
+	        } else if ($emailChanged) {
+	            sendEmail('emailVerification', $to, $content, '[PROCES] Verificar nuevo correo');
+	        }
         }
     }
     
