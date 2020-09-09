@@ -5,7 +5,5 @@ insert  into `user`(`id`,`name`,`username`,`password`,`email`,`company_id`,`acti
 /*Data for the table `product` */
 
 insert  into `product`(`id`,`keyword`,`name`,`url_product`,`company_id`,`token`) values 
-(1,'users','Proces - Usuarios','/usuarios',NULL,'CE6204AC6DD28E9B'),
-(2,'documents','Proces - Documentos','/documentos',NULL,'1AD5BE0D83DCEFB7'),
-(3,'administration','Proces - Proyectos','/proyectos',NULL,'1AD5BE0D1AD5BE0D'),
-(4,'guides','Proces - Guias','/guias',NULL,'3AE8BE0E1AD5BE6D');
+(1,'users','Proces Usuarios','/usuarios',NULL,'CE6204AC6DD28E9B'),
+(2,'administration','Proces Administración','/proyectos',NULL,'1AD5BE0D1AD5BE0D');
