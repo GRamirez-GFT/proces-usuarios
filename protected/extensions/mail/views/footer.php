@@ -4,11 +4,6 @@
                                                             </table>
                                                         </td>
                                                     </tr>
-                                                    <tr>
-                                                        <td align="center" valign="top">
-                                                            <img src="http://gallery.mailchimp.com/27aac8a65e64c994c4416d6b8/images/couponshadow.png" height="20" width="600" class="mcnImage" style="display:block; max-width:560px;">
-                                                        </td>
-                                                    </tr>
                                                 </table>
                                             </td>
                                         </tr>
