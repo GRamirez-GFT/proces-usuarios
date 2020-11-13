@@ -533,6 +533,8 @@
                                                                                         <td class="mcnImageContent" valign="top" style="padding-right: 9px; padding-left: 9px; padding-top: 0; padding-bottom: 0; text-align:center;">
 
 	                                                                                        <?php
+																								$dataImageUrl = getDataPublicUrl(Yii::getPathOfAlias('webroot.themes') . '/proces-bootstrap/img/logo_header.png');
+																								
 	                                                                                        	if(php_sapi_name() != "cli") {
 	                                                                                        		$baseUrl = Yii::app()->getBaseUrl(true);
 	                                                                                        	} else {
@@ -540,7 +542,7 @@
 	                                                                                        	}
 	                                                                                        ?>
                                                                                             <a href="<?=$baseUrl;?>">
-                                                                                                <img align="center" alt="" src="<?php $baseUrl.'/themes/proces-bootstrap/img/logo_header.png';?>" width="113" style="max-width:113px; padding-bottom: 0; display: inline !important; vertical-align: bottom;" class="mcnImage">
+                                                                                                <img align="center" alt="" src="<?=$dataImageUrl;?>" width="113" style="max-width:113px; padding-bottom: 0; display: inline !important; vertical-align: bottom;" class="mcnImage">
                                                                                             </a>
 
                                                                                         </td>

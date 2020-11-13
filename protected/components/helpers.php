@@ -92,3 +92,14 @@ function sendEmail($view = '', $to = array(), $content = array(), $subject = '')
 function isHttpSecure() {
   return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443;
 }
+
+function getDataPublicUrl($imagePath) {
+
+    if(!file_exists($imagePath)) {
+        return false;
+    }
+
+    $fileExtension = pathinfo($imagePath, PATHINFO_EXTENSION);;
+
+    return 'data:image/' . $fileExtension . ';base64,' . base64_encode(file_get_contents($imagePath));
+}

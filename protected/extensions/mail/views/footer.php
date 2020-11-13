@@ -4,11 +4,6 @@
                                                             </table>
                                                         </td>
                                                     </tr>
-                                                    <tr>
-                                                        <td align="center" valign="top">
-                                                            <img src="http://gallery.mailchimp.com/27aac8a65e64c994c4416d6b8/images/couponshadow.png" height="20" width="600" class="mcnImage" style="display:block; max-width:560px;">
-                                                        </td>
-                                                    </tr>
                                                 </table>
                                             </td>
                                         </tr>
@@ -35,7 +30,7 @@
                         <td valign="top" class="mcnTextContent" style="padding: 9px 18px; line-height: normal;">
                         
                             <em>
-                            	&copy; <?php echo date('Y'); ?> <?=Yii::t('base', 'by')?> Proces. <?=Yii::t('base', 'All rights reserved')?>.
+                            	&copy; <?php echo date('Y'); ?> <?=Yii::t('base', 'by')?> Proces Software. <?=Yii::t('base', 'All rights reserved')?>.
                             </em>
                             <br>
                             <br>
