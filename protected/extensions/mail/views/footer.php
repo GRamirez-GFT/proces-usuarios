@@ -35,7 +35,7 @@
                         <td valign="top" class="mcnTextContent" style="padding: 9px 18px; line-height: normal;">
                         
                             <em>
-                            	&copy; <?php echo date('Y'); ?> <?=Yii::t('base', 'by')?> Proces. <?=Yii::t('base', 'All rights reserved')?>.
+                            	&copy; <?php echo date('Y'); ?> <?=Yii::t('base', 'by')?> Proces Software. <?=Yii::t('base', 'All rights reserved')?>.
                             </em>
                             <br>
                             <br>
