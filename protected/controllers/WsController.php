@@ -316,7 +316,8 @@ class WsController extends CController {
         
         if(!empty($user->company_id)) {
             
-            $urlLogo = (!empty($user->company->url_logo)) ? "http://" . $_SERVER['HTTP_HOST'] . Yii::app()->baseUrl.DIRECTORY_SEPARATOR.$user->company->url_logo : null;
+            $httpString = 'http' . (isHttpSecure() ? 's' : '');
+            $urlLogo = (!empty($user->company->url_logo)) ? $httpString . "://" . $_SERVER['HTTP_HOST'] . Yii::app()->baseUrl.DIRECTORY_SEPARATOR.$user->company->url_logo : null;
             
             $request["company"] = $user->company->name;
             $request["subdomain"] = $user->company->subdomain;
